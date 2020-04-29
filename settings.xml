@@ -1,0 +1,20 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <!-- This is a read only password for reading packages. -->
+  <servers>
+    <server>
+      <id>github-matag-cards</id>
+      <username>antonioalonzi</username>
+      <password>e5426598ff9ea90a3b77a4968e83e462424eb305</password>
+    </server>
+    <server>
+      <id>github-matag-admin-entities</id>
+      <username>antonioalonzi</username>
+      <password>e5426598ff9ea90a3b77a4968e83e462424eb305</password>
+    </server>
+  </servers>
+</settings>
+
