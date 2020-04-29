@@ -6,10 +6,7 @@ It is deployed at https://matag-admin.herokuapp.com/
 
 ## Requisites
 
- * Install [JDK 11](https://jdk.java.net/11/)
- * Install [maven](https://maven.apache.org/download.cgi)
- * Install [yarn 1.21.1](https://classic.yarnpkg.com/en/docs/install)
- * Install [node v12.12.0](https://nodejs.org/en/download/)
+Read [Requisites](https://github.com/MatagTheGame/game/wiki/Requisites)
  
 The application connects to a [postgresql](https://www.postgresql.org/) database.
 You can install one locally and then run the [schema.sql](src/main/resource/schema.sql)
