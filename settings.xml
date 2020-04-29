@@ -3,18 +3,16 @@
   xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
                       http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
-  <!-- This is a read only password for reading packages. -->
   <servers>
     <server>
       <id>github-matag-cards</id>
       <username>antonioalonzi</username>
-      <password>e5426598ff9ea90a3b77a4968e83e462424eb305</password>
+      <password>${env.MAVEN_REPO_PASSWORD}</password>
     </server>
     <server>
       <id>github-matag-admin-entities</id>
       <username>antonioalonzi</username>
-      <password>e5426598ff9ea90a3b77a4968e83e462424eb305</password>
+      <password>${env.MAVEN_REPO_PASSWORD}</password>
     </server>
   </servers>
 </settings>
-
