@@ -4,6 +4,12 @@ This application is taking care of user management and deck building.
 It is deployed at https://matag-admin.herokuapp.com/
 
 
+## Build
+
+![Java CI with Maven](https://github.com/MatagTheGame/matag-admin/workflows/Java%20CI%20with%20Maven/badge.svg)
+ - https://github.com/MatagTheGame/matag-admin/actions 
+ 
+
 ## Requisites
 
 Read [Requisites](https://github.com/MatagTheGame/game/wiki/Requisites)
