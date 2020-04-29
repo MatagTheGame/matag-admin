@@ -1,0 +1,7 @@
+/.idea
+/*.iml
+/target
+
+/src/main/resources/public/js
+/node
+/node_modules
