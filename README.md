@@ -6,7 +6,7 @@ This application is taking care of user management and deck building.
 See [Matag: The Game](https://github.com/MatagTheGame/matag-the-game/wiki) wiki
 
 
-## Automated Build`
+## Automated Build
 
 ![Java CI with Maven](https://github.com/MatagTheGame/matag-admin/workflows/Java%20CI%20with%20Maven/badge.svg)
  - https://github.com/MatagTheGame/matag-admin/actions 
