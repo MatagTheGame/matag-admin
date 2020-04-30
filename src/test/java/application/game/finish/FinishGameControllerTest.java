@@ -35,15 +35,7 @@ public class FinishGameControllerTest extends AbstractApplicationTest {
 
   @Test
   public void requiresAdminAuthentication() {
-    // Given
-    userIsLoggedIn(USER_1_SESSION_TOKEN, user1());
-
-    // When
-    FinishGameRequest finishGameRequest = new FinishGameRequest(USER_1_SESSION_TOKEN);
-    ResponseEntity<Object> response = restTemplate.postForEntity("/game/1/finish", finishGameRequest, Object.class);
-
-    // Then
-    assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
+    throw new RuntimeException("");
   }
 
   @Test
