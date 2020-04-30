@@ -1,10 +1,12 @@
 # Admin
 
 This application is taking care of user management and deck building.
-It is deployed at https://matag-admin.herokuapp.com/
 
 
-## Build
+See [Matag: The Game](https://github.com/MatagTheGame/matag-the-game/wiki) wiki
+
+
+## Automated Build`
 
 ![Java CI with Maven](https://github.com/MatagTheGame/matag-admin/workflows/Java%20CI%20with%20Maven/badge.svg)
  - https://github.com/MatagTheGame/matag-admin/actions 
@@ -57,6 +59,6 @@ Tests mock database interaction so you should be able to code without it.
 Startup the app as spring boot
 
     # from intellij or with
-    mvn spring-boot:run -DDB_URL=<db_url> -DDB_NAME=<db_name> -DDB_USERNAME=<db_username> -DDB_PASSWORD=<db_password> -Dserver.port=8082 -Dmatag.game.url=http://localhost:8080
+    mvn spring-boot:run -DDB_URL=<db_url> -DDB_NAME=<db_name> -DDB_USERNAME=<db_username> -DDB_PASSWORD=<db_password> -Dserver.port=8082 -Dmatag.game.url=http://localhost:8080 -Dmatag.admin.password=password
     
 (The values above depend on your configuration.)
