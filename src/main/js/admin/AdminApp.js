@@ -13,6 +13,7 @@ import ApiClient from 'admin/utils/ApiClient'
 import history from 'admin/utils/history'
 import Play from './Play/Play'
 import './admin.scss'
+import Register from 'admin/Auth/Register/Register'
 
 // Copy layout from https://www.wix.com/website-template/view/html/1791?siteId=97d5d35e-d343-4d48-860f-22d22a8b6a6d&metaSiteId=a9f72a56-c68c-4a21-89d9-e8cfeb881d10&originUrl=https%3A%2F%2Fwww.wix.com%2Fwebsite%2Ftemplates
 
@@ -37,6 +38,9 @@ class AdminApp extends Component {
                 </Route>
                 <Route path="/ui/admin/login">
                   <div className='page with-margin'><Login/></div>
+                </Route>
+                <Route path="/ui/admin/register">
+                  <div className='page with-margin'><Register/></div>
                 </Route>
                 <Route path="/ui/admin/decks">
                   <div className='page'><Decks/></div>

@@ -10,6 +10,7 @@ import lombok.Value;
 @Builder(toBuilder = true)
 public class RegisterResponse {
   private final String message;
+  private final String error;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class RegisterResponseBuilder {

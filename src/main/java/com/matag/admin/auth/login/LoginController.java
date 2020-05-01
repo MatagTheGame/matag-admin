@@ -1,5 +1,6 @@
 package com.matag.admin.auth.login;
 
+import com.matag.admin.auth.validators.EmailValidator;
 import com.matag.admin.session.AuthSessionFilter;
 import com.matag.admin.session.MatagSession;
 import com.matag.admin.session.MatagSessionRepository;
@@ -40,7 +41,7 @@ public class LoginController {
   private final MatagUserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final MatagSessionRepository matagSessionRepository;
-  private final EmailRegexMatcher emailRegexMatcher;
+  private final EmailValidator emailValidator;
   private final CurrentUserProfileService currentUserProfileService;
   private final Clock clock;
 
@@ -48,7 +49,7 @@ public class LoginController {
   public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
     LOGGER.info("User " + loginRequest.getEmail() + " logging in.");
 
-    if (!emailRegexMatcher.isValidEmail(loginRequest.getEmail())) {
+    if (!emailValidator.isValid(loginRequest.getEmail())) {
       return response(BAD_REQUEST, EMAIL_IS_INVALID);
     }
 

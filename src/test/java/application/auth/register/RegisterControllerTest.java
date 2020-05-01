@@ -5,17 +5,15 @@ import com.matag.admin.auth.register.RegisterRequest;
 import com.matag.admin.auth.register.RegisterResponse;
 import com.matag.admin.user.MatagUser;
 import com.matag.admin.user.MatagUserRepository;
-import javax.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-
-import java.util.Optional;
 import org.springframework.mail.javamail.JavaMailSender;
+
+import javax.mail.internet.MimeMessage;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -39,9 +37,19 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
 
     // Then
-    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
-    assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getMessage()).isEqualTo("Email is invalid.");
+    assertErrorResponse(response, "Email is invalid.");
+  }
+
+  @Test
+  public void shouldReturnInvalidUsername() {
+    // Given
+    RegisterRequest request = new RegisterRequest("user1@matag.com", "$£", "xxx");
+
+    // When
+    ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
+
+    // Then
+    assertErrorResponse(response, "Username needs to be between 4 and 25 characters and can contains only letters  number and one of the following characters: [+ - * = _ . @ &].");
   }
 
   @Test
@@ -53,9 +61,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
 
     // Then
-    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
-    assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getMessage()).isEqualTo("Password is invalid.");
+    assertErrorResponse(response, "Password is invalid.");
   }
 
   @Test
@@ -67,9 +73,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
 
     // Then
-    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
-    assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getMessage()).isEqualTo("This email is already registered (use reset password functionality).");
+    assertErrorResponse(response, "This email is already registered (use reset password functionality).");
   }
 
   @Test
@@ -81,9 +85,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
 
     // Then
-    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
-    assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getMessage()).isEqualTo("This username is already registered (please choose a new one).");
+    assertErrorResponse(response, "This username is already registered (please choose a new one).");
   }
 
   @Test
@@ -92,7 +94,6 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     // Given
     RegisterRequest request = new RegisterRequest("new-user@matag.com", "NewUser", "password");
 
-    ArgumentCaptor<String> emailBody = ArgumentCaptor.forClass(String.class);
     MimeMessage mimeMessage = Mockito.mock(MimeMessage.class);
     given(javaMailSender.createMimeMessage()).willReturn(mimeMessage);
 
@@ -100,9 +101,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
 
     // Then
-    assertThat(response.getStatusCode()).isEqualTo(OK);
-    assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getMessage()).isEqualTo("Please check your email for a verification code.");
+    assertSuccessfulResponse(response);
 
     Optional<MatagUser> user = matagUserRepository.findByUsername("NewUser");
     assertThat(user).isPresent();
@@ -112,5 +111,19 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     assertThat(user.get().getCreatedAt()).isNotNull();
 
     verify(javaMailSender).send(mimeMessage);
+  }
+
+  private void assertErrorResponse(ResponseEntity<RegisterResponse> response, String expected) {
+    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().getMessage()).isNull();
+    assertThat(response.getBody().getError()).isEqualTo(expected);
+  }
+
+  private void assertSuccessfulResponse(ResponseEntity<RegisterResponse> response) {
+    assertThat(response.getStatusCode()).isEqualTo(OK);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().getError()).isNull();
+    assertThat(response.getBody().getMessage()).isEqualTo("Registration Successful. Please check your email for a verification code.");
   }
 }

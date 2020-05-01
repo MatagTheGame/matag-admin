@@ -42,6 +42,18 @@ export default (state, action) => {
         profile: action.value.profile
       }
     }
+
+  } else if (action.type === 'REGISTER_LOADING') {
+    newState.register = {loading: true}
+
+  } else if (action.type === 'REGISTER_RESPONSE') {
+    newState.register = {loading: false}
+    if (action.value.error) {
+      newState.register.error = action.value.error
+    } else {
+      newState.register.message = action.value.message
+    }
+
   } else if (action.type === 'ACTIVE_GAME_LOADING') {
     newState.activeGame = {loading: true}
 
