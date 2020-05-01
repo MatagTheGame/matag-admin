@@ -26,4 +26,6 @@ public class MatagUser {
   @Enumerated(EnumType.STRING)
   private MatagUserType type;
   private LocalDateTime createdAt;
+  private LocalDateTime updatedAt;
+  private String verificationCode;
 }

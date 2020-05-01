@@ -5,19 +5,30 @@ import com.matag.admin.auth.register.RegisterRequest;
 import com.matag.admin.auth.register.RegisterResponse;
 import com.matag.admin.user.MatagUser;
 import com.matag.admin.user.MatagUserRepository;
+import javax.mail.internet.MimeMessage;
+import lombok.SneakyThrows;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.BDDMockito;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
 public class RegisterControllerTest extends AbstractApplicationTest {
   @Autowired
   private MatagUserRepository matagUserRepository;
+
+  @Autowired
+  private JavaMailSender javaMailSender;
 
   @Test
   public void shouldReturnInvalidEmail() {
@@ -76,9 +87,14 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   }
 
   @Test
+  @SneakyThrows
   public void registerANewUser() {
     // Given
     RegisterRequest request = new RegisterRequest("new-user@matag.com", "NewUser", "password");
+
+    ArgumentCaptor<String> emailBody = ArgumentCaptor.forClass(String.class);
+    MimeMessage mimeMessage = Mockito.mock(MimeMessage.class);
+    given(javaMailSender.createMimeMessage()).willReturn(mimeMessage);
 
     // When
     ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
@@ -94,5 +110,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     assertThat(user.get().getPassword()).isNotBlank();
     assertThat(user.get().getEmailAddress()).isEqualTo("new-user@matag.com");
     assertThat(user.get().getCreatedAt()).isNotNull();
+
+    verify(javaMailSender).send(mimeMessage);
   }
 }

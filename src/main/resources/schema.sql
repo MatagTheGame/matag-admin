@@ -1,19 +1,21 @@
 create table matag_user
 (
-    id            bigserial primary key,
-    username      varchar(25)  not null unique,
-    password      varchar(255) not null unique,
-    email_address varchar(100) not null unique,
-    status        varchar(20)  not null,
-    type          varchar(20)  not null,
-    created_at    timestamp    not null default current_timestamp
+    id                bigserial primary key,
+    username          varchar(25)  not null unique,
+    password          varchar(255) not null unique,
+    email_address     varchar(100) not null unique,
+    status            varchar(20)  not null,
+    type              varchar(20)  not null,
+    created_at        timestamp    not null,
+    updated_at        timestamp    not null,
+    verification_code char(10)
 );
 
 create table matag_session
 (
     id            char(36) primary key,
     matag_user_id bigint    not null,
-    created_at    timestamp not null default current_timestamp,
+    created_at    timestamp not null,
     valid_until   timestamp not null,
     foreign key (matag_user_id) references matag_user (id) on delete cascade
 );
@@ -21,7 +23,7 @@ create table matag_session
 create table game
 (
     id          bigserial primary key,
-    created_at  timestamp   not null default current_timestamp,
+    created_at  timestamp   not null,
     type        varchar(20) not null,
     status      varchar(20) not null,
     result      varchar(20),
@@ -42,5 +44,5 @@ create table game_session
 
 
 -- insert Guest (username: Guest     password: password)
-insert into matag_user(username, password, email_address, status, type)
-values ('Guest', '{argon2}$argon2id$v=19$m=65536,t=4,p=8$LI8W+vC+a36vqqNbKu9RXw$/PGm7X3l6DEro/p7KYnOmKUW7a0+vX4NeynAP6QEV7M', 'guest@matag.com', 'ACTIVE', 'GUEST');
+insert into matag_user(username, password, email_address, status, type, created_at, updated_at)
+values ('Guest', '{argon2}$argon2id$v=19$m=65536,t=4,p=8$LI8W+vC+a36vqqNbKu9RXw$/PGm7X3l6DEro/p7KYnOmKUW7a0+vX4NeynAP6QEV7M', 'guest@matag.com', 'ACTIVE', 'GUEST', current_timestamp, current_timestamp);
