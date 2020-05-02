@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 public class ConfigService {
-  @Value("${matag.admin.url}")
+  @Value("${matag.game.url}")
   private String matagGameUrl;
 
-  @Value("${matag.game.url}")
+  @Value("${matag.admin.url}")
   private String matagAdminUrl;
 
   @Value("${matag.admin.password}")
