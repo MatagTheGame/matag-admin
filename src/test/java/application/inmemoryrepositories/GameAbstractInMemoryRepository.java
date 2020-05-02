@@ -6,6 +6,7 @@ import com.matag.admin.game.game.GameStatusType;
 import com.matag.admin.game.game.GameType;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -34,6 +35,14 @@ public class GameAbstractInMemoryRepository extends AbstractInMemoryRepository<G
   public List<Game> findByTypeAndStatus(GameType type, GameStatusType status) {
     return findAll().stream()
       .filter(g -> g.getType().equals(type))
+      .filter(g -> g.getStatus().equals(status))
+      .collect(toList());
+  }
+
+  @Override
+  public List<Game> findOldGameByStatus(GameStatusType status, LocalDateTime now) {
+    return findAll().stream()
+      .filter(g -> g.getCreatedAt().isBefore(now))
       .filter(g -> g.getStatus().equals(status))
       .collect(toList());
   }

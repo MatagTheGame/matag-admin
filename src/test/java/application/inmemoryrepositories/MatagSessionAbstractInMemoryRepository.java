@@ -29,12 +29,15 @@ public class MatagSessionAbstractInMemoryRepository extends AbstractInMemoryRepo
   }
 
   @Override
-  public void deleteValidUntilBefore(LocalDateTime now) {
+  public int deleteValidUntilBefore(LocalDateTime now) {
     List<String> keysToRemove = DATA.entrySet().stream()
       .filter(e -> e.getValue().getValidUntil().isAfter(now))
       .map(Map.Entry::getKey)
       .collect(toList());
+    int size = keysToRemove.size();
 
     keysToRemove.forEach(DATA::remove);
+
+    return size;
   }
 }

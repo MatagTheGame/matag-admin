@@ -16,5 +16,5 @@ public interface MatagSessionRepository extends CrudRepository<MatagSession, Str
   @Modifying
   @Transactional
   @Query("DELETE FROM MatagSession WHERE validUntil < ?1")
-  void deleteValidUntilBefore(LocalDateTime now);
+  int deleteValidUntilBefore(LocalDateTime now);
 }
