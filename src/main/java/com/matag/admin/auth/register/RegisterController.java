@@ -6,12 +6,10 @@ import com.matag.admin.user.MatagUserRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
@@ -61,6 +59,13 @@ public class RegisterController {
     registerService.register(request.getEmail(), request.getUsername(), request.getPassword());
 
     return ok(REGISTERED_VERIFY_EMAIL);
+  }
+
+  @GetMapping("/verify")
+  public VerifyResponse verify(@Param("code") String code) {
+    return VerifyResponse.builder()
+      .message("Yeah!")
+      .build();
   }
 
   private ResponseEntity<RegisterResponse> ok(String message) {

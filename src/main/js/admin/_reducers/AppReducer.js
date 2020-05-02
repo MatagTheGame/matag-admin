@@ -1,4 +1,6 @@
 import AuthHelper from 'admin/Auth/AuthHelper'
+import AuthReducer from 'admin/Auth/AuthReducer'
+import PlayReducer from 'admin/Play/PlayReducer'
 
 const clone = (object) => {
   if (!object) {
@@ -27,51 +29,11 @@ export default (state, action) => {
     newState.stats.loading = false
     newState.stats.value = action.value
 
-  } else if (action.type === 'LOGIN_LOADING') {
-    newState.login = {loading: true}
+  } else if (AuthReducer.getActions().indexOf(action.type) >= 0) {
+    AuthReducer.reduceAction(newState, action)
 
-  } else if (action.type === 'LOGIN_RESPONSE') {
-    newState.login = {loading: false}
-    if (action.value.error) {
-      newState.login.error = action.value.error
-    } else {
-      AuthHelper.setToken(action.value.token)
-      newState.session = {
-        loading: false,
-        token: action.value.token,
-        profile: action.value.profile
-      }
-    }
-
-  } else if (action.type === 'REGISTER_LOADING') {
-    newState.register = {loading: true}
-
-  } else if (action.type === 'REGISTER_RESPONSE') {
-    newState.register = {loading: false}
-    if (action.value.error) {
-      newState.register.error = action.value.error
-    } else {
-      newState.register.message = action.value.message
-    }
-
-  } else if (action.type === 'ACTIVE_GAME_LOADING') {
-    newState.activeGame = {loading: true}
-
-  } else if (action.type === 'ACTIVE_GAME_LOADED') {
-    newState.activeGame.loading = false
-    newState.activeGame.value = action.value
-
-  } else if (action.type === 'ACTIVE_GAME_DELETING') {
-    newState.activeGame.deleting = true
-
-  } else if (action.type === 'ACTIVE_GAME_DELETED') {
-    newState.activeGame.deleting = false
-
-    if (!action.response.error) {
-      newState.activeGame.value = {}
-    } else {
-      newState.activeGame.deletingError = action.response.error
-    }
+  } else if (PlayReducer.getActions().indexOf(action.type) >= 0) {
+    PlayReducer.reduceAction(newState, action)
 
   } else {
     throw new Error(`Unknown action type ${action.type}`)

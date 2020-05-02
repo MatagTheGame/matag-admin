@@ -28,7 +28,7 @@ public class RegisterEmailService {
     return
         "<p>Hi " + username + ",</p>" +
         "<p>Welcome to <a href=\"" + configService.getMatagAdminUrl() + "\">Matag: The Game</a>.</p>" +
-        "<p>Please <a href=\"" + configService.getMatagAdminUrl() + "/auth/verify?code=" + verificationCode + "\">click here</a> to verify your account.</p>" +
+        "<p>Please <a href=\"" + configService.getMatagAdminUrl() + "/ui/admin/auth/verify?code=" + verificationCode + "\">click here</a> to verify your account.</p>" +
         "<p>The Matag: The Game Team.</p>";
   }
 }

@@ -35,10 +35,10 @@ class Header extends Component {
             <Link to="/ui/admin">Home</Link>
           </nav>
           <nav>
-            <Link to="/ui/admin/login">Login</Link>
+            <Link to="/ui/admin/auth/login">Login</Link>
           </nav>
           <nav>
-            <Link to="/ui/admin/register">Register</Link>
+            <Link to="/ui/admin/auth/register">Register</Link>
           </nav>
         </div>
       )

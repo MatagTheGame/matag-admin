@@ -136,8 +136,8 @@ const mapStateToProps = state => {
   return {
     isLoggedIn: AuthHelper.isLoggedIn(state),
     loading: get(state, 'register.loading', false),
-    message: get(state, 'register.message', null),
-    error: get(state, 'register.error', null)
+    message: get(state, 'register.value.message', null),
+    error: get(state, 'register.value.error', null)
   }
 }
 
