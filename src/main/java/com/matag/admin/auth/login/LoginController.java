@@ -33,9 +33,8 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 public class LoginController {
   private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
-  public static final String EMAIL_IS_INVALID = "Email is invalid.";
   public static final String PASSWORD_IS_INVALID = "Password is invalid.";
-  public static final String EMAIL_OR_PASSWORD_ARE_INCORRECT = "Email or password are not correct.";
+  public static final String EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT = "Email/Username or password are not correct.";
   public static final String ACCOUNT_IS_NOT_ACTIVE = "Account is not active.";
 
   private final MatagUserRepository userRepository;
@@ -47,25 +46,22 @@ public class LoginController {
 
   @PostMapping("/login")
   public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-    LOGGER.info("User " + loginRequest.getEmail() + " logging in.");
-
-    if (!emailValidator.isValid(loginRequest.getEmail())) {
-      return response(BAD_REQUEST, EMAIL_IS_INVALID);
-    }
+    LOGGER.info("User " + loginRequest.getEmailOrUsername() + " logging in.");
 
     if (loginRequest.getPassword().length() < 4) {
       return response(BAD_REQUEST, PASSWORD_IS_INVALID);
     }
 
-    Optional<MatagUser> userOptional = userRepository.findByEmailAddress(loginRequest.getEmail());
+    boolean email = emailValidator.isValid(loginRequest.getEmailOrUsername());
+    Optional<MatagUser> userOptional = getUsername(loginRequest.getEmailOrUsername(), email);
 
     if (userOptional.isEmpty()) {
-      return response(UNAUTHORIZED, EMAIL_OR_PASSWORD_ARE_INCORRECT);
+      return response(UNAUTHORIZED, EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT);
     }
 
     MatagUser user = userOptional.get();
     if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-      return response(UNAUTHORIZED, EMAIL_OR_PASSWORD_ARE_INCORRECT);
+      return response(UNAUTHORIZED, EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT);
     }
 
     if (user.getStatus() != MatagUserStatus.ACTIVE) {
@@ -85,6 +81,14 @@ public class LoginController {
       .token(session.getId())
       .profile(currentUserProfileService.getProfile(user))
       .build());
+  }
+
+  private Optional<MatagUser> getUsername(String emailOrUsername, boolean email) {
+    if (email) {
+      return userRepository.findByEmailAddress(emailOrUsername);
+    } else {
+      return userRepository.findByUsername(emailOrUsername);
+    }
   }
 
   private ResponseEntity<LoginResponse> response(HttpStatus status, String error) {

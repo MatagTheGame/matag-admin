@@ -13,20 +13,6 @@ import org.springframework.http.ResponseEntity;
 
 public class LoginControllerTest extends AbstractApplicationTest {
   @Test
-  public void shouldReturnInvalidEmail() {
-    // Given
-    LoginRequest request = new LoginRequest("invalidEmail", "password");
-
-    // When
-    ResponseEntity<LoginResponse> response = restTemplate.postForEntity("/auth/login", request, LoginResponse.class);
-
-    // Then
-    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
-    assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getError()).isEqualTo("Email is invalid.");
-  }
-
-  @Test
   public void shouldReturnInvalidPassword() {
     // Given
     LoginRequest request = new LoginRequest("user1@matag.com", "xxx");
@@ -41,9 +27,25 @@ public class LoginControllerTest extends AbstractApplicationTest {
   }
 
   @Test
-  public void shouldLoginAUser() {
+  public void shouldLoginAUserViaEmail() {
     // Given
     LoginRequest request = new LoginRequest("user1@matag.com", "password");
+
+    // When
+    LoginResponse response = restTemplate.postForObject("/auth/login", request, LoginResponse.class);
+
+    // Then
+    assertThat(response.getToken()).isNotBlank();
+    assertThat(response.getProfile()).isEqualTo(CurrentUserProfileDto.builder()
+      .username("User1")
+      .type("USER")
+      .build());
+  }
+
+  @Test
+  public void shouldLoginAUserViaUsername() {
+    // Given
+    LoginRequest request = new LoginRequest("User1", "password");
 
     // When
     LoginResponse response = restTemplate.postForObject("/auth/login", request, LoginResponse.class);
@@ -67,7 +69,7 @@ public class LoginControllerTest extends AbstractApplicationTest {
     // Then
     assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
     assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getError()).isEqualTo("Email or password are not correct.");
+    assertThat(response.getBody().getError()).isEqualTo("Email/Username or password are not correct.");
   }
 
   @Test
@@ -81,7 +83,7 @@ public class LoginControllerTest extends AbstractApplicationTest {
     // Then
     assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
     assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getError()).isEqualTo("Email or password are not correct.");
+    assertThat(response.getBody().getError()).isEqualTo("Email/Username or password are not correct.");
   }
 
   @Test

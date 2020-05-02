@@ -12,26 +12,26 @@ class Login extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      email: '',
+      emailOrUsername: '',
       password: ''
     }
-    this.handleChangeEmail = this.handleChangeEmail.bind(this)
+    this.handleChangeEmailOrUsername = this.handleChangeEmailOrUsername.bind(this)
     this.handleChangePassword = this.handleChangePassword.bind(this)
     this.handleLogin = this.handleLogin.bind(this)
     this.handleLoginAsGuest = this.handleLoginAsGuest.bind(this)
   }
 
-  handleChangeEmail(event) {
-    this.setState({email: event.target.value})
+  handleChangeEmailOrUsername(event) {
+    this.setState({emailOrUsername: event.target.value})
   }
 
   handleChangePassword(event) {
     this.setState({password: event.target.value})
   }
 
-  login(email, password) {
+  login(emailOrUsername, password) {
     const request = {
-      email: email,
+      emailOrUsername: emailOrUsername,
       password: password
     }
 
@@ -43,7 +43,7 @@ class Login extends Component {
 
   handleLogin(event) {
     event.preventDefault()
-    this.login(this.state.email, this.state.password)
+    this.login(this.state.emailOrUsername, this.state.password)
   }
 
   handleLoginAsGuest() {
@@ -78,8 +78,8 @@ class Login extends Component {
           <h2>Login</h2>
           <form className='matag-form' onSubmit={this.handleLogin}>
             <div className='grid grid-label-value'>
-              <label htmlFor='email'>Email: </label>
-              <input type='text' name='email' value={this.state.email} onChange={this.handleChangeEmail}/>
+              <label htmlFor='email-or-username'>Email or Username: </label>
+              <input type='text' name='email-or-username' value={this.state.emailOrUsername} onChange={this.handleChangeEmailOrUsername}/>
             </div>
             <div className='grid grid-label-value'>
               <label htmlFor='password'>Password: </label>

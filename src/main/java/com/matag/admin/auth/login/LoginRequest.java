@@ -11,7 +11,7 @@ import lombok.Value;
 @JsonDeserialize(builder = LoginRequest.LoginRequestBuilder.class)
 @Builder(toBuilder = true)
 public class LoginRequest {
-  private final String email;
+  private final String emailOrUsername;
   private final String password;
 
   @JsonPOJOBuilder(withPrefix = "")
