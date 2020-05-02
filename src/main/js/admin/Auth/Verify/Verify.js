@@ -9,11 +9,20 @@ import Login from 'admin/Auth/Login/Login'
 class Verify extends Component {
   componentDidMount() {
     this.props.verifyLoading()
-    ApiClient.get('/auth/verify?code=' + this.getCode()).then(this.props.verifyLoaded)
+    let verificationUrl = '/auth/verify?username=' + this.getUsername() + '&code=' + this.getCode()
+    ApiClient.get(verificationUrl).then(this.props.verifyLoaded)
+  }
+
+  getUrlSearchParams() {
+    return new URLSearchParams(window.location.search)
+  }
+
+  getUsername() {
+    return this.getUrlSearchParams().get('username')
   }
 
   getCode() {
-    return new URLSearchParams(window.location.search).get('code')
+    return this.getUrlSearchParams().get('code')
   }
 
   displayContent() {

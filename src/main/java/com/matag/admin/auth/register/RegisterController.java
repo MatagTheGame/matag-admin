@@ -2,6 +2,7 @@ package com.matag.admin.auth.register;
 
 import com.matag.admin.auth.validators.EmailValidator;
 import com.matag.admin.auth.validators.UsernameValidator;
+import com.matag.admin.config.ConfigService;
 import com.matag.admin.user.MatagUserRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -20,13 +21,16 @@ import static org.springframework.http.HttpStatus.OK;
 public class RegisterController {
   private static final Logger LOGGER = LoggerFactory.getLogger(RegisterController.class);
 
-  public static final String EMAIL_IS_INVALID = "Email is invalid.";
-  public static final String USERNAME_INVALID = "Username needs to be between 4 and 25 characters and can contains only letters  number and one of the following characters: [+ - * = _ . @ &].";
-  public static final String PASSWORD_IS_INVALID = "Password is invalid.";
-  public static final String EMAIL_ALREADY_REGISTERED = "This email is already registered (use reset password functionality).";
-  public static final String USERNAME_ALREADY_REGISTERED = "This username is already registered (please choose a new one).";
-  public static final String REGISTERED_VERIFY_EMAIL = "Registration Successful. Please check your email for a verification code.";
+  private static final String EMAIL_IS_INVALID = "Email is invalid.";
+  private static final String USERNAME_INVALID = "Username needs to be between 4 and 25 characters and can contains only letters  number and one of the following characters: [+ - * = _ . @ &].";
+  private static final String PASSWORD_IS_INVALID = "Password is invalid.";
+  private static final String EMAIL_ALREADY_REGISTERED = "This email is already registered (use reset password functionality).";
+  private static final String USERNAME_ALREADY_REGISTERED = "This username is already registered (please choose a new one).";
+  private static final String REGISTERED_VERIFY_EMAIL = "Registration Successful. Please check your email for a verification code.";
+  private static final String ACCOUNT_VERIFICATION_CORRECT = "Your account has been correctly verified. Now you can proceed with logging in.";
+  private static final String ACCOUNT_VERIFICATION_ERROR = "Your account could not be verified. Please send a message to SUPPORT_MAIL.";
 
+  private final ConfigService configService;
   private final MatagUserRepository userRepository;
   private final EmailValidator emailValidator;
   private final UsernameValidator usernameValidator;
@@ -62,10 +66,26 @@ public class RegisterController {
   }
 
   @GetMapping("/verify")
-  public VerifyResponse verify(@Param("code") String code) {
-    return VerifyResponse.builder()
-      .message("Yeah!")
-      .build();
+  public ResponseEntity<VerifyResponse> verify(@Param("username") String username, @Param("code") String code) {
+    LOGGER.info("Verifying " + username + " with code " + code);
+    try {
+      registerService.activate(username, code);
+      return ResponseEntity
+        .status(OK)
+        .body(VerifyResponse.builder()
+          .message(ACCOUNT_VERIFICATION_CORRECT)
+          .build()
+        );
+
+    } catch (Exception e) {
+      LOGGER.warn(e.getMessage());
+      return ResponseEntity
+        .status(BAD_REQUEST)
+        .body(VerifyResponse.builder()
+          .error(ACCOUNT_VERIFICATION_ERROR.replace("SUPPORT_MAIL", configService.getMatagSupportEmail()))
+          .build()
+        );
+    }
   }
 
   private ResponseEntity<RegisterResponse> ok(String message) {

@@ -104,7 +104,6 @@ class Register extends Component {
             </div>
             {this.displayError()}
             {this.displayMessage()}
-            <p className='error'>Note this functionality has not been yet completed. You'll get an email but the activation code won't work!</p>
             <div className='grid three-columns'>
               <div/>
               <div className='register-buttons'>

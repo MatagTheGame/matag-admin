@@ -1,9 +1,10 @@
 package com.matag.admin.config;
 
-import java.util.Map;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 @Component
 @Getter
@@ -16,6 +17,9 @@ public class ConfigService {
 
   @Value("${matag.admin.password}")
   private String matagAdminPassword;
+
+  @Value("${matag.email.username}")
+  private String matagSupportEmail;
 
   public Map<String, String> getConfig() {
     return Map.of(
