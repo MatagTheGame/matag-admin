@@ -8,29 +8,11 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static java.util.stream.Collectors.toList;
 
 @Component
-public class GameAbstractInMemoryRepository extends AbstractInMemoryRepository<Game, Long> implements GameRepository {
-  private final AtomicLong idGenerator = new AtomicLong();
-
-  @Override
-  public Long getId(Game game) {
-    return game.getId();
-  }
-
-  @Override
-  public void generateId(Game game) {
-    game.setId(idGenerator.incrementAndGet());
-  }
-
-  @Override
-  public void resetGenerator() {
-    idGenerator.set(0);
-  }
-
+public class GameInMemoryRepository extends AbstractInMemoryRepository<Game> implements GameRepository {
   @Override
   public List<Game> findByTypeAndStatus(GameType type, GameStatusType status) {
     return findAll().stream()

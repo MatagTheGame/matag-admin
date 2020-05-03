@@ -7,30 +7,29 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
 @Component
-public class MatagSessionAbstractInMemoryRepository extends AbstractInMemoryRepository<MatagSession, String> implements MatagSessionRepository {
+public class MatagSessionAbstractInMemoryRepository extends AbstractInMemoryRepository<MatagSession> implements MatagSessionRepository {
   @Override
-  public String getId(MatagSession matagSession) {
-    return matagSession.getId();
-  }
-
-  @Override
-  public void generateId(MatagSession session) {
-    session.setId(UUID.randomUUID().toString());
+  public Optional<MatagSession> findBySessionId(String sessionId) {
+    return DATA.values().stream()
+      .filter(s -> s.getSessionId().equals(sessionId))
+      .findFirst();
   }
 
   @Override
   public long countOnlineUsers(LocalDateTime now) {
-    return DATA.values().stream().filter(s -> s.getValidUntil().isAfter(now)).count();
+    return DATA.values().stream()
+      .filter(s -> s.getValidUntil().isAfter(now))
+      .count();
   }
 
   @Override
   public int deleteValidUntilBefore(LocalDateTime now) {
-    List<String> keysToRemove = DATA.entrySet().stream()
+    List<Long> keysToRemove = DATA.entrySet().stream()
       .filter(e -> e.getValue().getValidUntil().isAfter(now))
       .map(Map.Entry::getKey)
       .collect(toList());
@@ -39,5 +38,11 @@ public class MatagSessionAbstractInMemoryRepository extends AbstractInMemoryRepo
     keysToRemove.forEach(DATA::remove);
 
     return size;
+  }
+
+  @Override
+  public void deleteBySessionId(String sessionId) {
+    Optional<MatagSession> session = findBySessionId(sessionId);
+    session.ifPresent(s -> deleteById(s.getId()));
   }
 }

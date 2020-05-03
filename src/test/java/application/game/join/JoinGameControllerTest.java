@@ -51,7 +51,7 @@ public class JoinGameControllerTest extends AbstractApplicationTest {
     assertThat(gameSessions).hasSize(1);
     GameSession gameSession = gameSessions.iterator().next();
     assertThat(gameSession.getGame()).isEqualTo(game.get());
-    assertThat(gameSession.getSession().getId()).isEqualTo(USER_1_SESSION_TOKEN);
+    assertThat(gameSession.getSession().getSessionId()).isEqualTo(USER_1_SESSION_TOKEN);
     assertThat(gameSession.getPlayer()).isEqualTo(user1());
     assertThat(gameSession.getPlayerOptions()).isEqualTo("player1 options");
   }
@@ -90,13 +90,13 @@ public class JoinGameControllerTest extends AbstractApplicationTest {
     Iterator<GameSession> iterator = gameSessions.iterator();
     GameSession firstGameSession = iterator.next();
     assertThat(firstGameSession.getGame()).isEqualTo(game.get());
-    assertThat(firstGameSession.getSession().getId()).isEqualTo(USER_1_SESSION_TOKEN);
+    assertThat(firstGameSession.getSession().getSessionId()).isEqualTo(USER_1_SESSION_TOKEN);
     assertThat(firstGameSession.getPlayer()).isEqualTo(user1());
     assertThat(firstGameSession.getPlayerOptions()).isEqualTo("player1 options");
 
     GameSession secondGameSession = iterator.next();
     assertThat(secondGameSession.getGame()).isEqualTo(game.get());
-    assertThat(secondGameSession.getSession().getId()).isEqualTo(USER_2_SESSION_TOKEN);
+    assertThat(secondGameSession.getSession().getSessionId()).isEqualTo(USER_2_SESSION_TOKEN);
     assertThat(secondGameSession.getPlayer()).isEqualTo(user2());
     assertThat(secondGameSession.getPlayerOptions()).isEqualTo("player2 options");
   }

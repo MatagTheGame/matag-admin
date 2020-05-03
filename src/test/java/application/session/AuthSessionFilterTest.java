@@ -59,7 +59,7 @@ public class AuthSessionFilterTest extends AbstractApplicationTest {
     restTemplate.getForEntity("/path/to/a/resource", String.class);
 
     // Then
-    assertThat(matagSessionRepository.findById(USER_1_SESSION_TOKEN).isPresent()).isTrue();
-    assertThat(matagSessionRepository.findById(USER_1_SESSION_TOKEN).get().getValidUntil()).isEqualTo(TEST_START_TIME.plusHours(1).plusMinutes(45));
+    assertThat(matagSessionRepository.findBySessionId(USER_1_SESSION_TOKEN).isPresent()).isTrue();
+    assertThat(matagSessionRepository.findBySessionId(USER_1_SESSION_TOKEN).get().getValidUntil()).isEqualTo(TEST_START_TIME.plusHours(1).plusMinutes(45));
   }
 }

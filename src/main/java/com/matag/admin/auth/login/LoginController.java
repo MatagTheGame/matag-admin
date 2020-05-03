@@ -69,7 +69,7 @@ public class LoginController {
     }
 
     MatagSession session = MatagSession.builder()
-      .id(UUID.randomUUID().toString())
+      .sessionId(UUID.randomUUID().toString())
       .matagUser(user)
       .createdAt(LocalDateTime.now(clock))
       .validUntil(LocalDateTime.now(clock).plusSeconds(AuthSessionFilter.SESSION_DURATION_TIME))
@@ -78,7 +78,7 @@ public class LoginController {
 
     LOGGER.info("Login successful.");
     return ResponseEntity.ok(LoginResponse.builder()
-      .token(session.getId())
+      .token(session.getSessionId())
       .profile(currentUserProfileService.getProfile(user))
       .build());
   }

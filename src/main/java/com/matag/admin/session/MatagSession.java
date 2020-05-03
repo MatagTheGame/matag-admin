@@ -17,7 +17,9 @@ import java.time.LocalDateTime;
 @Table(name = "matag_session")
 public class MatagSession {
   @Id
-  private String id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+  private String sessionId;
   @ManyToOne
   @JoinColumn(referencedColumnName = "id")
   private MatagUser matagUser;

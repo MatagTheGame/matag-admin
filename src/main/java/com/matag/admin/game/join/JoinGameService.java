@@ -35,7 +35,7 @@ public class JoinGameService {
     MatagUser user = securityContextHolderHelper.getUser();
     MatagSession session = securityContextHolderHelper.getSession();
 
-    Optional<GameSession> activeGameOfPlayer = gameSessionRepository.findPlayerActiveGameSession(session.getId());
+    Optional<GameSession> activeGameOfPlayer = gameSessionRepository.findPlayerActiveGameSession(session.getSessionId());
     if (activeGameOfPlayer.isPresent()) {
       Long activeGameId = activeGameOfPlayer.get().getGame().getId();
       return JoinGameResponse.builder()

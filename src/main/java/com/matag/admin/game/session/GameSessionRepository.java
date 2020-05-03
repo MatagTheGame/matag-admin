@@ -12,6 +12,6 @@ import java.util.Optional;
 public interface GameSessionRepository extends CrudRepository<GameSession, Long> {
   List<GameSession> findByGame(Game game);
 
-  @Query("FROM GameSession gs WHERE gs.session.id = ?1 AND gs.game.status IN ('STARTING', 'IN_PROGRESS')")
+  @Query("FROM GameSession gs WHERE gs.session.sessionId = ?1 AND gs.game.status IN ('STARTING', 'IN_PROGRESS')")
   Optional<GameSession> findPlayerActiveGameSession(String session);
 }

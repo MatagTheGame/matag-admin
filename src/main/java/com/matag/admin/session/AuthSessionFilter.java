@@ -60,7 +60,7 @@ public class AuthSessionFilter extends GenericFilterBean {
   }
 
   private void userAuthentication(String sessionId) {
-    Optional<MatagSession> matagSession = matagSessionRepository.findById(sessionId);
+    Optional<MatagSession> matagSession = matagSessionRepository.findBySessionId(sessionId);
 
     matagSession.ifPresent(session -> {
       if (LocalDateTime.now(clock).isBefore(session.getValidUntil())) {

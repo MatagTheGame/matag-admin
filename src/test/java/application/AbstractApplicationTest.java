@@ -92,7 +92,7 @@ public abstract class AbstractApplicationTest {
 
   public void loginUser(String userToken, MatagUser user) {
     matagSessionRepository.save(MatagSession.builder()
-      .id(UUID.fromString(userToken).toString())
+      .sessionId(UUID.fromString(userToken).toString())
       .matagUser(user)
       .createdAt(LocalDateTime.now(clock))
       .validUntil(LocalDateTime.now(clock).plusSeconds(SESSION_DURATION_TIME))

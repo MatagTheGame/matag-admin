@@ -52,7 +52,7 @@ public class FinishGameService {
   }
 
   private GameResultType getResult(GamePlayers gamePlayers, String winnerSessionId) {
-    if (gamePlayers.getPlayerSession().getSession().getId().equals(winnerSessionId)) {
+    if (gamePlayers.getPlayerSession().getSession().getSessionId().equals(winnerSessionId)) {
       return GameResultType.R1;
     } else {
       return GameResultType.R2;

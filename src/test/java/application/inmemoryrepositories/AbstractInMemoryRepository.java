@@ -1,22 +1,40 @@
 package application.inmemoryrepositories;
 
+import lombok.SneakyThrows;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.NonNull;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
 
-public abstract class AbstractInMemoryRepository<T, ID> implements CrudRepository<T, ID> {
-  protected final Map<ID, T> DATA = new HashMap<>();
+public abstract class AbstractInMemoryRepository<T> implements CrudRepository<T, Long> {
+  protected final Map<Long, T> DATA = new HashMap<>();
 
-  public abstract ID getId(T t);
+  private final AtomicLong idGenerator = new AtomicLong();
 
-  public abstract void generateId(T t);
+  @SneakyThrows
+  public Long getId(T t) {
+    Field idField = findIdField(t);
+    idField.setAccessible(true);
+    return (Long) idField.get(t);
+  }
 
-  public void resetGenerator() {}
+  @SneakyThrows
+  public void setId(T t, Long id) {
+    Field idField = findIdField(t);
+    idField.setAccessible(true);
+    idField.set(t, id);
+  }
+
+  public void resetGenerator() {
+    idGenerator.set(0);
+  }
 
   @NonNull
   @Override
@@ -26,7 +44,7 @@ public abstract class AbstractInMemoryRepository<T, ID> implements CrudRepositor
 
   @NonNull
   @Override
-  public List<T> findAllById(Iterable<ID> ids) {
+  public List<T> findAllById(Iterable<Long> ids) {
     return StreamSupport.stream(ids.spliterator(), false)
       .map(this::findById)
       .map(Optional::get)
@@ -39,7 +57,7 @@ public abstract class AbstractInMemoryRepository<T, ID> implements CrudRepositor
   }
 
   @Override
-  public void deleteById(@NonNull ID id) {
+  public void deleteById(@NonNull Long id) {
     DATA.remove(id);
   }
 
@@ -61,9 +79,9 @@ public abstract class AbstractInMemoryRepository<T, ID> implements CrudRepositor
   @NonNull
   @Override
   public <S extends T> S save(@NonNull S s) {
-    ID id = getId(s);
+    Long id = getId(s);
     if (id == null) {
-      generateId(s);
+      setId(s, idGenerator.incrementAndGet());
     }
     DATA.put(getId(s), s);
     return s;
@@ -79,12 +97,32 @@ public abstract class AbstractInMemoryRepository<T, ID> implements CrudRepositor
 
   @NonNull
   @Override
-  public Optional<T> findById(@NonNull ID id) {
+  public Optional<T> findById(@NonNull Long id) {
     return Optional.ofNullable(DATA.get(id));
   }
 
   @Override
-  public boolean existsById(@NonNull ID id) {
+  public boolean existsById(@NonNull Long id) {
     return DATA.containsKey(id);
+  }
+
+  private Field findIdField(T t) {
+    Field[] fields = t.getClass().getDeclaredFields();
+
+    for (Field field : fields) {
+      Annotation[] fieldAnnotations = field.getDeclaredAnnotations();
+      for (Annotation fieldAnnotation : fieldAnnotations) {
+        if (fieldAnnotation.toString().equals("@javax.persistence.Id()")) {
+          if (field.getType().isAssignableFrom(Long.class)) {
+            return field;
+
+          } else {
+            throw new RuntimeException("Annotated @Id field type[" + field.getType() + "] is not supported.");
+          }
+        }
+      }
+    }
+
+    throw new RuntimeException("No field found annotated with @Id.");
   }
 }

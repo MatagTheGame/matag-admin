@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,11 +19,12 @@ import static com.matag.admin.session.AuthSessionFilter.SESSION_NAME;
 public class MatagLogoutSuccessHandler implements LogoutSuccessHandler {
   private final MatagSessionRepository matagSessionRepository;
 
+  @Transactional
   @Override
   public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
     String sessionId = request.getHeader(SESSION_NAME);
     if (StringUtils.hasText(sessionId)) {
-      matagSessionRepository.deleteById(sessionId);
+      matagSessionRepository.deleteBySessionId(sessionId);
     }
 
     response.setStatus(HttpServletResponse.SC_OK);

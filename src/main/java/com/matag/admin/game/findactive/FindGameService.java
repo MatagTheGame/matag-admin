@@ -21,7 +21,7 @@ public class FindGameService {
 
   public ActiveGameResponse findActiveGame() {
     MatagSession session = securityContextHolderHelper.getSession();
-    Optional<GameSession> activeGameSession = gameSessionRepository.findPlayerActiveGameSession(session.getId());
+    Optional<GameSession> activeGameSession = gameSessionRepository.findPlayerActiveGameSession(session.getSessionId());
 
     if (activeGameSession.isEmpty()) {
       return ActiveGameResponse.builder().build();
