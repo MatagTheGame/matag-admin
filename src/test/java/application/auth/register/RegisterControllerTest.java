@@ -135,6 +135,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     Optional<MatagUser> user = matagUserRepository.findByUsername(username);
     assertThat(user).isPresent();
     assertThat(user.get().getStatus()).isEqualTo(ACTIVE);
+    assertThat(user.get().getVerificationCode()).isNull();
   }
 
   @Test

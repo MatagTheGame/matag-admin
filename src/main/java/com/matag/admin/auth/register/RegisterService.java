@@ -61,6 +61,7 @@ public class RegisterService {
 
         user.setStatus(ACTIVE);
         user.setUpdatedAt(LocalDateTime.now(clock));
+        user.setVerificationCode(null);
         userRepository.save(user);
     }
   }
