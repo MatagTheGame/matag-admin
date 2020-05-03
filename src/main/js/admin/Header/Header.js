@@ -49,7 +49,8 @@ class Header extends Component {
     return (
       <header>
         <div id='logo'>
-          <h1>MATAG</h1>
+          <img src='/img/matag.png' alt='matag-logo'/>
+          <h1>Matag: The Game</h1>
         </div>
         {this.displayMenu()}
       </header>
