@@ -13,7 +13,8 @@ create table matag_user
 
 create table matag_session
 (
-    id            char(36) primary key,
+    id            bigserial primary key,
+    session_id    char(36) unique,
     matag_user_id bigint    not null,
     created_at    timestamp not null,
     valid_until   timestamp not null,
@@ -34,7 +35,7 @@ create table game_session
 (
     id             bigserial primary key,
     game_id        bigint not null,
-    session_id     char(36) unique,
+    session_id     bigint unique,
     player_id      bigint not null,
     player_options varchar(255),
     foreign key (game_id) references game (id) on delete set null,
@@ -42,7 +43,6 @@ create table game_session
     foreign key (player_id) references matag_user (id) on delete set null
 );
 
-
--- insert Guest (username: Guest     password: password)
+-- insert Guest (password: password)
 insert into matag_user(username, password, email_address, status, type, created_at, updated_at)
 values ('Guest', '{argon2}$argon2id$v=19$m=65536,t=4,p=8$LI8W+vC+a36vqqNbKu9RXw$/PGm7X3l6DEro/p7KYnOmKUW7a0+vX4NeynAP6QEV7M', 'guest@matag.com', 'ACTIVE', 'GUEST', current_timestamp, current_timestamp);
