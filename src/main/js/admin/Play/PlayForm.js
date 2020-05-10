@@ -36,6 +36,7 @@ class PlayForm extends Component {
       .then(r => {
         this.setState({loading: false})
         if (r.gameId > 0) {
+          this.setState({goToGameLoading: true})
           this.props.goToGame(r.gameId)
 
         } else {
@@ -82,7 +83,7 @@ class PlayForm extends Component {
   }
 
   displayLoader() {
-    if (this.state.loading) {
+    if (this.state.loading || this.state.goToGameLoading) {
       return <Loader center/>
     }
   }
