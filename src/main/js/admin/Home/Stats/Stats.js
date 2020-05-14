@@ -17,10 +17,10 @@ class Stats extends Component {
     } else {
       return (
         <ul>
-          <li><span>Total Users: </span><span>{this.props.stats.totalUsers}</span></li>
-          <li><span>Online Users: </span><span>{this.props.stats.onlineUsers}</span></li>
-          <li><span>Total Cards: </span><span>{this.props.stats.totalCards}</span></li>
-          <li><span>Total Sets: </span><span>{this.props.stats.totalSets} (from Ixalan)</span></li>
+          <li><small><span>TOTAL USERS: </span></small><span>{this.props.stats.totalUsers}</span></li>
+          <li><small><span>ONLINE USERS: </span></small><span>{this.props.stats.onlineUsers}</span></li>
+          <li><small><span>TOTAL CARDS: </span></small><span>{this.props.stats.totalCards}</span></li>
+          <li><small><span>TOTAL SETS: </span></small><span>{this.props.stats.totalSets} (from Ixalan)</span></li>
         </ul>
       )
     }

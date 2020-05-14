@@ -21,6 +21,7 @@ header {
     h1 {
       font-size: 24px;
       margin: auto;
+      color: white;
     }
   }
 
@@ -29,21 +30,42 @@ header {
     justify-content: flex-end;
 
     nav {
-      height: $header-height;
-      min-width: 80px;
+      height: 50px;
+      min-width: 50px;
       text-align: center;
+      padding-left: 10px;
+      padding-right: 10px;
+
+      a {
+        text-decoration: none;
+        color: $header-text-color;
+      }
 
       a, span {
         line-height: $header-height;
       }
+
+      a:hover, span:hover {
+        color: $nav-hover-text-color;
+      }
+
+      ul.dropdown {
+        background-color: $header-background-color;
+        min-width: calc(100% + 20px);
+        padding: 0;
+        margin: 0 0 0 -10px;
+        display: none;
+        z-index: 1;
+
+        li {
+          display: block;
+          height: 50px;
+        }
+      }
     }
 
-    nav:hover {
-      background-color: $nav-hover-background-color;
-    }
-
-    .welcome {
-      margin-right: 10px;
+    nav:hover ul.dropdown {
+      display: block;
     }
   }
 }
