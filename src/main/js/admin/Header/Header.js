@@ -21,9 +21,9 @@ class Header extends Component {
             <Link to="/ui/admin/play">Play</Link>
           </nav>
           <nav>
-            <a href="#">{this.props.profile.username}</a>
+            <Link to="/ui/admin/profile">{this.props.profile.username}</Link>
             <ul className="dropdown">
-              <li><a href="#">Profile</a></li>
+              <li><Link to="/ui/admin/profile">Profile</Link></li>
               <li><Logout/></li>
             </ul>
           </nav>

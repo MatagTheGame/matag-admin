@@ -12,6 +12,7 @@ import ProfileUtils from 'admin/Profile/ProfileUtils'
 import ApiClient from 'admin/utils/ApiClient'
 import history from 'admin/utils/history'
 import Play from './Play/Play'
+import Profile from "admin/Profile/Profile";
 import Register from 'admin/Auth/Register/Register'
 import Verify from 'admin/Auth/Verify/Verify'
 import './admin.scss'
@@ -51,6 +52,9 @@ class AdminApp extends Component {
                 </Route>
                 <Route path="/ui/admin/play">
                   <div className='page with-margin'><Play/></div>
+                </Route>
+                <Route path="/ui/admin/profile">
+                  <div className='page with-margin'><Profile/></div>
                 </Route>
               </Switch>
             </div>
