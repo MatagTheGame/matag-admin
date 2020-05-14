@@ -19,6 +19,10 @@ class Header extends Component {
           </nav>
           <nav>
             <Link to="/ui/admin/play">Play</Link>
+            <ul className="dropdown">
+              <li><Link to="/ui/admin/game-history">Game History</Link></li>
+              <li><Link to="/ui/admin/score-board">Score Board</Link></li>
+            </ul>
           </nav>
           <nav>
             <Link to="/ui/admin/profile">{this.props.profile.username}</Link>

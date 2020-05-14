@@ -4,17 +4,19 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import get from 'lodash/get'
 import Login from 'admin/Auth/Login/Login'
+import Register from 'admin/Auth/Register/Register'
+import Verify from 'admin/Auth/Verify/Verify'
 import Loader from 'admin/Common/Loader'
 import Decks from 'admin/Decks/Decks'
 import Header from 'admin/Header/Header'
 import Home from 'admin/Home/Home'
-import ProfileUtils from 'admin/Profile/ProfileUtils'
 import ApiClient from 'admin/utils/ApiClient'
 import history from 'admin/utils/history'
 import Play from './Play/Play'
+import GameHistory from "admin/Play/GameHistory/GameHistory";
+import ScoreBoard from "admin/Play/ScoreBoard/ScoreBoard";
 import Profile from "admin/Profile/Profile";
-import Register from 'admin/Auth/Register/Register'
-import Verify from 'admin/Auth/Verify/Verify'
+import ProfileUtils from 'admin/Profile/ProfileUtils'
 import './admin.scss'
 
 class AdminApp extends Component {
@@ -50,9 +52,17 @@ class AdminApp extends Component {
                 <Route path="/ui/admin/decks">
                   <div className='page'><Decks/></div>
                 </Route>
+
                 <Route path="/ui/admin/play">
                   <div className='page with-margin'><Play/></div>
                 </Route>
+                <Route path="/ui/admin/game-history">
+                  <div className='page with-margin'><GameHistory/></div>
+                </Route>
+                <Route path="/ui/admin/score-board">
+                  <div className='page with-margin'><ScoreBoard/></div>
+                </Route>
+
                 <Route path="/ui/admin/profile">
                   <div className='page with-margin'><Profile/></div>
                 </Route>
