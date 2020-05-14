@@ -19,7 +19,7 @@ public class RegisterEmailService {
     MimeMessage mimeMessage = emailSender.createMimeMessage();
     MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
     helper.setTo(email);
-    helper.setSubject("Matag: The Game - Registration");
+    helper.setSubject(configService.getMatagName() + " - Registration");
     helper.setText(createBody(username, verificationCode), true);
     emailSender.send(mimeMessage);
   }
@@ -31,8 +31,8 @@ public class RegisterEmailService {
 
     return
       "<p>Hi " + username + ",</p>" +
-        "<p>Welcome to <a href=\"" + configService.getMatagAdminUrl() + "\">Matag: The Game</a>.</p>" +
+        "<p>Welcome to <a href=\"" + configService.getMatagAdminUrl() + "\">" + configService.getMatagName() + "</a>.</p>" +
         "<p>Please <a href=\"" + verificationLink + "\">click here</a> to verify your account.</p>" +
-        "<p>The Matag: The Game Team.</p>";
+        "<p>The <em>" + configService.getMatagName() + "</em> Team.</p>";
   }
 }

@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import Login from 'admin/Auth/Login/Login'
+import get from 'lodash/get'
 import AuthHelper from 'admin/Auth/AuthHelper'
+import Login from 'admin/Auth/Login/Login'
 import Play from 'admin/Play/Play'
 import Stats from './Stats/Stats'
 import Intro from './Intro/Intro'
@@ -19,7 +20,7 @@ class Home extends Component {
     return (
       <section>
         <h2>Home</h2>
-        <Intro/>
+        <Intro config={this.props.config}/>
         <Stats/>
         { this.displayMainAction() }
       </section>
@@ -29,7 +30,8 @@ class Home extends Component {
 
 const mapStateToProps = state => {
   return {
-    isLoggedIn: AuthHelper.isLoggedIn(state)
+    isLoggedIn: AuthHelper.isLoggedIn(state),
+    config: get(state, 'config', {})
   }
 }
 

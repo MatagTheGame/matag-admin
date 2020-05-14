@@ -50,7 +50,7 @@ class Header extends Component {
       <header>
         <div id='logo'>
           <img src='/img/matag.png' alt='matag-logo'/>
-          <h1>Matag: The Game</h1>
+          <h1>{this.props.config.matagName}</h1>
         </div>
         {this.displayMenu()}
       </header>
@@ -61,7 +61,8 @@ class Header extends Component {
 const mapStateToProps = state => {
   return {
     isLoggedIn: AuthHelper.isLoggedIn(state),
-    profile: get(state, 'session.profile', {})
+    profile: get(state, 'session.profile', {}),
+    config: get(state, 'config', {})
   }
 }
 

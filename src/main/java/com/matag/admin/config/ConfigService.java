@@ -9,6 +9,9 @@ import java.util.Map;
 @Component
 @Getter
 public class ConfigService {
+  @Value("${matag.name}")
+  private String matagName;
+
   @Value("${matag.game.url}")
   private String matagGameUrl;
 
@@ -23,8 +26,10 @@ public class ConfigService {
 
   public Map<String, String> getConfig() {
     return Map.of(
-        "matagAdminUrl", matagAdminUrl,
-        "matagGameUrl", matagGameUrl
+      "matagName", matagName,
+      "matagAdminUrl", matagAdminUrl,
+      "matagGameUrl", matagGameUrl,
+      "matagSupportEmail", matagSupportEmail
     );
   }
 }
