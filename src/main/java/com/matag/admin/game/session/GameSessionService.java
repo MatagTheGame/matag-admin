@@ -9,10 +9,8 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 public class GameSessionService {
-  private final GameSessionRepository gameSessionRepository;
-
   public GamePlayers loadPlayers(Game game) {
-    List<GameSession> gameSessions = gameSessionRepository.findByGame(game);
+    List<GameSession> gameSessions = game.getGameSessions();
     GameSession playerGameSession = gameSessions.get(0);
     GameSession opponentGameSession = null;
     if (gameSessions.size() > 1) {

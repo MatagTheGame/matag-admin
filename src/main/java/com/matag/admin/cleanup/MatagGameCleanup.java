@@ -32,7 +32,7 @@ public class MatagGameCleanup {
     int totalGameDeleted = 0;
     for (Game game : oldGamesNotStarted) {
       try {
-        List<GameSession> gameSessions = gameSessionRepository.findByGame(game);
+        List<GameSession> gameSessions = game.getGameSessions();
         for (GameSession gameSession : gameSessions) {
           gameSessionRepository.delete(gameSession);
           gameRepository.delete(game);

@@ -57,8 +57,8 @@ const activeGameLoaded = (activeGame) => {
 
 const mapStateToProps = state => {
   return {
-    loading: get(state, 'activeGame.loading', true),
-    activeGame: get(state, 'activeGame.value', {}),
+    loading: get(state, 'play.activeGame.loading', true),
+    activeGame: get(state, 'play.activeGame.value', {}),
     matagGameUrl: get(state, 'config.matagGameUrl', '')
   }
 }

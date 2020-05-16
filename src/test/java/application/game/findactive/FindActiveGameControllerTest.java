@@ -4,12 +4,14 @@ import application.AbstractApplicationTest;
 import com.matag.admin.game.findactive.ActiveGameResponse;
 import com.matag.admin.game.join.JoinGameRequest;
 import com.matag.admin.game.join.JoinGameResponse;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static application.TestUtils.user1;
 import static com.matag.admin.game.game.GameType.UNLIMITED;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Ignore
 public class FindActiveGameControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldFindNoGames() {

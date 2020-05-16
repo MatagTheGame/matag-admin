@@ -80,9 +80,9 @@ const deletedActiveGame = (response) => {
 
 const mapStateToProps = state => {
   return {
-    activeGame: get(state, 'activeGame.value', {}),
-    deleting: get(state, 'activeGame.deleting', false),
-    deletingError: get(state, 'activeGame.deletingError', null),
+    activeGame: get(state, 'play.activeGame.value', {}),
+    deleting: get(state, 'play.activeGame.deleting', false),
+    deletingError: get(state, 'play.activeGame.deletingError', null),
     matagGameUrl: get(state, 'config.matagGameUrl', '')
   }
 }

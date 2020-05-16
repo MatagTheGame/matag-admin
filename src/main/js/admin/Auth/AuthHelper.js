@@ -21,7 +21,6 @@ export default class AuthHelper {
   }
 
   static isNonGuest(state) {
-    console.log('Antonio: ', state.session)
     return AuthHelper.isLoggedIn(state) && get(state, 'session.profile.type') !== 'GUEST'
   }
 }

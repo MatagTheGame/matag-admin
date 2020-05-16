@@ -1,14 +1,14 @@
 package com.matag.admin.game.game;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.matag.admin.game.session.GameSession;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
+@ToString(exclude = "gameSessions")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -26,4 +26,7 @@ public class Game {
   @Enumerated(EnumType.STRING)
   private GameResultType result;
   private LocalDateTime finishedAt;
+
+  @OneToMany(mappedBy = "game")
+  private List<GameSession> gameSessions;
 }
