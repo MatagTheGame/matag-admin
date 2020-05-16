@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
 @JsonDeserialize(builder = ActiveGameResponse.ActiveGameResponseBuilder.class)
 @Builder(toBuilder = true)
 public class ActiveGameResponse {
-  private final Long gameId;
-  private final LocalDateTime createdAt;
-  private final String playerName;
-  private final String playerOptions;
-  private final String opponentName;
-  private final String opponentOptions;
+  Long gameId;
+  LocalDateTime createdAt;
+  String playerName;
+  String playerOptions;
+  String opponentName;
+  String opponentOptions;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class ActiveGameResponseBuilder {

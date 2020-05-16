@@ -11,9 +11,9 @@ import lombok.Value;
 @JsonDeserialize(builder = JoinGameResponse.JoinGameResponseBuilder.class)
 @Builder(toBuilder = true)
 public class JoinGameResponse {
-  private final Long gameId;
-  private final String errorMessage;
-  private final Long activeGameId;
+  Long gameId;
+  String errorMessage;
+  Long activeGameId;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class JoinGameResponseBuilder {

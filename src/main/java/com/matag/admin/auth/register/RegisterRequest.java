@@ -11,9 +11,9 @@ import lombok.Value;
 @JsonDeserialize(builder = RegisterRequest.RegisterRequestBuilder.class)
 @Builder(toBuilder = true)
 public class RegisterRequest {
-  private final String email;
-  private final String username;
-  private final String password;
+  String email;
+  String username;
+  String password;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class RegisterRequestBuilder {

@@ -9,10 +9,10 @@ import lombok.Value;
 @JsonDeserialize(builder = StatsResponse.StatsResponseBuilder.class)
 @Builder(toBuilder = true)
 public class StatsResponse {
-  private final long totalUsers;
-  private final long onlineUsers;
-  private final int totalCards;
-  private final int totalSets;
+  long totalUsers;
+  long onlineUsers;
+  int totalCards;
+  int totalSets;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class StatsResponseBuilder {

@@ -10,9 +10,9 @@ import lombok.Value;
 @JsonDeserialize(builder = LoginResponse.LoginResponseBuilder.class)
 @Builder(toBuilder = true)
 public class LoginResponse {
-  private final String token;
-  private final CurrentUserProfileDto profile;
-  private final String error;
+  String token;
+  CurrentUserProfileDto profile;
+  String error;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class LoginResponseBuilder {

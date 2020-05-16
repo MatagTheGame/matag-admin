@@ -11,7 +11,7 @@ import lombok.Value;
 @JsonDeserialize(builder = CancelGameResponse.CancelGameResponseBuilder.class)
 @Builder(toBuilder = true)
 public class CancelGameResponse {
-  private final String error;
+  String error;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class CancelGameResponseBuilder {
