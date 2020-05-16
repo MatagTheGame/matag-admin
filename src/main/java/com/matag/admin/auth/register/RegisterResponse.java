@@ -9,8 +9,8 @@ import lombok.Value;
 @JsonDeserialize(builder = RegisterResponse.RegisterResponseBuilder.class)
 @Builder(toBuilder = true)
 public class RegisterResponse {
-  private final String message;
-  private final String error;
+  String message;
+  String error;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class RegisterResponseBuilder {

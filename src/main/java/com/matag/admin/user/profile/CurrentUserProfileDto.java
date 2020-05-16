@@ -9,8 +9,8 @@ import lombok.Value;
 @JsonDeserialize(builder = CurrentUserProfileDto.CurrentUserProfileDtoBuilder.class)
 @Builder(toBuilder = true)
 public class CurrentUserProfileDto {
-  private final String username;
-  private final String type;
+  String username;
+  String type;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class CurrentUserProfileDtoBuilder {

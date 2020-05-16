@@ -9,8 +9,8 @@ import lombok.Value;
 @JsonDeserialize(builder = VerifyResponse.VerifyResponseBuilder.class)
 @Builder(toBuilder = true)
 public class VerifyResponse {
-  private String message;
-  private String error;
+  String message;
+  String error;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class VerifyResponseBuilder {

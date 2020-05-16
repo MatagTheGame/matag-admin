@@ -12,8 +12,8 @@ import lombok.Value;
 @JsonDeserialize(builder = JoinGameRequest.JoinGameRequestBuilder.class)
 @Builder(toBuilder = true)
 public class JoinGameRequest {
-  private final GameType gameType;
-  private final String playerOptions;
+  GameType gameType;
+  String playerOptions;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class JoinGameRequestBuilder {
