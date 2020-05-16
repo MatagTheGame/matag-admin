@@ -13,7 +13,12 @@ export default (state, action) => {
   const newState = clone(state)
 
   if (!state) {
-    return {session: {loading: true, token: AuthHelper.getToken()}}
+    return {
+      session: {
+        loading: true, token: AuthHelper.getToken()
+      },
+      play: {}
+    }
 
   } else if (action.type === 'CONFIG_LOADED') {
     newState.config = action.value

@@ -4,6 +4,7 @@ import com.matag.admin.game.game.Game;
 import com.matag.admin.game.game.GameRepository;
 import com.matag.admin.game.game.GameStatusType;
 import com.matag.admin.game.game.GameType;
+import com.matag.admin.game.session.GameSession;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -27,5 +28,23 @@ public class GameInMemoryRepository extends AbstractInMemoryRepository<Game> imp
       .filter(g -> g.getCreatedAt().isBefore(now))
       .filter(g -> g.getStatus().equals(status))
       .collect(toList());
+  }
+
+  @Override
+  public List<Game> findByPlayerIdAndStatus(Long playerId, GameStatusType status) {
+    return findAll().stream()
+      .filter(g -> isForPlayerId(g.getGameSessions(), playerId))
+      .filter(g -> g.getStatus().equals(status))
+      .collect(toList());
+  }
+
+  private boolean isForPlayerId(List<GameSession> gameSessions, Long playerId) {
+    for (GameSession gameSession : gameSessions) {
+      if (gameSession.getPlayer().getId().equals(playerId)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

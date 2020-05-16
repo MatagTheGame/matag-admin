@@ -7,6 +7,7 @@ import com.matag.admin.game.join.JoinGameRequest;
 import com.matag.admin.game.join.JoinGameResponse;
 import com.matag.admin.game.session.GameSession;
 import com.matag.admin.game.session.GameSessionRepository;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,6 +21,7 @@ import static com.matag.admin.game.game.GameStatusType.STARTING;
 import static com.matag.admin.game.game.GameType.UNLIMITED;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Ignore
 public class JoinGameControllerTest extends AbstractApplicationTest {
   @Autowired
   private GameRepository gameRepository;

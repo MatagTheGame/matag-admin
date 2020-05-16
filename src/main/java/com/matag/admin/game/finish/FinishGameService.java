@@ -4,6 +4,7 @@ import com.matag.admin.game.game.Game;
 import com.matag.admin.game.game.GameRepository;
 import com.matag.admin.game.game.GameResultType;
 import com.matag.admin.game.game.GameStatusType;
+import com.matag.admin.game.result.ResultService;
 import com.matag.admin.game.session.GamePlayers;
 import com.matag.admin.game.session.GameSessionRepository;
 import com.matag.admin.game.session.GameSessionService;
@@ -25,6 +26,7 @@ public class FinishGameService {
   private final GameRepository gameRepository;
   private final GameSessionRepository gameSessionRepository;
   private final GameSessionService gameSessionService;
+  private final ResultService resultService;
 
   @Transactional
   public void finish(Long gameId, FinishGameRequest request) {
@@ -40,7 +42,7 @@ public class FinishGameService {
   public void finishGame(Game game, GamePlayers gamePlayers, String winnerSessionId) {
     game.setStatus(GameStatusType.FINISHED);
 
-    GameResultType gameResultType = getResult(gamePlayers, winnerSessionId);
+    GameResultType gameResultType = resultService.getResult(gamePlayers, winnerSessionId);
     game.setResult(gameResultType);
     game.setFinishedAt(LocalDateTime.now(clock));
     gameRepository.save(game);
@@ -49,13 +51,5 @@ public class FinishGameService {
     gameSessionRepository.save(gamePlayers.getPlayerSession());
     gamePlayers.getOpponentSession().setSession(null);
     gameSessionRepository.save(gamePlayers.getOpponentSession());
-  }
-
-  private GameResultType getResult(GamePlayers gamePlayers, String winnerSessionId) {
-    if (gamePlayers.getPlayerSession().getSession().getSessionId().equals(winnerSessionId)) {
-      return GameResultType.R1;
-    } else {
-      return GameResultType.R2;
-    }
   }
 }

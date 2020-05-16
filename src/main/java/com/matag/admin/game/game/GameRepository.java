@@ -13,4 +13,7 @@ public interface GameRepository extends CrudRepository<Game, Long> {
 
   @Query("FROM Game WHERE status = ?1 AND createdAt < ?2")
   List<Game> findOldGameByStatus(GameStatusType status, LocalDateTime now);
+
+  @Query("FROM Game g JOIN FETCH GameSession gs on g.id = gs.game.id WHERE gs.player.id = ?1 AND g.status = ?2")
+  List<Game> findByPlayerIdAndStatus(Long playerId, GameStatusType status);
 }

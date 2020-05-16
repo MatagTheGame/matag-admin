@@ -3,10 +3,7 @@ package com.matag.admin.game.session;
 import com.matag.admin.game.game.Game;
 import com.matag.admin.session.MatagSession;
 import com.matag.admin.user.MatagUser;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
