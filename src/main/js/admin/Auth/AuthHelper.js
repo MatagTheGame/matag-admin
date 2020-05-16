@@ -1,4 +1,5 @@
 import has from 'lodash/has'
+import get from 'lodash/get'
 
 const TOKEN = 'token'
 
@@ -17,5 +18,10 @@ export default class AuthHelper {
 
   static isLoggedIn(state) {
     return has(state, 'session.profile.username')
+  }
+
+  static isNonGuest(state) {
+    console.log('Antonio: ', state.session)
+    return AuthHelper.isLoggedIn(state) && get(state, 'session.profile.type') !== 'GUEST'
   }
 }

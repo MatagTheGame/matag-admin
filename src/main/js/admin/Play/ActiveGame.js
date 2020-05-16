@@ -11,11 +11,6 @@ class ActiveGame extends Component {
     this.cancelGame = this.cancelGame.bind(this)
   }
 
-  displayGoToGame() {
-    const gameId = this.props.activeGame.gameId
-    return <span>Go to <a href='#' onClick={() => this.props.goToGame(gameId)}>game #{gameId}</a></span>
-  }
-
   cancelGame() {
     this.props.deletingActiveGame()
     ApiClient.delete('/game/' + this.props.activeGame.gameId)

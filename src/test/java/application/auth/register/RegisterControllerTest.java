@@ -157,7 +157,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     // Then
     assertThat(verifyResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
     assertThat(verifyResponse.getBody()).isNotNull();
-    assertThat(verifyResponse.getBody().getError()).isEqualTo("Your account could not be verified. Please send a message to some-email-address@mtg.com.");
+    assertThat(verifyResponse.getBody().getError()).isEqualTo("Your account could not be verified. Please send a message to matag.the.game@gmail.com.");
 
     Optional<MatagUser> user = matagUserRepository.findByUsername(username);
     assertThat(user).isPresent();
@@ -179,7 +179,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     // Then
     assertThat(verifyResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
     assertThat(verifyResponse.getBody()).isNotNull();
-    assertThat(verifyResponse.getBody().getError()).isEqualTo("Your account could not be verified. Please send a message to some-email-address@mtg.com.");
+    assertThat(verifyResponse.getBody().getError()).isEqualTo("Your account could not be verified. Please send a message to matag.the.game@gmail.com.");
 
     Optional<MatagUser> user = matagUserRepository.findByUsername(username);
     assertThat(user).isPresent();

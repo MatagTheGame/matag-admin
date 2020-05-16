@@ -5,7 +5,7 @@ class ScoreBoard extends Component {
   render() {
     return (
       <section id='score-board'>
-        <h2>ScoreBoard</h2>
+        <h2>Score Board</h2>
         Coming soon
       </section>
     )
@@ -14,6 +14,7 @@ class ScoreBoard extends Component {
 
 const mapStateToProps = state => {
   return {
+
   }
 }
 
