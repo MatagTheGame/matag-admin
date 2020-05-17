@@ -1,6 +1,6 @@
 import 'babel-polyfill'
 import TestUtils from '../../TestUtils'
-import HomePage from './HomePage'
+import Browser from '../../Browser'
 
 describe('Home', () => {
   beforeEach(() => {
@@ -16,15 +16,17 @@ describe('Home', () => {
     TestUtils.guestUser()
 
     // When
-    const homePage = new HomePage(TestUtils.renderAdminApp())
-    await homePage.waitUntilLoaded()
+    const browser = new Browser(TestUtils.renderAdminApp())
+    await browser.waitUntilLoaded()
 
     // Then
-    homePage.getHeader().expectTitleToBeMatagTheGame()
-    homePage.expectTitleToBeHome()
-    homePage.getHeader().expectMenuItems(['Home', 'Login', 'Register'])
-    homePage.getIntroSection().validateAllLinks()
-    homePage.getStatsSection().validateStats(TestUtils.DEFAULT_STATS)
+    browser.getHeader().expectTitleToBeMatagTheGame()
+    browser.expectTitleToBeHome()
+    browser.getHeader().expectMenuItems(['Home', 'Login', 'Register'])
+    browser.getIntroSection().validateAllLinks()
+    browser.getStatsSection().validateStats(TestUtils.DEFAULT_STATS)
+    expect(browser.getLoginSection().element).toBeDefined()
+    expect(browser.getPlaySection().element).toBeNull()
   })
 
   test('Should load homepage for logged in user', async () => {
@@ -33,14 +35,16 @@ describe('Home', () => {
     TestUtils.userIsLoggedIn()
 
     // When
-    const homePage = new HomePage(TestUtils.renderAdminApp())
-    await homePage.waitUntilLoaded()
+    const browser = new Browser(TestUtils.renderAdminApp())
+    await browser.waitUntilLoaded()
 
     // Then
-    homePage.getHeader().expectTitleToBeMatagTheGame()
-    homePage.getHeader().expectMenuItems(['Home', 'Decks', 'Play', 'User1'])
-    homePage.expectTitleToBeHome()
-    homePage.getIntroSection().validateAllLinks()
-    homePage.getStatsSection().validateStats(TestUtils.DEFAULT_STATS)
+    browser.getHeader().expectTitleToBeMatagTheGame()
+    browser.getHeader().expectMenuItems(['Home', 'Decks', 'Play', 'User1'])
+    browser.expectTitleToBeHome()
+    browser.getIntroSection().validateAllLinks()
+    browser.getStatsSection().validateStats(TestUtils.DEFAULT_STATS)
+    expect(browser.getPlaySection().element).toBeDefined()
+    expect(browser.getLoginSection().element).toBeNull()
   })
 })

@@ -73,7 +73,7 @@ class Login extends Component {
     }
 
     return (
-      <section>
+      <section id='login'>
         <div id='login-container'>
           <h2>Login</h2>
           <form className='matag-form' onSubmit={this.handleLogin}>
