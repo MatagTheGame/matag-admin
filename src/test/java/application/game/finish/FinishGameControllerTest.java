@@ -8,7 +8,6 @@ import com.matag.admin.game.join.JoinGameResponse;
 import com.matag.admin.game.session.GameSession;
 import com.matag.admin.game.session.GameSessionRepository;
 import com.matag.adminentities.FinishGameRequest;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static application.TestUtils.user1;
-import static application.TestUtils.user2;
+import static application.TestUtils.*;
 import static com.matag.admin.game.game.GameResultType.R1;
 import static com.matag.admin.game.game.GameStatusType.FINISHED;
 import static com.matag.admin.game.game.GameType.UNLIMITED;
@@ -27,7 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.OK;
 
-@Ignore
 public class FinishGameControllerTest extends AbstractApplicationTest {
   @Autowired
   private GameRepository gameRepository;
@@ -38,7 +35,7 @@ public class FinishGameControllerTest extends AbstractApplicationTest {
   @Test
   public void requiresAdminAuthentication() {
     // Given
-    userIsLoggedIn(USER_1_SESSION_TOKEN, user1());
+    userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
 
     // When
     FinishGameRequest finishGameRequest = new FinishGameRequest(USER_1_SESSION_TOKEN);
@@ -51,7 +48,7 @@ public class FinishGameControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldFinishAGame() {
     // Given
-    userIsLoggedIn(USER_1_SESSION_TOKEN, user1());
+    userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
     JoinGameRequest request1 = JoinGameRequest.builder()
       .gameType(UNLIMITED)
       .playerOptions("player1 options")
@@ -59,7 +56,7 @@ public class FinishGameControllerTest extends AbstractApplicationTest {
     JoinGameResponse joinGameResponse = restTemplate.postForObject("/game", request1, JoinGameResponse.class);
     Long gameId = joinGameResponse.getGameId();
 
-    userIsLoggedIn(USER_2_SESSION_TOKEN, user2());
+    userIsLoggedIn(USER_2_SESSION_TOKEN, USER_2_USERNAME);
     JoinGameRequest request2 = JoinGameRequest.builder()
       .gameType(UNLIMITED)
       .playerOptions("player2 options")

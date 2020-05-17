@@ -1,37 +1,21 @@
 package application;
 
-import static application.TestUtils.inactive;
-import static application.TestUtils.user1;
-import static application.TestUtils.user2;
-import static com.matag.admin.session.AuthSessionFilter.SESSION_DURATION_TIME;
-import static com.matag.admin.session.AuthSessionFilter.SESSION_NAME;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
-import application.inmemoryrepositories.AbstractInMemoryRepository;
-import application.inmemoryrepositories.MatagUserAbstractInMemoryRepository;
 import com.matag.admin.MatagAdminApplication;
 import com.matag.admin.config.ConfigService;
+import com.matag.admin.game.game.GameRepository;
+import com.matag.admin.game.session.GameSessionRepository;
 import com.matag.admin.session.MatagSession;
 import com.matag.admin.session.MatagSessionRepository;
 import com.matag.admin.user.MatagUser;
 import com.matag.admin.user.MatagUserRepository;
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
@@ -39,14 +23,22 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Collections;
+import java.util.UUID;
+
+import static application.TestUtils.*;
+import static com.matag.admin.session.AuthSessionFilter.SESSION_DURATION_TIME;
+import static com.matag.admin.session.AuthSessionFilter.SESSION_NAME;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MatagAdminApplication.class, webEnvironment = RANDOM_PORT)
 @Import(AbstractApplicationTest.ApplicationTestConfiguration.class)
 @ActiveProfiles("test")
 public abstract class AbstractApplicationTest {
-  public static final String USER_1_SESSION_TOKEN = "00000000-0000-0000-0000-000000000001";
-  public static final String USER_2_SESSION_TOKEN = "00000000-0000-0000-0000-000000000002";
-
   public static final LocalDateTime TEST_START_TIME = LocalDateTime.parse("2020-01-01T00:00:00");
 
   @Autowired
@@ -56,7 +48,10 @@ public abstract class AbstractApplicationTest {
   private MatagSessionRepository matagSessionRepository;
 
   @Autowired
-  private List<AbstractInMemoryRepository> inMemoryRepositoryList;
+  private GameRepository gameRepository;
+
+  @Autowired
+  private GameSessionRepository gameSessionRepository;
 
   @Autowired
   protected Clock clock;
@@ -68,10 +63,8 @@ public abstract class AbstractApplicationTest {
   private ConfigService configService;
 
   @Before
-  public void setupDatabase() {
+  public void setup() {
     setCurrentTime(TEST_START_TIME);
-
-    restTemplate.getRestTemplate().getInterceptors().clear();
 
     matagUserRepository.save(user1());
     matagUserRepository.save(user2());
@@ -79,28 +72,35 @@ public abstract class AbstractApplicationTest {
   }
 
   @After
-  public void cleanupDatabase() {
-    inMemoryRepositoryList.forEach(r -> {
-      r.deleteAll();
-      r.resetGenerator();
-    });
+  public void cleanup() {
+    restTemplate.getRestTemplate().getInterceptors().clear();
+
+    gameSessionRepository.deleteAll();
+    gameRepository.deleteAll();
+    matagSessionRepository.deleteAll();
+    matagUserRepository.deleteAll();
   }
 
   public void setCurrentTime(LocalDateTime currentTime) {
     ((MockClock) clock).setCurrentTime(currentTime.toInstant(ZoneOffset.UTC));
   }
 
-  public void loginUser(String userToken, MatagUser user) {
-    matagSessionRepository.save(MatagSession.builder()
-      .sessionId(UUID.fromString(userToken).toString())
-      .matagUser(user)
-      .createdAt(LocalDateTime.now(clock))
-      .validUntil(LocalDateTime.now(clock).plusSeconds(SESSION_DURATION_TIME))
-      .build());
+  public void loginUser(String userToken, String username) {
+    String sessionId = UUID.fromString(userToken).toString();
+    if (!matagSessionRepository.existsBySessionId(sessionId)) {
+      MatagUser user = matagUserRepository.findByUsername(username).orElseThrow(RuntimeException::new);
+      matagSessionRepository.save(MatagSession.builder()
+        .sessionId(sessionId)
+        .matagUser(user)
+        .createdAt(LocalDateTime.now(clock))
+        .validUntil(LocalDateTime.now(clock).plusSeconds(SESSION_DURATION_TIME))
+        .build());
+      System.out.println("save session");
+    }
   }
 
-  public void userIsLoggedIn(String userToken, MatagUser user) {
-    loginUser(userToken, user);
+  public void userIsLoggedIn(String userToken, String username) {
+    loginUser(userToken, username);
     restTemplate.getRestTemplate().setInterceptors(
       Collections.singletonList((request, body, execution) -> {
         request.getHeaders().add(SESSION_NAME, userToken);
@@ -117,8 +117,6 @@ public abstract class AbstractApplicationTest {
   }
 
   @Configuration
-  @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
-  @ComponentScan(basePackageClasses = MatagUserAbstractInMemoryRepository.class)
   public static class ApplicationTestConfiguration {
     @Bean
     @Primary

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.security.web.firewall.FirewalledRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
@@ -13,7 +14,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -36,10 +36,15 @@ public class AuthSessionFilter extends GenericFilterBean {
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-    HttpServletRequest httpRequest = (HttpServletRequest) request;
+    if (request instanceof FirewalledRequest) {
+      applySecurity((FirewalledRequest)request);
+    }
+    filterChain.doFilter(request, response);
+  }
 
-    String adminPassword = httpRequest.getHeader(ADMIN_NAME);
-    String userSessionId = httpRequest.getHeader(SESSION_NAME);
+  private void applySecurity(FirewalledRequest request) {
+    String adminPassword = request.getHeader(ADMIN_NAME);
+    String userSessionId = request.getHeader(SESSION_NAME);
 
     if (StringUtils.hasText(adminPassword)) {
       adminAuthentication(adminPassword);
@@ -47,8 +52,6 @@ public class AuthSessionFilter extends GenericFilterBean {
     } else if (StringUtils.hasText(userSessionId)) {
       userAuthentication(userSessionId);
     }
-
-    filterChain.doFilter(request, response);
   }
 
   private void adminAuthentication(String adminPassword) {

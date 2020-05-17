@@ -4,19 +4,17 @@ import application.AbstractApplicationTest;
 import com.matag.admin.game.findactive.ActiveGameResponse;
 import com.matag.admin.game.join.JoinGameRequest;
 import com.matag.admin.game.join.JoinGameResponse;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import static application.TestUtils.user1;
+import static application.TestUtils.*;
 import static com.matag.admin.game.game.GameType.UNLIMITED;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore
 public class FindActiveGameControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldFindNoGames() {
     // Given
-    userIsLoggedIn(USER_1_SESSION_TOKEN, user1());
+    userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
 
     // When
     ActiveGameResponse response = restTemplate.getForObject("/game", ActiveGameResponse.class);
@@ -28,7 +26,7 @@ public class FindActiveGameControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldFindAnActiveGame() {
     // Given
-    userIsLoggedIn(USER_1_SESSION_TOKEN, user1());
+    userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
 
     JoinGameRequest request = JoinGameRequest.builder()
       .gameType(UNLIMITED)

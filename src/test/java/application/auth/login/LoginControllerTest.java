@@ -89,7 +89,7 @@ public class LoginControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldNotLoginNotActiveUser() {
     // Given
-    LoginRequest request = new LoginRequest("inactive@matag.com", "password");
+    LoginRequest request = new LoginRequest("inactiveUser@matag.com", "password");
 
     // When
     ResponseEntity<LoginResponse> response = restTemplate.postForEntity("/auth/login", request, LoginResponse.class);

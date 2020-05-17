@@ -22,4 +22,6 @@ public interface MatagSessionRepository extends CrudRepository<MatagSession, Lon
   int deleteValidUntilBefore(LocalDateTime now);
 
   void deleteBySessionId(String sessionId);
+
+  boolean existsBySessionId(String sessionId);
 }

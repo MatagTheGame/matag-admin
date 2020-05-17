@@ -38,7 +38,7 @@ create table game_session
     session_id     bigint unique,
     player_id      bigint not null,
     player_options varchar(255),
-    foreign key (game_id) references game (id) on delete set null,
+    foreign key (game_id) references game (id) on delete cascade,
     foreign key (session_id) references matag_session (id) on delete set null,
     foreign key (player_id) references matag_user (id) on delete set null
 );
