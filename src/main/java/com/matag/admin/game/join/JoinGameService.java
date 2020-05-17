@@ -75,7 +75,7 @@ public class JoinGameService {
 
   private Game findFreeGame(List<Game> games) {
     for (Game game : games) {
-      GamePlayers gamePlayers = gameSessionService.loadPlayers(game);
+      GamePlayers gamePlayers = gameSessionService.getGamePlayers(game);
       if (gamePlayers.getOpponentSession() == null) {
         return game;
       }

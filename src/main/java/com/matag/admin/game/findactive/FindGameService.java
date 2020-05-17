@@ -28,7 +28,7 @@ public class FindGameService {
     }
 
     Game game = activeGameSession.get().getGame();
-    GamePlayers gamePlayers = gameSessionService.loadPlayers(game);
+    GamePlayers gamePlayers = gameSessionService.getGamePlayers(game);
 
     return ActiveGameResponse.builder()
       .gameId(game.getId())

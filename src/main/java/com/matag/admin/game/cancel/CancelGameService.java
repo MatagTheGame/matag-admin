@@ -31,7 +31,7 @@ public class CancelGameService {
     if (activeGameSession.isPresent()) {
       if (activeGameSession.get().getGame().getId().equals(gameId)) {
         Game game = activeGameSession.get().getGame();
-        GamePlayers gamePlayers = gameSessionService.loadPlayers(game);
+        GamePlayers gamePlayers = gameSessionService.getGamePlayers(game);
         if (gamePlayers.getOpponentSession() == null) {
           gameSessionRepository.delete(gamePlayers.getPlayerSession());
           gameRepository.delete(game);

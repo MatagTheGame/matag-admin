@@ -39,14 +39,14 @@ public class GamesHistoryController {
   }
 
   private GameHistory toGameHistory(Game game, MatagUser user) {
-    GamePlayers gamePlayers = gameSessionService.loadPlayers(game);
+    GamePlayers gamePlayers = gameSessionService.getGamePlayers(game);
     GameSession player1 = gamePlayers.getPlayerSession();
     GameSession player2 = gamePlayers.getOpponentSession();
     return GameHistory.builder()
       .startedTime(game.getCreatedAt())
       .finishedTime(game.getFinishedAt())
       .type(game.getType())
-      .result(resultService.toUserResult(gamePlayers, user))
+      .result(resultService.toUserResult(game, user))
       .player1Name(player1.getPlayer().getUsername())
       .player1Options(player1.getPlayerOptions())
       .player2Name(player2.getPlayer().getUsername())

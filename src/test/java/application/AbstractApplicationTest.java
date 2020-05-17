@@ -85,13 +85,17 @@ public abstract class AbstractApplicationTest {
     ((MockClock) clock).setCurrentTime(currentTime.toInstant(ZoneOffset.UTC));
   }
 
+  public MatagUser loadUser(String username) {
+    return matagUserRepository.findByUsername(username).orElseThrow(RuntimeException::new);
+  }
+
   public void loginUser(String userToken, String username) {
     String sessionId = UUID.fromString(userToken).toString();
     if (!matagSessionRepository.existsBySessionId(sessionId)) {
-      MatagUser user = matagUserRepository.findByUsername(username).orElseThrow(RuntimeException::new);
+
       matagSessionRepository.save(MatagSession.builder()
         .sessionId(sessionId)
-        .matagUser(user)
+        .matagUser(loadUser(username))
         .createdAt(LocalDateTime.now(clock))
         .validUntil(LocalDateTime.now(clock).plusSeconds(SESSION_DURATION_TIME))
         .build());

@@ -9,7 +9,7 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 public class GameSessionService {
-  public GamePlayers loadPlayers(Game game) {
+  public GamePlayers getGamePlayers(Game game) {
     List<GameSession> gameSessions = game.getGameSessions();
     GameSession playerGameSession = gameSessions.get(0);
     GameSession opponentGameSession = null;

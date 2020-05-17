@@ -33,7 +33,7 @@ public class FinishGameService {
     Optional<Game> gameOptional = gameRepository.findById(gameId);
     gameOptional.ifPresent(game -> {
       if (game.getStatus() == IN_PROGRESS) {
-        GamePlayers gamePlayers = gameSessionService.loadPlayers(game);
+        GamePlayers gamePlayers = gameSessionService.getGamePlayers(game);
         finishGame(game, gamePlayers, request.getWinnerSessionId());
       }
     });
