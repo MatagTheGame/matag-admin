@@ -7,21 +7,17 @@ import com.matag.admin.game.join.JoinGameRequest;
 import com.matag.admin.game.join.JoinGameResponse;
 import com.matag.admin.game.session.GameSession;
 import com.matag.admin.game.session.GameSessionRepository;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Iterator;
-import java.util.Optional;
 
-import static application.TestUtils.user1;
-import static application.TestUtils.user2;
+import static application.TestUtils.*;
 import static com.matag.admin.game.game.GameStatusType.IN_PROGRESS;
 import static com.matag.admin.game.game.GameStatusType.STARTING;
 import static com.matag.admin.game.game.GameType.UNLIMITED;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore
 public class JoinGameControllerTest extends AbstractApplicationTest {
   @Autowired
   private GameRepository gameRepository;
@@ -32,7 +28,7 @@ public class JoinGameControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldCreateAGame() {
     // Given
-    userIsLoggedIn(USER_1_SESSION_TOKEN, user1());
+    userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
     JoinGameRequest request = JoinGameRequest.builder()
       .gameType(UNLIMITED)
       .playerOptions("player1 options")
@@ -42,26 +38,28 @@ public class JoinGameControllerTest extends AbstractApplicationTest {
     JoinGameResponse response = restTemplate.postForObject("/game", request, JoinGameResponse.class);
 
     // Then
-    assertThat(response).isEqualTo(JoinGameResponse.builder().gameId(1L).build());
+    assertThat(response.getGameId()).isGreaterThan(0);
 
-    Optional<Game> game = gameRepository.findById(1L);
-    assertThat(game).isNotEmpty();
-    assertThat(game.get().getType()).isEqualTo(UNLIMITED);
-    assertThat(game.get().getStatus()).isEqualTo(STARTING);
+    Iterable<Game> games = gameRepository.findAll();
+    assertThat(games).hasSize(1);
+    Game game = games.iterator().next();
+    assertThat(game.getId()).isEqualTo(response.getGameId());
+    assertThat(game.getType()).isEqualTo(UNLIMITED);
+    assertThat(game.getStatus()).isEqualTo(STARTING);
 
     Iterable<GameSession> gameSessions = gameSessionRepository.findAll();
     assertThat(gameSessions).hasSize(1);
     GameSession gameSession = gameSessions.iterator().next();
-    assertThat(gameSession.getGame()).isEqualTo(game.get());
+    assertThat(gameSession.getGame()).isEqualTo(game);
     assertThat(gameSession.getSession().getSessionId()).isEqualTo(USER_1_SESSION_TOKEN);
-    assertThat(gameSession.getPlayer()).isEqualTo(user1());
+    assertThat(gameSession.getPlayer().getUsername()).isEqualTo(USER_1_USERNAME);
     assertThat(gameSession.getPlayerOptions()).isEqualTo("player1 options");
   }
 
   @Test
   public void shouldJoinAnExistingGame() {
     // Given
-    userIsLoggedIn(USER_1_SESSION_TOKEN, user1());
+    userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
     JoinGameRequest player1JoinRequest = JoinGameRequest.builder()
       .gameType(UNLIMITED)
       .playerOptions("player1 options")
@@ -69,7 +67,7 @@ public class JoinGameControllerTest extends AbstractApplicationTest {
 
     restTemplate.postForObject("/game", player1JoinRequest, JoinGameResponse.class);
 
-    userIsLoggedIn(USER_2_SESSION_TOKEN, user2());
+    userIsLoggedIn(USER_2_SESSION_TOKEN, USER_2_USERNAME);
 
     JoinGameRequest player2JoinRequest = JoinGameRequest.builder()
       .gameType(UNLIMITED)
@@ -80,33 +78,35 @@ public class JoinGameControllerTest extends AbstractApplicationTest {
     JoinGameResponse response = restTemplate.postForObject("/game", player2JoinRequest, JoinGameResponse.class);
 
     // Then
-    assertThat(response).isEqualTo(JoinGameResponse.builder().gameId(1L).build());
+    assertThat(response.getGameId()).isGreaterThan(0);
 
-    Optional<Game> game = gameRepository.findById(1L);
-    assertThat(game).isNotEmpty();
-    assertThat(game.get().getType()).isEqualTo(UNLIMITED);
-    assertThat(game.get().getStatus()).isEqualTo(IN_PROGRESS);
+    Iterable<Game> games = gameRepository.findAll();
+    assertThat(games).hasSize(1);
+    Game game = games.iterator().next();
+    assertThat(game.getId()).isEqualTo(response.getGameId());
+    assertThat(game.getType()).isEqualTo(UNLIMITED);
+    assertThat(game.getStatus()).isEqualTo(IN_PROGRESS);
 
     Iterable<GameSession> gameSessions = gameSessionRepository.findAll();
     assertThat(gameSessions).hasSize(2);
     Iterator<GameSession> iterator = gameSessions.iterator();
     GameSession firstGameSession = iterator.next();
-    assertThat(firstGameSession.getGame()).isEqualTo(game.get());
+    assertThat(firstGameSession.getGame()).isEqualTo(game);
     assertThat(firstGameSession.getSession().getSessionId()).isEqualTo(USER_1_SESSION_TOKEN);
-    assertThat(firstGameSession.getPlayer()).isEqualTo(user1());
+    assertThat(firstGameSession.getPlayer().getUsername()).isEqualTo(USER_1_USERNAME);
     assertThat(firstGameSession.getPlayerOptions()).isEqualTo("player1 options");
 
     GameSession secondGameSession = iterator.next();
-    assertThat(secondGameSession.getGame()).isEqualTo(game.get());
+    assertThat(secondGameSession.getGame()).isEqualTo(game);
     assertThat(secondGameSession.getSession().getSessionId()).isEqualTo(USER_2_SESSION_TOKEN);
-    assertThat(secondGameSession.getPlayer()).isEqualTo(user2());
+    assertThat(secondGameSession.getPlayer().getUsername()).isEqualTo(USER_2_USERNAME);
     assertThat(secondGameSession.getPlayerOptions()).isEqualTo("player2 options");
   }
 
   @Test
   public void userCannotStartAnotherGameIfAlreadyInOne() {
     // Given
-    userIsLoggedIn(USER_1_SESSION_TOKEN, user1());
+    userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
     JoinGameRequest player1JoinRequest = JoinGameRequest.builder()
       .gameType(UNLIMITED)
       .playerOptions("player1 options")
@@ -118,9 +118,7 @@ public class JoinGameControllerTest extends AbstractApplicationTest {
     JoinGameResponse response = restTemplate.postForObject("/game", player1JoinRequest, JoinGameResponse.class);
 
     // Then
-    assertThat(response).isEqualTo(JoinGameResponse.builder()
-      .errorMessage("You are already in a game.")
-      .activeGameId(1L)
-      .build());
+    assertThat(response.getErrorMessage()).isEqualTo("You are already in a game.");
+    assertThat(response.getActiveGameId()).isGreaterThan(0);
   }
 }

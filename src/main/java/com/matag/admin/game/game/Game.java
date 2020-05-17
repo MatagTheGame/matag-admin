@@ -9,6 +9,7 @@ import java.util.List;
 
 @Data
 @ToString(exclude = "gameSessions")
+@EqualsAndHashCode(exclude = "gameSessions")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -27,6 +28,6 @@ public class Game {
   private GameResultType result;
   private LocalDateTime finishedAt;
 
-  @OneToMany(mappedBy = "game")
+  @OneToMany(mappedBy = "game", cascade = CascadeType.REMOVE)
   private List<GameSession> gameSessions;
 }

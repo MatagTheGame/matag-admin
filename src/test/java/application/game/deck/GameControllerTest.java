@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import java.util.Set;
 
-import static application.TestUtils.user1;
+import static application.TestUtils.*;
 import static com.matag.admin.game.game.GameType.UNLIMITED;
 import static com.matag.cards.properties.Color.RED;
 import static com.matag.cards.properties.Color.WHITE;
@@ -18,7 +18,7 @@ public class GameControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldRetrieveGameInfo() {
     // Given
-    userIsLoggedIn(USER_1_SESSION_TOKEN, user1());
+    userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
     JoinGameRequest request = JoinGameRequest.builder()
       .gameType(UNLIMITED)
       .playerOptions("{\"randomColors\": [\"WHITE\", \"RED\"]}}")

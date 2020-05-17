@@ -17,7 +17,7 @@ See [Matag: The Game](https://github.com/MatagTheGame/matag-the-game/wiki) wiki
 Read [Requisites](https://github.com/MatagTheGame/game/wiki/Requisites)
  
 The application connects to a [postgresql](https://www.postgresql.org/) database.
-You can install one locally and then run the [schema.sql](src/main/resource/schema.sql)
+You can install one locally and then run the [postgres-schema.sql](src/main/resource/schema.sql)
 
 ## Development
 
