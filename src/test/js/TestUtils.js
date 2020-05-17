@@ -2,15 +2,15 @@ import React from 'react'
 import Provider from 'react-redux/lib/components/Provider'
 import {createStore} from 'redux'
 import fetchMock from 'fetch-mock'
-import {mount} from 'enzyme'
 import AdminApp from 'admin/AdminApp'
 import history from 'admin/utils/history'
+import {render} from '@testing-library/react'
 import AppReducer from 'admin/_reducers/AppReducer'
 import AuthHelper from 'admin/Auth/AuthHelper'
 
 export default class TestUtils {
-  static mountAdminApp(url = '/ui/admin') {
-    const app = mount(
+  static renderAdminApp (url = '/ui/admin') {
+    const app = render(
       <Provider store={createStore(AppReducer)}>
         <AdminApp/>
       </Provider>

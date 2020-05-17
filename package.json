@@ -33,9 +33,7 @@
     "babel-polyfill": "^6.26.0",
     "connected-react-router": "^6.8.0",
     "css-loader": "^3.4.2",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.2",
-    "enzyme-wait": "^1.0.9",
+    "@testing-library/react": "^10.0.4",
     "eslint": "^5.16.0",
     "eslint-loader": "^2.1.2",
     "eslint-plugin-react": "^7.12.4",
@@ -57,9 +55,6 @@
       ".+\\.(css|styl|less|sass|scss)$": "jest-transform-css",
       "^admin/(.*)$": "<rootDir>/src/main/js/admin/$1"
     },
-    "automock": false,
-    "setupFiles": [
-      "./setupJest.js"
-    ]
+    "automock": false
   }
 }
