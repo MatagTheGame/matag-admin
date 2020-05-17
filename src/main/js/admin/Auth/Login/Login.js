@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import './login.scss'
 import {connect} from 'react-redux'
 import get from 'lodash/get'
 import {bindActionCreators} from 'redux'
@@ -7,6 +6,7 @@ import Loader from 'admin/Common/Loader'
 import ApiClient from 'admin/utils/ApiClient'
 import history from 'admin/utils/history'
 import AuthHelper from '../AuthHelper'
+import './login.scss'
 
 class Login extends Component {
   constructor(props) {

@@ -19,6 +19,8 @@ export default (state, action) => {
       },
       play: {}
     }
+  } else if (action.type.indexOf('@@') > -1) {
+    // ignore all of these action types
 
   } else if (action.type === 'CONFIG_LOADED') {
     newState.config = action.value

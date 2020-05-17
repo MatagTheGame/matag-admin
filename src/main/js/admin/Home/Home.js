@@ -18,7 +18,7 @@ class Home extends Component {
 
   render() {
     return (
-      <section>
+      <section id='home'>
         <h2>Home</h2>
         <Intro config={this.props.config}/>
         <Stats/>
