@@ -1,15 +1,22 @@
-/* global test, expect */
+/* global describe, expect */
 
-import {renderAdminApp, mockConfig, mockProfile} from "../../test-utils"
-import {screen, waitFor} from '@testing-library/react'
-import 'babel-polyfill'
+import TestUtils from '../../TestUtils'
+import {createWaitForElement} from 'enzyme-wait'
 
-mockConfig()
-mockProfile()
+TestUtils.mockConfig()
+TestUtils.mockStats()
+TestUtils.mockProfile()
+TestUtils.mockActiveGame()
+TestUtils.mockAuthHelper()
+
+const delay = ms => new Promise(res => setTimeout(res, ms));
 
 test('Should load homepage', async () => {
-  const app = renderAdminApp()
-  const home = await waitFor(() => app.container.querySelector('#home'))
-  screen.debug()
-  console.log(home)
+  console.log('Test started at: ', new Date())
+  let app = TestUtils.mountAdminApp()
+  console.log(app.html())
+  delay(2000)
+  console.log('Inspecting at: ', new Date())
+  app.update()
+  console.log(app.html())
 })
