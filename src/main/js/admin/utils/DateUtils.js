@@ -4,6 +4,6 @@ export default class DateUtils {
   }
 
   static formatDateTime(date) {
-    return date.toLocaleString()
+    return date.toLocaleString('en-GB', 'full')
   }
 }

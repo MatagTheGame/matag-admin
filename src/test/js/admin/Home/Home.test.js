@@ -14,5 +14,4 @@ test('Should load homepage', async () => {
   const app = TestUtils.renderAdminApp()
   await waitFor(() => app.container.querySelector('#home'))
   expect(getNodeText(app.container.querySelector('h1'))).toBe('Matag: The Game')
-  throw Error('')
 })
