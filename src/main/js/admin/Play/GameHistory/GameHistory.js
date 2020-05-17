@@ -1,10 +1,10 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import NonGuestFunctionalityErrorMessage from "admin/Common/NonGuestFunctionalityErrorMessage";
-import AuthHelper from "admin/Auth/AuthHelper";
-import ApiClient from "admin/utils/ApiClient";
-import get from "lodash/get";
-import {bindActionCreators} from "redux";
+import NonGuestFunctionalityErrorMessage from 'admin/Common/NonGuestFunctionalityErrorMessage'
+import AuthHelper from 'admin/Auth/AuthHelper'
+import ApiClient from 'admin/utils/ApiClient'
+import get from 'lodash/get'
+import {bindActionCreators} from 'redux'
 
 class GameHistory extends Component {
   componentDidMount() {

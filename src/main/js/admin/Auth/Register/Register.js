@@ -82,7 +82,7 @@ class Register extends Component {
 
   render() {
     if (this.props.isLoggedIn) {
-      history.push("/ui/admin");
+      history.push('/ui/admin')
     }
 
     return (

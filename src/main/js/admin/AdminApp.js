@@ -13,9 +13,9 @@ import Home from 'admin/Home/Home'
 import ApiClient from 'admin/utils/ApiClient'
 import history from 'admin/utils/history'
 import Play from './Play/Play'
-import GameHistory from "admin/Play/GameHistory/GameHistory";
-import ScoreBoard from "admin/Play/ScoreBoard/ScoreBoard";
-import Profile from "admin/Profile/Profile";
+import GameHistory from 'admin/Play/GameHistory/GameHistory'
+import ScoreBoard from 'admin/Play/ScoreBoard/ScoreBoard'
+import Profile from 'admin/Profile/Profile'
 import ProfileUtils from 'admin/Profile/ProfileUtils'
 import './admin.scss'
 
@@ -31,44 +31,44 @@ class AdminApp extends Component {
 
     } else {
       return (
-          <Router history={history}>
-            <div>
-              <Header/>
-              <Switch>
-                <Route path="/ui/admin" exact>
-                  <div className='page with-margin'><Home/></div>
-                </Route>
+        <Router history={history}>
+          <div>
+            <Header/>
+            <Switch>
+              <Route path="/ui/admin" exact>
+                <div className='page with-margin'><Home/></div>
+              </Route>
 
-                <Route path="/ui/admin/auth/login">
-                  <div className='page with-margin'><Login/></div>
-                </Route>
-                <Route path="/ui/admin/auth/register">
-                  <div className='page with-margin'><Register/></div>
-                </Route>
-                <Route path="/ui/admin/auth/verify">
-                  <div className='page with-margin'><Verify/></div>
-                </Route>
+              <Route path="/ui/admin/auth/login">
+                <div className='page with-margin'><Login/></div>
+              </Route>
+              <Route path="/ui/admin/auth/register">
+                <div className='page with-margin'><Register/></div>
+              </Route>
+              <Route path="/ui/admin/auth/verify">
+                <div className='page with-margin'><Verify/></div>
+              </Route>
 
-                <Route path="/ui/admin/decks">
-                  <div className='page'><Decks/></div>
-                </Route>
+              <Route path="/ui/admin/decks">
+                <div className='page'><Decks/></div>
+              </Route>
 
-                <Route path="/ui/admin/play">
-                  <div className='page with-margin'><Play/></div>
-                </Route>
-                <Route path="/ui/admin/game-history">
-                  <div className='page with-margin'><GameHistory/></div>
-                </Route>
-                <Route path="/ui/admin/score-board">
-                  <div className='page with-margin'><ScoreBoard/></div>
-                </Route>
+              <Route path="/ui/admin/play">
+                <div className='page with-margin'><Play/></div>
+              </Route>
+              <Route path="/ui/admin/game-history">
+                <div className='page with-margin'><GameHistory/></div>
+              </Route>
+              <Route path="/ui/admin/score-board">
+                <div className='page with-margin'><ScoreBoard/></div>
+              </Route>
 
-                <Route path="/ui/admin/profile">
-                  <div className='page with-margin'><Profile/></div>
-                </Route>
-              </Switch>
-            </div>
-          </Router>
+              <Route path="/ui/admin/profile">
+                <div className='page with-margin'><Profile/></div>
+              </Route>
+            </Switch>
+          </div>
+        </Router>
       )
     }
   }

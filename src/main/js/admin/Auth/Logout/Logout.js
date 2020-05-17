@@ -14,7 +14,7 @@ export default class Logout extends Component {
 
   render() {
     return (
-        <Link to='#' onClick={this.logout}>Logout</Link>
+      <Link to='#' onClick={this.logout}>Logout</Link>
     )
   }
 }
