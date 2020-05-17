@@ -21,7 +21,10 @@ describe('Home', () => {
 
     // Then
     homePage.getHeader().expectTitleToBeMatagTheGame()
+    homePage.expectTitleToBeHome()
     homePage.getHeader().expectMenuItems(['Home', 'Login', 'Register'])
+    homePage.getIntroSection().validateAllLinks()
+    homePage.getStatsSection().validateStats(TestUtils.DEFAULT_STATS)
   })
 
   test('Should load homepage for logged in user', async () => {
@@ -36,5 +39,8 @@ describe('Home', () => {
     // Then
     homePage.getHeader().expectTitleToBeMatagTheGame()
     homePage.getHeader().expectMenuItems(['Home', 'Decks', 'Play', 'User1'])
+    homePage.expectTitleToBeHome()
+    homePage.getIntroSection().validateAllLinks()
+    homePage.getStatsSection().validateStats(TestUtils.DEFAULT_STATS)
   })
 })

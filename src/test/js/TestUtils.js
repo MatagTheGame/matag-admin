@@ -29,21 +29,11 @@ export default class TestUtils {
   }
 
   static mockConfig () {
-    fetchMock.get('/config', {
-      'matagName': 'Matag: The Game',
-      'matagAdminUrl': 'http://localhost:8082',
-      'matagGameUrl': 'http://localhost:8080',
-      'matagSupportEmail': 'matag.the.game@gmail.com'
-    })
+    fetchMock.get('/config', TestUtils.DEFAULT_CONFIG)
   }
 
   static mockStats () {
-    fetchMock.get('/stats', {
-      'totalUsers': 2,
-      'onlineUsers': 1,
-      'totalCards': 300,
-      'totalSets': 10
-    })
+    fetchMock.get('/stats', TestUtils.DEFAULT_STATS)
   }
 
   static mockConfigAndStats() {
@@ -73,4 +63,18 @@ export default class TestUtils {
   static resetMocks() {
     fetchMock.reset()
   }
+}
+
+TestUtils.DEFAULT_CONFIG = {
+  'matagName': 'Matag: The Game',
+  'matagAdminUrl': 'http://localhost:8082',
+  'matagGameUrl': 'http://localhost:8080',
+  'matagSupportEmail': 'matag.the.game@gmail.com'
+}
+
+TestUtils.DEFAULT_STATS = {
+  'totalUsers': 2,
+  'onlineUsers': 1,
+  'totalCards': 300,
+  'totalSets': 10
 }
