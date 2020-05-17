@@ -1,5 +1,3 @@
-/* global describe, expect */
-
 import DateUtils from 'admin/utils/DateUtils'
 
 describe('DateUtils', () => {

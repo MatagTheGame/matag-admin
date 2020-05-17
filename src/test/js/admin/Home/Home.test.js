@@ -1,17 +1,40 @@
-/* global describe, expect */
-
-import {screen, waitFor, getNodeText} from '@testing-library/react'
 import 'babel-polyfill'
 import TestUtils from '../../TestUtils'
+import HomePage from './HomePage'
 
-TestUtils.mockConfig()
-TestUtils.mockStats()
-TestUtils.mockActiveGame()
-TestUtils.mockProfile()
-TestUtils.mockAuthHelper()
+describe('Home', () => {
+  beforeEach(() => {
+    TestUtils.mockConfigAndStats()
+  });
 
-test('Should load homepage', async () => {
-  const app = TestUtils.renderAdminApp()
-  await waitFor(() => app.container.querySelector('#home'))
-  expect(getNodeText(app.container.querySelector('h1'))).toBe('Matag: The Game')
+  afterEach(() => {
+    TestUtils.resetMocks()
+  });
+
+  test('Should load homepage for non logged in user', async () => {
+    // Given
+    TestUtils.guestUser()
+
+    // When
+    const homePage = new HomePage(TestUtils.renderAdminApp())
+    await homePage.waitUntilLoaded()
+
+    // Then
+    homePage.getHeader().expectTitleToBeMatagTheGame()
+    homePage.getHeader().expectMenuItems(['Home', 'Login', 'Register'])
+  })
+
+  test('Should load homepage for logged in user', async () => {
+    // Given
+    TestUtils.mockActiveGame()
+    TestUtils.userIsLoggedIn()
+
+    // When
+    const homePage = new HomePage(TestUtils.renderAdminApp())
+    await homePage.waitUntilLoaded()
+
+    // Then
+    homePage.getHeader().expectTitleToBeMatagTheGame()
+    homePage.getHeader().expectMenuItems(['Home', 'Decks', 'Play', 'User1'])
+  })
 })

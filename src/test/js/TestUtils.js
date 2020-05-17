@@ -19,19 +19,21 @@ export default class TestUtils {
     return app
   }
 
+  static userIsLoggedIn() {
+    TestUtils.mockProfile()
+    TestUtils.mockAuthHelper()
+  }
+
+  static guestUser() {
+    TestUtils.mockGuestProfile()
+  }
+
   static mockConfig () {
     fetchMock.get('/config', {
       'matagName': 'Matag: The Game',
       'matagAdminUrl': 'http://localhost:8082',
       'matagGameUrl': 'http://localhost:8080',
       'matagSupportEmail': 'matag.the.game@gmail.com'
-    })
-  }
-
-  static mockProfile () {
-    fetchMock.get('/profile', {
-      'username': 'User1',
-      'type': 'USER'
     })
   }
 
@@ -44,11 +46,31 @@ export default class TestUtils {
     })
   }
 
+  static mockConfigAndStats() {
+    TestUtils.mockConfig()
+    TestUtils.mockStats()
+  }
+
+  static mockProfile () {
+    fetchMock.get('/profile', {
+      'username': 'User1',
+      'type': 'USER'
+    })
+  }
+
+  static mockGuestProfile () {
+    fetchMock.get('/profile', {})
+  }
+
   static mockActiveGame () {
     fetchMock.get('/game', {})
   }
 
   static mockAuthHelper() {
     AuthHelper.getToken = () => 'token-001'
+  }
+
+  static resetMocks() {
+    fetchMock.reset()
   }
 }
