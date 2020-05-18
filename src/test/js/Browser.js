@@ -4,6 +4,7 @@ import IntroSection from './admin/Home/Intro/IntroSection'
 import StatsSection from './admin/Home/Stats/StatsSection'
 import LoginSection from './admin/Auth/LoginSection'
 import PlaySection from './admin/Play/PlaySection'
+import ProfileSection from './admin/Profile/ProfileSection'
 
 export default class Browser {
   constructor(app) {
@@ -18,8 +19,8 @@ export default class Browser {
     return new HeaderSection(this.app.container.querySelector('header'))
   }
 
-  expectTitleToBeHome() {
-    expect(getNodeText(this.app.container.querySelector('h2'))).toBe('Home')
+  expectTitleToBe(title) {
+    expect(getNodeText(this.app.container.querySelector('h2'))).toBe(title)
   }
 
   getIntroSection() {
@@ -36,5 +37,9 @@ export default class Browser {
 
   getPlaySection() {
     return new PlaySection(this.app.container.querySelector('#play'))
+  }
+
+  getProfileSection() {
+    return new ProfileSection(this.app.container.querySelector('#profile'))
   }
 }

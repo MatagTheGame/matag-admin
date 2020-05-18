@@ -9,13 +9,13 @@ import AppReducer from 'admin/_reducers/AppReducer'
 import AuthHelper from 'admin/Auth/AuthHelper'
 
 export default class TestUtils {
-  static renderAdminApp (url = '/ui/admin') {
+  static renderAdminApp (url = '') {
     const app = render(
       <Provider store={createStore(AppReducer)}>
         <AdminApp/>
       </Provider>
     )
-    history.push(url)
+    history.push('/ui/admin' + url)
     return app
   }
 
@@ -42,10 +42,7 @@ export default class TestUtils {
   }
 
   static mockProfile () {
-    fetchMock.get('/profile', {
-      'username': 'User1',
-      'type': 'USER'
-    })
+    fetchMock.get('/profile', TestUtils.DEFAULT_PROFILE)
   }
 
   static mockGuestProfile () {
@@ -77,4 +74,9 @@ TestUtils.DEFAULT_STATS = {
   'onlineUsers': 1,
   'totalCards': 300,
   'totalSets': 10
+}
+
+TestUtils.DEFAULT_PROFILE = {
+  'username': 'User1',
+  'type': 'USER'
 }

@@ -21,7 +21,7 @@ describe('Home', () => {
 
     // Then
     browser.getHeader().expectTitleToBeMatagTheGame()
-    browser.expectTitleToBeHome()
+    browser.expectTitleToBe('Home')
     browser.getHeader().expectMenuItems(['Home', 'Login', 'Register'])
     browser.getIntroSection().validateAllLinks()
     browser.getStatsSection().validateStats(TestUtils.DEFAULT_STATS)
@@ -41,7 +41,7 @@ describe('Home', () => {
     // Then
     browser.getHeader().expectTitleToBeMatagTheGame()
     browser.getHeader().expectMenuItems(['Home', 'Decks', 'Play', 'User1'])
-    browser.expectTitleToBeHome()
+    browser.expectTitleToBeHome('Home')
     browser.getIntroSection().validateAllLinks()
     browser.getStatsSection().validateStats(TestUtils.DEFAULT_STATS)
     expect(browser.getPlaySection().element).toBeDefined()
