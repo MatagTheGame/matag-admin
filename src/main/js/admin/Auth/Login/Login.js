@@ -79,11 +79,11 @@ class Login extends Component {
           <form className='matag-form' onSubmit={this.handleLogin}>
             <div className='grid grid-label-value'>
               <label htmlFor='email-or-username'>Email or Username: </label>
-              <input type='text' name='email-or-username' value={this.state.emailOrUsername} onChange={this.handleChangeEmailOrUsername}/>
+              <input type='text' id='email-or-username' name='email-or-username' value={this.state.emailOrUsername} onChange={this.handleChangeEmailOrUsername}/>
             </div>
             <div className='grid grid-label-value'>
               <label htmlFor='password'>Password: </label>
-              <input type='password' name='password' value={this.state.password} onChange={this.handleChangePassword}/>
+              <input type='password' id='password' name='password' value={this.state.password} onChange={this.handleChangePassword}/>
             </div>
             {this.displayError()}
             <div className='grid three-columns'>

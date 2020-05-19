@@ -1,12 +1,12 @@
 import React from 'react'
 import Provider from 'react-redux/lib/components/Provider'
 import {createStore} from 'redux'
-import fetchMock from 'fetch-mock'
+import {render} from '@testing-library/react'
 import AdminApp from 'admin/AdminApp'
 import history from 'admin/utils/history'
-import {render} from '@testing-library/react'
 import AppReducer from 'admin/_reducers/AppReducer'
 import AuthHelper from 'admin/Auth/AuthHelper'
+import ApiClientStub from './ApiClientStub'
 
 export default class TestUtils {
   static renderAdminApp (url = '') {
@@ -20,45 +20,21 @@ export default class TestUtils {
   }
 
   static userIsLoggedIn() {
-    TestUtils.mockProfile()
+    ApiClientStub.stubProfile()
     TestUtils.mockAuthHelper()
   }
 
-  static guestUser() {
-    TestUtils.mockGuestProfile()
+  static userIsNotLoggedIn() {
+    ApiClientStub.stubProfile({})
   }
 
-  static mockConfig () {
-    fetchMock.get('/config', TestUtils.DEFAULT_CONFIG)
-  }
-
-  static mockStats () {
-    fetchMock.get('/stats', TestUtils.DEFAULT_STATS)
-  }
-
-  static mockConfigAndStats() {
-    TestUtils.mockConfig()
-    TestUtils.mockStats()
-  }
-
-  static mockProfile () {
-    fetchMock.get('/profile', TestUtils.DEFAULT_PROFILE)
-  }
-
-  static mockGuestProfile () {
-    fetchMock.get('/profile', {})
-  }
-
-  static mockActiveGame () {
-    fetchMock.get('/game', {})
+  static defaultConfigAndStats() {
+    ApiClientStub.stubConfig()
+    ApiClientStub.stubStats()
   }
 
   static mockAuthHelper() {
     AuthHelper.getToken = () => 'token-001'
-  }
-
-  static resetMocks() {
-    fetchMock.reset()
   }
 }
 

@@ -1,0 +1,24 @@
+import fetchMock from 'fetch-mock'
+import TestUtils from './TestUtils'
+
+export default class ApiClientStub {
+  static stubConfig (config = TestUtils.DEFAULT_CONFIG) {
+    fetchMock.get('/config', config)
+  }
+
+  static stubStats (stats = TestUtils.DEFAULT_STATS) {
+    fetchMock.get('/stats', stats)
+  }
+
+  static stubProfile (profile = TestUtils.DEFAULT_PROFILE) {
+    fetchMock.get('/profile', profile)
+  }
+
+  static stubActiveGame () {
+    fetchMock.get('/game', {})
+  }
+
+  static resetStubs() {
+    fetchMock.reset()
+  }
+}

@@ -1,19 +1,20 @@
 import 'babel-polyfill'
-import TestUtils from '../../TestUtils'
+import ApiClientStub from '../utils/ApiClientStub'
+import TestUtils from '../utils/TestUtils'
 import Browser from '../../Browser'
 
 describe('Home', () => {
   beforeEach(() => {
-    TestUtils.mockConfigAndStats()
-  });
+    TestUtils.defaultConfigAndStats()
+  })
 
   afterEach(() => {
-    TestUtils.resetMocks()
-  });
+    ApiClientStub.resetStubs()
+  })
 
   test('Should load homepage for non logged in user', async () => {
     // Given
-    TestUtils.guestUser()
+    TestUtils.userIsNotLoggedIn()
 
     // When
     const browser = new Browser(TestUtils.renderAdminApp())
@@ -31,7 +32,7 @@ describe('Home', () => {
 
   test('Should load homepage for logged in user', async () => {
     // Given
-    TestUtils.mockActiveGame()
+    ApiClientStub.stubActiveGame()
     TestUtils.userIsLoggedIn()
 
     // When
@@ -41,7 +42,7 @@ describe('Home', () => {
     // Then
     browser.getHeader().expectTitleToBeMatagTheGame()
     browser.getHeader().expectMenuItems(['Home', 'Decks', 'Play', 'User1'])
-    browser.expectTitleToBeHome('Home')
+    browser.expectTitleToBe('Home')
     browser.getIntroSection().validateAllLinks()
     browser.getStatsSection().validateStats(TestUtils.DEFAULT_STATS)
     expect(browser.getPlaySection().element).toBeDefined()

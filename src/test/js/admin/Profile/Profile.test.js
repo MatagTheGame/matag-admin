@@ -1,19 +1,20 @@
 import 'babel-polyfill'
-import TestUtils from '../../TestUtils'
+import ApiClientStub from '../utils/ApiClientStub'
+import TestUtils from '../utils/TestUtils'
 import Browser from '../../Browser'
 
 describe('Profile', () => {
   beforeEach(() => {
-    TestUtils.mockConfigAndStats()
-  });
+    TestUtils.defaultConfigAndStats()
+  })
 
   afterEach(() => {
-    TestUtils.resetMocks()
-  });
+    ApiClientStub.resetStubs()
+  })
 
   test('Should display profile', async () => {
     // Given
-    TestUtils.mockActiveGame()
+    ApiClientStub.stubActiveGame()
     TestUtils.userIsLoggedIn()
 
     // When

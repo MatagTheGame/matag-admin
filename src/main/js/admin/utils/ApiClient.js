@@ -42,8 +42,8 @@ export default class ApiClient {
     form.setAttribute('method', 'POST')
     form.setAttribute('action', path)
 
-    for(const key in params) {
-      if(params.hasOwnProperty(key)) {
+    for (const key in params) {
+      if (Object.prototype.hasOwnProperty.call(params, key)) {
         const hiddenField = document.createElement('input')
         hiddenField.setAttribute('type', 'hidden')
         hiddenField.setAttribute('name', key)

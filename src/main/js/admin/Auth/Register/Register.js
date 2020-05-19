@@ -92,15 +92,15 @@ class Register extends Component {
           <form className='matag-form' onSubmit={this.handleRegister}>
             <div className='grid grid-label-value'>
               <label htmlFor='email'>Email: </label>
-              <input type='text' name='email' value={this.state.email} onChange={this.handleChangeEmail}/>
+              <input type='text' id='email' name='email' value={this.state.email} onChange={this.handleChangeEmail}/>
             </div>
             <div className='grid grid-label-value'>
               <label htmlFor='username'>Username: </label>
-              <input type='text' name='username' value={this.state.username} onChange={this.handleChangeUsername}/>
+              <input type='text' id='username' name='username' value={this.state.username} onChange={this.handleChangeUsername}/>
             </div>
             <div className='grid grid-label-value'>
               <label htmlFor='password'>Password: </label>
-              <input type='password' name='password' value={this.state.password} onChange={this.handleChangePassword}/>
+              <input type='password' id='password' name='password' value={this.state.password} onChange={this.handleChangePassword}/>
             </div>
             {this.displayError()}
             {this.displayMessage()}
