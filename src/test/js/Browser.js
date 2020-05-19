@@ -15,12 +15,12 @@ export default class Browser {
     await waitFor(() => this.app.container.querySelector('.page'))
   }
 
-  getHeader() {
-    return new HeaderSection(this.app.container.querySelector('header'))
+  async waitForTitleToBe(title) {
+    await waitFor(() => getNodeText(this.app.container.querySelector('h2')) === title)
   }
 
-  expectTitleToBe(title) {
-    expect(getNodeText(this.app.container.querySelector('h2'))).toBe(title)
+  getHeader() {
+    return new HeaderSection(this.app.container.querySelector('header'))
   }
 
   getIntroSection() {

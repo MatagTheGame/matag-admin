@@ -1,4 +1,4 @@
-import {fireEvent, screen} from '@testing-library/react'
+import {fireEvent, getNodeText, screen, waitFor} from '@testing-library/react'
 
 export default class LoginSection {
   constructor(element) {
@@ -15,5 +15,13 @@ export default class LoginSection {
 
   login() {
     fireEvent.click(this.element.querySelectorAll('.login-buttons input')[0])
+  }
+
+  async waitForLoaderToDisappear() {
+    await waitFor(() => !this.element.querySelector('.loader'))
+  }
+
+  getError() {
+    return getNodeText(this.element.querySelector('.error'))
   }
 }

@@ -22,7 +22,7 @@ describe('Profile', () => {
     await browser.waitUntilLoaded()
 
     // Then
-    browser.expectTitleToBe('Profile')
+    await browser.waitForTitleToBe('Profile')
     browser.getProfileSection('profile').validateProfile(TestUtils.DEFAULT_PROFILE)
   })
 })

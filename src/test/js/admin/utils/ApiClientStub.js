@@ -18,6 +18,10 @@ export default class ApiClientStub {
     fetchMock.get('/game', {})
   }
 
+  static stubLogin (loginResponse) {
+    fetchMock.post('/auth/login', loginResponse)
+  }
+
   static resetStubs() {
     fetchMock.reset()
   }

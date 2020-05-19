@@ -69,7 +69,9 @@ class Login extends Component {
 
   render() {
     if (this.props.isLoggedIn) {
+      // FIXME this raise a warning... history push is not supposed to be done in render
       history.push('/ui/admin')
+      return <></>
     }
 
     return (
