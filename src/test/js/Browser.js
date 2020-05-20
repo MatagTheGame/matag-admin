@@ -2,9 +2,10 @@ import {getNodeText, waitFor} from '@testing-library/react'
 import HeaderSection from './admin/Header/HeaderSection'
 import IntroSection from './admin/Home/Intro/IntroSection'
 import StatsSection from './admin/Home/Stats/StatsSection'
-import LoginSection from './admin/Auth/LoginSection'
+import LoginSection from './admin/Auth/Login/LoginSection'
 import PlaySection from './admin/Play/PlaySection'
 import ProfileSection from './admin/Profile/ProfileSection'
+import RegisterSection from './admin/Auth/Register/RegisterSection'
 
 export default class Browser {
   constructor(app) {
@@ -33,6 +34,10 @@ export default class Browser {
 
   getLoginSection() {
     return new LoginSection(this.app.container.querySelector('#login'))
+  }
+
+  getRegisterSection() {
+    return new RegisterSection(this.app.container.querySelector('#register'))
   }
 
   getPlaySection() {

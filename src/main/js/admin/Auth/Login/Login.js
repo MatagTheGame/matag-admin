@@ -21,7 +21,7 @@ class Login extends Component {
     this.handleLoginAsGuest = this.handleLoginAsGuest.bind(this)
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps, prevState, snapshot) { // eslint-disable-line
     if (this.props.isLoggedIn) {
       history.push('/ui/admin')
     }

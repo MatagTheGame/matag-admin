@@ -86,7 +86,7 @@ class Register extends Component {
     }
 
     return (
-      <section>
+      <section id='register'>
         <div id='register-container'>
           <h2>Register</h2>
           <form className='matag-form' onSubmit={this.handleRegister}>
