@@ -21,6 +21,12 @@ class Login extends Component {
     this.handleLoginAsGuest = this.handleLoginAsGuest.bind(this)
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.isLoggedIn) {
+      history.push('/ui/admin')
+    }
+  }
+
   handleChangeEmailOrUsername(event) {
     this.setState({emailOrUsername: event.target.value})
   }
@@ -68,12 +74,6 @@ class Login extends Component {
   }
 
   render() {
-    if (this.props.isLoggedIn) {
-      // FIXME this raise a warning... history push is not supposed to be done in render
-      history.push('/ui/admin')
-      return <></>
-    }
-
     return (
       <section id='login'>
         <div id='login-container'>
