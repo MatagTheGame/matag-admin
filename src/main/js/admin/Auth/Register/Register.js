@@ -42,8 +42,7 @@ class Register extends Component {
     }
 
     this.props.registerLoading()
-    ApiClient.postNoJson('/auth/register', request)
-      .then(response => response.json())
+    ApiClient.post('/auth/register', request)
       .then(response => this.props.registerResponse(response))
   }
 

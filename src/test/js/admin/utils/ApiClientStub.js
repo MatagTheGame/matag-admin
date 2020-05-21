@@ -26,6 +26,10 @@ export default class ApiClientStub {
     fetchMock.post('/auth/register', registrationResponse)
   }
 
+  static stubGameHistory(gameHistoryResponse) {
+    fetchMock.get('/game/history', gameHistoryResponse)
+  }
+
   static resetStubs() {
     fetchMock.reset()
   }

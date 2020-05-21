@@ -53,13 +53,13 @@ class AdminApp extends Component {
                 <div className='page'><Decks/></div>
               </Route>
 
-              <Route path="/ui/admin/play">
+              <Route path="/ui/admin/play" exact>
                 <div className='page with-margin'><Play/></div>
               </Route>
-              <Route path="/ui/admin/game-history">
+              <Route path="/ui/admin/play/game-history">
                 <div className='page with-margin'><GameHistory/></div>
               </Route>
-              <Route path="/ui/admin/score-board">
+              <Route path="/ui/admin/play/score-board">
                 <div className='page with-margin'><ScoreBoard/></div>
               </Route>
 

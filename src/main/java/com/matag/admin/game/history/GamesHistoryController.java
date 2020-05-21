@@ -43,6 +43,7 @@ public class GamesHistoryController {
     GameSession player1 = gamePlayers.getPlayerSession();
     GameSession player2 = gamePlayers.getOpponentSession();
     return GameHistory.builder()
+      .gameId(game.getId())
       .startedTime(game.getCreatedAt())
       .finishedTime(game.getFinishedAt())
       .type(game.getType())

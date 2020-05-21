@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 import get from 'lodash/get'
 import {connect} from 'react-redux'
 import Logout from 'admin/Auth/Logout/Logout'
-import AuthHelper from '../Auth/AuthHelper'
+import AuthHelper from 'admin/Auth/AuthHelper'
 import './header.scss'
 
 class Header extends Component {
@@ -20,8 +20,8 @@ class Header extends Component {
           <nav>
             <Link to="/ui/admin/play">Play</Link>
             <ul className="dropdown">
-              <li><Link to="/ui/admin/game-history">Game History</Link></li>
-              <li><Link to="/ui/admin/score-board">Score Board</Link></li>
+              <li><Link to="/ui/admin/play/game-history">Game History</Link></li>
+              <li><Link to="/ui/admin/play/score-board">Score Board</Link></li>
             </ul>
           </nav>
           <nav>

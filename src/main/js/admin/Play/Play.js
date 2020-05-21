@@ -1,13 +1,13 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import ApiClient from '../utils/ApiClient'
 import {bindActionCreators} from 'redux'
 import get from 'lodash/get'
-import PlayForm from './PlayForm'
-import Loader from '../Common/Loader'
+import AuthHelper from 'admin/Auth/AuthHelper'
+import Loader from 'admin/Common/Loader'
+import ApiClient from 'admin/utils/ApiClient'
 import ActiveGame from './ActiveGame'
+import PlayForm from './PlayForm'
 import './play.scss'
-import AuthHelper from '../Auth/AuthHelper'
 
 class Play extends Component {
   componentDidMount() {

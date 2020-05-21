@@ -1,9 +1,10 @@
 import React, {Component} from 'react'
-import DateUtils from '../utils/DateUtils'
 import get from 'lodash/get'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import ApiClient from '../utils/ApiClient'
+import ApiClient from 'admin/utils/ApiClient'
+import DateUtils from 'admin/utils/DateUtils'
+
 
 class ActiveGame extends Component {
   constructor(props) {

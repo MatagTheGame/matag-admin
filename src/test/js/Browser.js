@@ -6,6 +6,7 @@ import LoginSection from './admin/Auth/Login/LoginSection'
 import PlaySection from './admin/Play/PlaySection'
 import ProfileSection from './admin/Profile/ProfileSection'
 import RegisterSection from './admin/Auth/Register/RegisterSection'
+import GameHistorySection from './admin/Play/GameHistory/GameHistorySection'
 
 export default class Browser {
   constructor(app) {
@@ -42,6 +43,10 @@ export default class Browser {
 
   getPlaySection() {
     return new PlaySection(this.app.container.querySelector('#play'))
+  }
+
+  getGameHistorySection() {
+    return new GameHistorySection(this.app.container.querySelector('#game-history'))
   }
 
   getProfileSection() {

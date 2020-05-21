@@ -1,7 +1,7 @@
 import React from 'react'
 import Provider from 'react-redux/lib/components/Provider'
 import {createStore} from 'redux'
-import {render} from '@testing-library/react'
+import {getNodeText, render} from '@testing-library/react'
 import AdminApp from 'admin/AdminApp'
 import history from 'admin/utils/history'
 import AppReducer from 'admin/_reducers/AppReducer'
@@ -35,6 +35,16 @@ export default class TestUtils {
 
   static mockAuthHelper() {
     AuthHelper.getToken = () => 'token-001'
+  }
+
+  static tableDataAsStrings(table) {
+    const trs = table.querySelectorAll('tbody tr')
+    return Array.from(trs).map((tr) => TestUtils.rowAsStrings(tr))
+  }
+
+  static rowAsStrings(row) {
+    const tds = row.querySelectorAll('td')
+    return Array.from(tds).map((td) => getNodeText(td))
   }
 }
 

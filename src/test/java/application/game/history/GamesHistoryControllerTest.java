@@ -56,7 +56,8 @@ public class GamesHistoryControllerTest extends AbstractApplicationTest {
     GamesHistoryResponse gamesHistoryResponse = restTemplate.getForObject("/game/history", GamesHistoryResponse.class);
 
     // Then
-    assertThat(gamesHistoryResponse.getGamesHistory()).containsExactly(
+    assertThat(gamesHistoryResponse.getGamesHistory()).hasSize(3);
+    assertThat(gamesHistoryResponse.getGamesHistory().get(0)).isEqualToIgnoringGivenFields(
       GameHistory.builder()
         .startedTime(LocalDateTime.now(clock))
         .finishedTime(LocalDateTime.now(clock))
@@ -67,6 +68,9 @@ public class GamesHistoryControllerTest extends AbstractApplicationTest {
         .player2Name(USER_2_USERNAME)
         .player2Options("User2 options")
         .build(),
+      "gameId"
+    );
+    assertThat(gamesHistoryResponse.getGamesHistory().get(1)).isEqualToIgnoringGivenFields(
       GameHistory.builder()
         .startedTime(LocalDateTime.now(clock))
         .finishedTime(LocalDateTime.now(clock))
@@ -77,6 +81,9 @@ public class GamesHistoryControllerTest extends AbstractApplicationTest {
         .player2Name(USER_2_USERNAME)
         .player2Options("User2 options")
         .build(),
+      "gameId"
+    );
+    assertThat(gamesHistoryResponse.getGamesHistory().get(2)).isEqualToIgnoringGivenFields(
       GameHistory.builder()
         .startedTime(LocalDateTime.now(clock))
         .finishedTime(LocalDateTime.now(clock))
@@ -86,7 +93,8 @@ public class GamesHistoryControllerTest extends AbstractApplicationTest {
         .player1Options("User2 options")
         .player2Name(USER_1_USERNAME)
         .player2Options("User1 options")
-        .build()
+        .build(),
+      "gameId"
     );
   }
 

@@ -11,12 +11,19 @@ import java.util.List;
 public class GameSessionService {
   public GamePlayers getGamePlayers(Game game) {
     List<GameSession> gameSessions = game.getGameSessions();
-    GameSession playerGameSession = gameSessions.get(0);
-    GameSession opponentGameSession = null;
-    if (gameSessions.size() > 1) {
-      opponentGameSession = gameSessions.get(1);
+
+    if (gameSessions.size() == 1) {
+      return new GamePlayers(gameSessions.get(0), null);
+
+    } else if (gameSessions.size() == 2) {
+      if (gameSessions.get(0).getId() < gameSessions.get(1).getId()) {
+        return new GamePlayers(gameSessions.get(0), gameSessions.get(1));
+
+      } else {
+        return new GamePlayers(gameSessions.get(1), gameSessions.get(0));
+      }
     }
 
-    return new GamePlayers(playerGameSession, opponentGameSession);
+    return new GamePlayers(null, null);
   }
 }

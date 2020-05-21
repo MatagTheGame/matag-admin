@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import get from 'lodash/get'
-import AuthHelper from '../Auth/AuthHelper'
-import ApiClient from '../utils/ApiClient'
-import Loader from '../Common/Loader'
+import AuthHelper from 'admin/Auth/AuthHelper'
+import Loader from 'admin/Common/Loader'
+import ApiClient from 'admin/utils/ApiClient'
 
 class PlayForm extends Component {
   constructor(props) {

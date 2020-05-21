@@ -66,6 +66,37 @@ dl {
   }
 }
 
+// https://www.w3schools.com/bootstrap4/tryit.asp?filename=trybs_table_dark_striped&stacked=h
+table {
+  width: 100%;
+  margin-bottom: 1rem;
+  color: $table-text-color;
+  border-collapse: collapse;
+
+  thead {
+    th {
+      vertical-align: bottom;
+      text-align: inherit;
+      background-color: $table-th-background-color;
+      border-top: 1px solid $table-th-border-color;
+      border-bottom: 2px solid $table-th-border-color;
+    }
+  }
+
+  tbody tr:nth-of-type(odd) {
+    background-color: $table-td-odd-background-color
+  }
+
+  tbody tr:nth-of-type(even) {
+    background-color: $table-td-even-background-color
+  }
+
+  th, td {
+    padding: .75rem;
+    vertical-align: top;
+  }
+}
+
 .error {
   color: $error-text-color;
 }

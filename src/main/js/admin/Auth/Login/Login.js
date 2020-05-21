@@ -42,8 +42,7 @@ class Login extends Component {
     }
 
     this.props.loginLoading()
-    ApiClient.postNoJson('/auth/login', request)
-      .then(response => response.json())
+    ApiClient.post('/auth/login', request)
       .then(response => this.props.loginResponse(response))
   }
 

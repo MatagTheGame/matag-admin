@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @JsonDeserialize(builder = GameHistory.GameHistoryBuilder.class)
 @Builder(toBuilder = true)
 public class GameHistory {
+  Long gameId;
   LocalDateTime startedTime;
   LocalDateTime finishedTime;
   GameType type;
