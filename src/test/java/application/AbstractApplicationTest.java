@@ -66,6 +66,7 @@ public abstract class AbstractApplicationTest {
   public void setup() {
     setCurrentTime(TEST_START_TIME);
 
+    matagUserRepository.save(guest());
     matagUserRepository.save(user1());
     matagUserRepository.save(user2());
     matagUserRepository.save(inactive());

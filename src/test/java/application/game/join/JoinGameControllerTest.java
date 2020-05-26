@@ -57,7 +57,7 @@ public class JoinGameControllerTest extends AbstractApplicationTest {
   }
 
   @Test
-  public void shouldJoinAnExistingGame() {
+  public void aDifferentPlayerShouldJoinAnExistingGame() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
     JoinGameRequest player1JoinRequest = JoinGameRequest.builder()
@@ -101,6 +101,30 @@ public class JoinGameControllerTest extends AbstractApplicationTest {
     assertThat(secondGameSession.getSession().getSessionId()).isEqualTo(USER_2_SESSION_TOKEN);
     assertThat(secondGameSession.getPlayer().getUsername()).isEqualTo(USER_2_USERNAME);
     assertThat(secondGameSession.getPlayerOptions()).isEqualTo("player2 options");
+  }
+
+  @Test
+  public void samePlayerShouldNotBeAbleToJoinItsOwnGame() {
+    // Given
+    userIsLoggedIn(GUEST_SESSION_TOKEN_1, GUEST_USERNAME);
+    JoinGameRequest player1JoinRequest = JoinGameRequest.builder()
+      .gameType(UNLIMITED)
+      .playerOptions("player1 options")
+      .build();
+
+    restTemplate.postForObject("/game", player1JoinRequest, JoinGameResponse.class);
+
+    userIsLoggedIn(GUEST_SESSION_TOKEN_2, GUEST_USERNAME);
+    JoinGameRequest player2JoinRequest = JoinGameRequest.builder()
+      .gameType(UNLIMITED)
+      .playerOptions("player2 options")
+      .build();
+
+    // When
+    JoinGameResponse response = restTemplate.postForObject("/game", player2JoinRequest, JoinGameResponse.class);
+
+    // Then
+    assertThat(response.getGameId()).isGreaterThan(0);
   }
 
   @Test

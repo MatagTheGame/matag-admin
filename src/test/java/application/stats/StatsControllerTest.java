@@ -26,7 +26,7 @@ public class StatsControllerTest extends AbstractApplicationTest {
     StatsResponse response = restTemplate.getForObject("/stats", StatsResponse.class);
 
     // Then
-    assertThat(response.getTotalUsers()).isEqualTo(2);
+    assertThat(response.getTotalUsers()).isEqualTo(3);
   }
 
   @Test
