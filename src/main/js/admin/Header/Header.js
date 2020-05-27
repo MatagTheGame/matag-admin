@@ -28,6 +28,7 @@ class Header extends Component {
             <Link to="/ui/admin/profile">{this.props.profile.username}</Link>
             <ul className="dropdown">
               <li><Link to="/ui/admin/profile">Profile</Link></li>
+              <li><Link to="/ui/admin/auth/change-password">Change Password</Link></li>
               <li><Logout/></li>
             </ul>
           </nav>

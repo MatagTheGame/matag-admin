@@ -44,10 +44,10 @@ header {
 
       a, span {
         line-height: $header-height;
-      }
 
-      a:hover, span:hover {
-        color: $nav-hover-text-color;
+        &:hover {
+          color: $nav-hover-text-color;
+        }
       }
 
       ul.dropdown {
@@ -59,10 +59,24 @@ header {
         z-index: 1;
         right: 0;
         white-space: nowrap;
+        border-top: 1px solid $nav-hover-text-color;
+
+        &:before {
+          bottom: 100%;
+          left: 70%;
+          border: 8px solid transparent;
+          border-bottom-color: $nav-hover-text-color;
+          content: " ";
+          height: 0;
+          width: 0;
+          position: absolute;
+          pointer-events: none;
+        }
 
         li {
           display: block;
           height: 50px;
+          text-align: left;
         }
       }
     }

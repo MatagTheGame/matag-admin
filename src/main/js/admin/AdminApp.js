@@ -3,6 +3,7 @@ import {Route, Router, Switch} from 'react-router-dom'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import get from 'lodash/get'
+import ChangePassword from 'admin/Auth/ChangePassword/ChangePassword'
 import Login from 'admin/Auth/Login/Login'
 import Register from 'admin/Auth/Register/Register'
 import Verify from 'admin/Auth/Verify/Verify'
@@ -18,6 +19,7 @@ import ScoreBoard from 'admin/Play/ScoreBoard/ScoreBoard'
 import Profile from 'admin/Profile/Profile'
 import ProfileUtils from 'admin/Profile/ProfileUtils'
 import './admin.scss'
+
 
 class AdminApp extends Component {
   componentDidMount() {
@@ -47,6 +49,9 @@ class AdminApp extends Component {
               </Route>
               <Route path="/ui/admin/auth/verify">
                 <div className='page with-margin'><Verify/></div>
+              </Route>
+              <Route path="/ui/admin/auth/change-password">
+                <div className='page with-margin'><ChangePassword/></div>
               </Route>
 
               <Route path="/ui/admin/decks">
