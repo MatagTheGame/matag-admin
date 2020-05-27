@@ -7,8 +7,7 @@ create table matag_user
     status            varchar(20)  not null,
     type              varchar(20)  not null,
     created_at        timestamp    not null,
-    updated_at        timestamp    not null,
-    verification_code char(10)
+    updated_at        timestamp    not null
 );
 
 create table matag_user_verification
