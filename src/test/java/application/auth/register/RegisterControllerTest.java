@@ -15,6 +15,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import javax.mail.internet.MimeMessage;
 
+import java.time.LocalDateTime;
+
 import static com.matag.admin.user.MatagUserStatus.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -182,6 +184,58 @@ public class RegisterControllerTest extends AbstractApplicationTest {
 
     MatagUser user = loadUser(username);
     assertThat(user.getStatus()).isEqualTo(VERIFYING);
+    assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(1);
+  }
+
+  @Test
+  public void verifyAUserFailsIfTooManyAttempts() {
+    // Given
+    String username = "NewUser";
+    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, "password");
+    mockMailSender();
+
+    restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
+    MatagUser user = loadUser(username);
+    String verificationCode = user.getMatagUserVerification().getVerificationCode();
+
+    // When
+    restTemplate.getForEntity("/auth/verify?username=" + username + "&code=incorrect-code", VerifyResponse.class);
+    restTemplate.getForEntity("/auth/verify?username=" + username + "&code=incorrect-code", VerifyResponse.class);
+    restTemplate.getForEntity("/auth/verify?username=" + username + "&code=incorrect-code", VerifyResponse.class);
+    restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, VerifyResponse.class);
+    restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, VerifyResponse.class);
+    ResponseEntity<VerifyResponse> verifyResponse = restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, VerifyResponse.class);
+
+    // Then
+    assertThat(verifyResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
+
+    user = loadUser(username);
+    assertThat(user.getStatus()).isEqualTo(VERIFYING);
+    assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(6);
+  }
+
+  @Test
+  public void verifyAUserFailsIfAfterValidUntilDate() {
+    // Given
+    String username = "NewUser";
+    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, "password");
+    mockMailSender();
+
+    restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
+    MatagUser user = loadUser(username);
+    String verificationCode = user.getMatagUserVerification().getVerificationCode();
+
+    setCurrentTime(LocalDateTime.now().plusDays(2));
+
+    // When
+    ResponseEntity<VerifyResponse> verifyResponse = restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, VerifyResponse.class);
+
+    // Then
+    assertThat(verifyResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
+
+    user = loadUser(username);
+    assertThat(user.getStatus()).isEqualTo(VERIFYING);
+    assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(1);
   }
 
   private void assertErrorRegisterResponse(ResponseEntity<RegisterResponse> response, String expected) {
