@@ -13,7 +13,7 @@ create table matag_user
 create table matag_user_verification
 (
     id                bigserial primary key,
-    matag_user_id     bigint    not null,
+    matag_user_id     bigint    not null unique,
     verification_code char(10),
     valid_until       timestamp,
     attempts          int not null,
