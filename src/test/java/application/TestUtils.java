@@ -23,42 +23,42 @@ public class TestUtils {
   public static String PASSWORD_ENCODED = "{argon2}$argon2id$v=19$m=65536,t=4,p=8$kfWxCBLq0XIjaaG8LxfrQg$FkuvunHdrO2m+Dw85b33OUSY7uONpyVCgppJg+BYjsM";
 
   public static MatagUser guest() {
-    MatagUser matagUser = new MatagUser();
-    matagUser.setUsername(GUEST_USERNAME);
-    matagUser.setPassword(PASSWORD_ENCODED);
-    matagUser.setEmailAddress("guest@matag.com");
-    matagUser.setStatus(ACTIVE);
-    matagUser.setType(GUEST);
-    return matagUser;
+    return MatagUser.builder()
+      .username(GUEST_USERNAME)
+      .password(PASSWORD_ENCODED)
+      .emailAddress("guest@matag.com")
+      .status(ACTIVE)
+      .type(GUEST)
+      .build();
   }
 
   public static MatagUser user1() {
-    MatagUser matagUser = new MatagUser();
-    matagUser.setUsername(USER_1_USERNAME);
-    matagUser.setPassword(PASSWORD_ENCODED);
-    matagUser.setEmailAddress("user1@matag.com");
-    matagUser.setStatus(ACTIVE);
-    matagUser.setType(USER);
-    return matagUser;
+    return MatagUser.builder()
+      .username(USER_1_USERNAME)
+      .password(PASSWORD_ENCODED)
+      .emailAddress("user1@matag.com")
+      .status(ACTIVE)
+      .type(USER)
+      .build();
   }
 
   public static MatagUser user2() {
-    MatagUser matagUser = new MatagUser();
-    matagUser.setUsername(USER_2_USERNAME);
-    matagUser.setPassword(PASSWORD_ENCODED);
-    matagUser.setEmailAddress("user2@matag.com");
-    matagUser.setStatus(ACTIVE);
-    matagUser.setType(USER);
-    return matagUser;
+    return MatagUser.builder()
+      .username(USER_2_USERNAME)
+      .password(PASSWORD_ENCODED)
+      .emailAddress("user2@matag.com")
+      .status(ACTIVE)
+      .type(USER)
+      .build();
   }
 
   public static MatagUser inactive() {
-    MatagUser matagUser = new MatagUser();
-    matagUser.setUsername(INACTIVE_USER_USERNAME);
-    matagUser.setPassword(PASSWORD_ENCODED);
-    matagUser.setEmailAddress("inactiveUser@matag.com");
-    matagUser.setStatus(INACTIVE);
-    matagUser.setType(USER);
-    return matagUser;
+    return MatagUser.builder()
+      .username(INACTIVE_USER_USERNAME)
+      .password(PASSWORD_ENCODED)
+      .emailAddress("inactiveUser@matag.com")
+      .status(INACTIVE)
+      .type(USER)
+      .build();
   }
 }

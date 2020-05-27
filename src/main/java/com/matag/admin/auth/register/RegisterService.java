@@ -3,6 +3,8 @@ package com.matag.admin.auth.register;
 import com.matag.admin.auth.codes.RandomCodeService;
 import com.matag.admin.user.MatagUser;
 import com.matag.admin.user.MatagUserRepository;
+import com.matag.admin.user.verification.MatagUserVerification;
+import com.matag.admin.user.verification.MatagUserVerificationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,7 @@ public class RegisterService {
   private final PasswordEncoder passwordEncoder;
   private final Clock clock;
   private final MatagUserRepository userRepository;
+  private final MatagUserVerificationRepository userVerificationRepository;
   private final RandomCodeService randomCodeService;
   private final RegisterEmailService registerEmailService;
 
@@ -29,16 +32,25 @@ public class RegisterService {
   public void register(String email, String username, String password) {
     String verificationCode = randomCodeService.generatesRandomCode();
 
-    MatagUser user = new MatagUser();
-    user.setUsername(username);
-    user.setPassword(passwordEncoder.encode(password));
-    user.setEmailAddress(email);
-    user.setCreatedAt(LocalDateTime.now(clock));
-    user.setUpdatedAt(LocalDateTime.now(clock));
-    user.setStatus(VERIFYING);
-    user.setType(USER);
-    user.setVerificationCode(verificationCode);
+    MatagUser user = MatagUser.builder()
+      .username(username)
+      .password(passwordEncoder.encode(password))
+      .emailAddress(email)
+      .createdAt(LocalDateTime.now(clock))
+      .updatedAt(LocalDateTime.now(clock))
+      .status(VERIFYING)
+      .type(USER)
+      .build();
+
+    MatagUserVerification matagUserVerification = MatagUserVerification.builder()
+      .verificationCode(verificationCode)
+      .matagUser(user)
+      .validUntil(LocalDateTime.now(clock).plusDays(1))
+      .attempts(0)
+      .build();
+
     userRepository.save(user);
+    userVerificationRepository.save(matagUserVerification);
 
     registerEmailService.sendRegistrationEmail(email, username, verificationCode);
   }
@@ -55,14 +67,20 @@ public class RegisterService {
         throw new RuntimeException("User " + username + " is inactive and cannot be activated.");
 
       case VERIFYING:
-        if (!user.getVerificationCode().equals(code)) {
-          throw new RuntimeException("User " + username + " attempting a wrong code: " + code);
+        MatagUserVerification matagUserVerification = user.getMatagUserVerification();
+        if (!matagUserVerification.getVerificationCode().equals(code)) {
+          matagUserVerification.setAttempts(matagUserVerification.getAttempts() + 1);
+          throw new RuntimeException("User " + username + " attempting a wrong code: " + code + " times: " + matagUserVerification.getAttempts());
         }
 
         user.setStatus(ACTIVE);
         user.setUpdatedAt(LocalDateTime.now(clock));
-        user.setVerificationCode(null);
         userRepository.save(user);
+
+        matagUserVerification.setVerificationCode(null);
+        matagUserVerification.setValidUntil(null);
+        matagUserVerification.setAttempts(0);
+        userVerificationRepository.save(matagUserVerification);
     }
   }
 }

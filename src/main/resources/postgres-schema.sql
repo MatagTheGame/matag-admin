@@ -11,6 +11,16 @@ create table matag_user
     verification_code char(10)
 );
 
+create table matag_user_verification
+(
+    id                bigserial primary key,
+    matag_user_id     bigint    not null,
+    verification_code char(10),
+    valid_until       timestamp,
+    attempts          int not null,
+    foreign key (id) references matag_user (id) on delete cascade
+);
+
 create table matag_session
 (
     id            bigserial primary key,

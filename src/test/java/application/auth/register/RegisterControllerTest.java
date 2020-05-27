@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import javax.mail.internet.MimeMessage;
-import java.util.Optional;
 
 import static com.matag.admin.user.MatagUserStatus.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -103,13 +102,12 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     // Then
     assertSuccessfulRegisterResponse(response);
 
-    Optional<MatagUser> user = matagUserRepository.findByUsername("NewUser");
-    assertThat(user).isPresent();
-    assertThat(user.get().getUsername()).isEqualTo("NewUser");
-    assertThat(user.get().getPassword()).isNotBlank();
-    assertThat(user.get().getEmailAddress()).isEqualTo("new-user@matag.com");
-    assertThat(user.get().getStatus()).isEqualTo(VERIFYING);
-    assertThat(user.get().getCreatedAt()).isNotNull();
+    MatagUser user = loadUser("NewUser");
+    assertThat(user.getUsername()).isEqualTo("NewUser");
+    assertThat(user.getPassword()).isNotBlank();
+    assertThat(user.getEmailAddress()).isEqualTo("new-user@matag.com");
+    assertThat(user.getStatus()).isEqualTo(VERIFYING);
+    assertThat(user.getCreatedAt()).isNotNull();
 
     verify(javaMailSender).send(mimeMessage);
   }
@@ -122,7 +120,8 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     mockMailSender();
 
     restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
-    String verificationCode = matagUserRepository.findByUsername(username).get().getVerificationCode();
+    MatagUser user = loadUser(username);
+    String verificationCode = user.getMatagUserVerification().getVerificationCode();
 
     // When
     ResponseEntity<VerifyResponse> verifyResponse = restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, VerifyResponse.class);
@@ -132,10 +131,11 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     assertThat(verifyResponse.getBody()).isNotNull();
     assertThat(verifyResponse.getBody().getMessage()).isEqualTo("Your account has been correctly verified. Now you can proceed with logging in.");
 
-    Optional<MatagUser> user = matagUserRepository.findByUsername(username);
-    assertThat(user).isPresent();
-    assertThat(user.get().getStatus()).isEqualTo(ACTIVE);
-    assertThat(user.get().getVerificationCode()).isNull();
+    user = loadUser(username);
+    assertThat(user.getStatus()).isEqualTo(ACTIVE);
+    assertThat(user.getMatagUserVerification().getVerificationCode()).isNull();
+    assertThat(user.getMatagUserVerification().getValidUntil()).isNull();
+    assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(0);
   }
 
   @Test
@@ -146,8 +146,8 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     mockMailSender();
 
     restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
-    MatagUser newUser = matagUserRepository.findByUsername(username).get();
-    String verificationCode = newUser.getVerificationCode();
+    MatagUser newUser = loadUser(username);
+    String verificationCode = newUser.getMatagUserVerification().getVerificationCode();
     newUser.setStatus(INACTIVE);
     matagUserRepository.save(newUser);
 
@@ -159,9 +159,8 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     assertThat(verifyResponse.getBody()).isNotNull();
     assertThat(verifyResponse.getBody().getError()).isEqualTo("Your account could not be verified. Please send a message to matag.the.game@gmail.com.");
 
-    Optional<MatagUser> user = matagUserRepository.findByUsername(username);
-    assertThat(user).isPresent();
-    assertThat(user.get().getStatus()).isEqualTo(INACTIVE);
+    MatagUser user = loadUser(username);
+    assertThat(user.getStatus()).isEqualTo(INACTIVE);
   }
 
   @Test
@@ -181,9 +180,8 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     assertThat(verifyResponse.getBody()).isNotNull();
     assertThat(verifyResponse.getBody().getError()).isEqualTo("Your account could not be verified. Please send a message to matag.the.game@gmail.com.");
 
-    Optional<MatagUser> user = matagUserRepository.findByUsername(username);
-    assertThat(user).isPresent();
-    assertThat(user.get().getStatus()).isEqualTo(VERIFYING);
+    MatagUser user = loadUser(username);
+    assertThat(user.getStatus()).isEqualTo(VERIFYING);
   }
 
   private void assertErrorRegisterResponse(ResponseEntity<RegisterResponse> response, String expected) {

@@ -1,5 +1,6 @@
 package com.matag.admin.user;
 
+import com.matag.admin.user.verification.MatagUserVerification;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,5 +28,7 @@ public class MatagUser {
   private MatagUserType type;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
-  private String verificationCode;
+
+  @OneToOne(mappedBy = "matagUser", cascade = CascadeType.REMOVE)
+  private MatagUserVerification matagUserVerification;
 }
