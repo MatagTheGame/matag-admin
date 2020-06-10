@@ -55,3 +55,56 @@ create table game_session
 -- insert Guest (password: password)
 insert into matag_user(username, password, email_address, status, type, created_at, updated_at)
 values ('Guest', '{argon2}$argon2id$v=19$m=65536,t=4,p=8$LI8W+vC+a36vqqNbKu9RXw$/PGm7X3l6DEro/p7KYnOmKUW7a0+vX4NeynAP6QEV7M', 'guest@matag.com', 'ACTIVE', 'GUEST', current_timestamp, current_timestamp);
+
+
+
+
+-- ### USEFUL QUERIES ###
+
+-- select
+select * from matag_user;
+select * from matag_user_verification;
+select * from matag_session;
+select * from game;
+select * from game_session;
+
+
+-- composite
+select * from game g join game_session gs on g.id = gs.game_id;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- delete stuff
+delete from game_session;
+delete from game;
+delete from matag_session;
+delete from matag_session where valid_until < current_timestamp;
+delete from matag_user where username = 'antonio85';
+
+
+-- drop everything
+drop table game_session;
+drop table game;
+drop table matag_session;
+drop table matag_user_verification;
+drop table matag_user;
+
+
+
+-- change stuff
+ALTER TABLE matag_user ALTER COLUMN type SET NOT NULL;
+ALTER TABLE game add column finished_at timestamp;
+ALTER TABLE matag_user drop column status;

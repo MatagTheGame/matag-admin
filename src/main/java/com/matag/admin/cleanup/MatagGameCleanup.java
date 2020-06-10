@@ -14,6 +14,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.matag.admin.game.game.GameStatusType.IN_PROGRESS;
 import static com.matag.admin.game.game.GameStatusType.STARTING;
 
 @Component
@@ -27,10 +28,10 @@ public class MatagGameCleanup {
 
   @Transactional
   public void cleanup() {
-    List<Game> oldGamesNotStarted = gameRepository.findOldGameByStatus(STARTING, LocalDateTime.now(clock).minusDays(2));
-    LOGGER.info("MatagGameCleanup identified " + oldGamesNotStarted.size() + " entries to delete.");
+    List<Game> oldNotFinishedGames = gameRepository.findOldGameByStatus(List.of(STARTING, IN_PROGRESS), LocalDateTime.now(clock).minusDays(2));
+    LOGGER.info("MatagGameCleanup identified " + oldNotFinishedGames.size() + " entries to delete.");
     int totalGameDeleted = 0;
-    for (Game game : oldGamesNotStarted) {
+    for (Game game : oldNotFinishedGames) {
       try {
         List<GameSession> gameSessions = game.getGameSessions();
         for (GameSession gameSession : gameSessions) {
