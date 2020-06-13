@@ -25,6 +25,8 @@
 }
 
 .matag-form {
+  max-width: 800px;
+
   select,
   input:not([type='checkbox']):not([type='radio']),
   textarea,
@@ -81,5 +83,9 @@
     color: $body-text-color;
     transition: background-color 5000s ease-in-out 0s;
     background-color: $input-background-color;
+  }
+
+  .form-buttons {
+    margin-top: .5rem;
   }
 }

@@ -7,6 +7,7 @@ import PlaySection from './admin/Play/PlaySection'
 import ProfileSection from './admin/Profile/ProfileSection'
 import RegisterSection from './admin/Auth/Register/RegisterSection'
 import GameHistorySection from './admin/Play/GameHistory/GameHistorySection'
+import ChangePasswordSection from './admin/Auth/ChangePassword/ChangePasswordSection'
 
 export default class Browser {
   constructor(app) {
@@ -39,6 +40,10 @@ export default class Browser {
 
   getRegisterSection() {
     return new RegisterSection(this.app.container.querySelector('#register'))
+  }
+
+  getChangePasswordSection() {
+    return new ChangePasswordSection(this.app.container.querySelector('#change-password'))
   }
 
   getPlaySection() {

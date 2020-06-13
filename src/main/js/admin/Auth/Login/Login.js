@@ -89,7 +89,7 @@ class Login extends Component {
             {this.displayError()}
             <div className='grid three-columns'>
               <div/>
-              <div className='login-buttons'>
+              <div className='form-buttons'>
                 <input type='submit' value='Login'/>
                 <div className='or'>or</div>
                 <input type='button' value='Login as Guest' onClick={this.handleLoginAsGuest}/>

@@ -6,7 +6,6 @@ import Loader from 'admin/Common/Loader'
 import ApiClient from 'admin/utils/ApiClient'
 import history from 'admin/utils/history'
 import AuthHelper from '../AuthHelper'
-import './changePassword.scss'
 
 class ChangePassword extends Component {
   constructor(props) {
@@ -34,7 +33,6 @@ class ChangePassword extends Component {
       newPassword: newPassword
     }
 
-    alert('Coming Soon!')
     this.props.changePasswordLoading()
     ApiClient.post('/auth/change-password', request)
       .then(response => this.props.changePasswordResponse(response))
@@ -74,7 +72,6 @@ class ChangePassword extends Component {
   }
 
   render() {
-    console.log('here')
     if (!this.props.isNonGuest) {
       history.push('/ui/admin')
     }
@@ -96,7 +93,7 @@ class ChangePassword extends Component {
             {this.displayMessage()}
             <div className='grid three-columns'>
               <div/>
-              <div className='submit-container'>
+              <div className='form-buttons'>
                 <input type='submit' value='Change Password'/>
               </div>
               {this.displayLoader()}

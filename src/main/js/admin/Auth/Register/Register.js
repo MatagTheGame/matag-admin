@@ -6,7 +6,6 @@ import Loader from 'admin/Common/Loader'
 import ApiClient from 'admin/utils/ApiClient'
 import history from 'admin/utils/history'
 import AuthHelper from '../AuthHelper'
-import './register.scss'
 
 class Register extends Component {
   constructor(props) {
@@ -105,7 +104,7 @@ class Register extends Component {
             {this.displayMessage()}
             <div className='grid three-columns'>
               <div/>
-              <div className='register-buttons'>
+              <div className='form-buttons'>
                 <input type='submit' value='Register'/>
               </div>
               {this.displayLoader()}

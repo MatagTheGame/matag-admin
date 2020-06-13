@@ -1,10 +1,7 @@
-import {fireEvent, getNodeText, screen, waitFor} from '@testing-library/react'
+import {fireEvent, screen} from '@testing-library/react'
+import AbstractFormSection from '../../utils/AbstractFormSection'
 
-export default class RegisterSection {
-  constructor(element) {
-    this.element = element
-  }
-
+export default class RegisterSection extends AbstractFormSection {
   setEmail(email) {
     fireEvent.change(screen.getByLabelText(/Email/), {target: {value: email}})
   }
@@ -18,18 +15,6 @@ export default class RegisterSection {
   }
 
   register() {
-    fireEvent.click(this.element.querySelector('.register-buttons input'))
-  }
-
-  async waitForLoaderToDisappear() {
-    await waitFor(() => !this.element.querySelector('.loader'))
-  }
-
-  getError() {
-    return getNodeText(this.element.querySelector('.error'))
-  }
-
-  getMessage() {
-    return getNodeText(this.element.querySelector('.message'))
+    fireEvent.click(this.element.querySelector('.form-buttons input'))
   }
 }

@@ -2,7 +2,8 @@ import AuthHelper from 'admin/Auth/AuthHelper'
 
 export default class AuthReducer {
   static getActions() {
-    return ['LOGIN_LOADING', 'LOGIN_RESPONSE', 'REGISTER_LOADING', 'REGISTER_RESPONSE', 'VERIFY_LOADING', 'VERIFY_LOADED']
+    return ['LOGIN_LOADING', 'LOGIN_RESPONSE', 'REGISTER_LOADING', 'REGISTER_RESPONSE', 'VERIFY_LOADING', 'VERIFY_LOADED',
+      'CHANGE_PASSWORD_LOADING', 'CHANGE_PASSWORD_RESPONSE']
   }
 
   static reduceAction(newState, action) {
@@ -42,6 +43,14 @@ export default class AuthReducer {
       newState.verify.loading = false
       newState.verify.value = action.value
       break
+
+    case 'CHANGE_PASSWORD_LOADING':
+      newState.changePassword = {loading: true}
+      break
+
+    case 'CHANGE_PASSWORD_RESPONSE':
+      newState.changePassword.loading = false
+      newState.changePassword.value = action.value
     }
   }
 }
