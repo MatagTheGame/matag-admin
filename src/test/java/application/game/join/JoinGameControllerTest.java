@@ -142,7 +142,7 @@ public class JoinGameControllerTest extends AbstractApplicationTest {
     JoinGameResponse response = restTemplate.postForObject("/game", player1JoinRequest, JoinGameResponse.class);
 
     // Then
-    assertThat(response.getErrorMessage()).isEqualTo("You are already in a game.");
+    assertThat(response.getError()).isEqualTo("You are already in a game.");
     assertThat(response.getActiveGameId()).isGreaterThan(0);
   }
 }

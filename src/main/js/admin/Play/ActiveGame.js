@@ -1,12 +1,13 @@
-import React, {Component} from 'react'
+import React from 'react'
 import get from 'lodash/get'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import ApiClient from 'admin/utils/ApiClient'
 import DateUtils from 'admin/utils/DateUtils'
+import AbstractForm from 'admin/utils/AbstractForm'
 
 
-class ActiveGame extends Component {
+class ActiveGame extends AbstractForm {
   constructor(props) {
     super(props)
     this.cancelGame = this.cancelGame.bind(this)
@@ -16,16 +17,6 @@ class ActiveGame extends Component {
     this.props.deletingActiveGame()
     ApiClient.delete('/game/' + this.props.activeGame.gameId)
       .then(response => this.props.deletedActiveGame(response))
-  }
-
-  displayErrorMessage() {
-    if (this.props.deletingError) {
-      return (
-        <p className='message'>
-          <span className='error'>{this.props.deletingError}</span>
-        </p>
-      )
-    }
   }
 
   render() {
@@ -51,7 +42,7 @@ class ActiveGame extends Component {
             <dd>{game.opponentOptions}</dd>
           </dl>
 
-          { this.displayErrorMessage() }
+          { this.displayError() }
 
           <div className='matag-form'>
             <div className='grid grid-50-50'>
@@ -83,7 +74,7 @@ const mapStateToProps = state => {
   return {
     activeGame: get(state, 'play.activeGame.value', {}),
     deleting: get(state, 'play.activeGame.deleting', false),
-    deletingError: get(state, 'play.activeGame.deletingError', null),
+    error: get(state, 'play.activeGame.error', null),
     matagGameUrl: get(state, 'config.matagGameUrl', '')
   }
 }

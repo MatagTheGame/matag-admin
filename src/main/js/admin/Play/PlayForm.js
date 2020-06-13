@@ -15,10 +15,10 @@ class PlayForm extends Component {
 
   handlePlay(event) {
     event.preventDefault()
-    this.setState({errorMessage: null})
+    this.setState({error: null})
 
     if (this.state.colors.length === 0) {
-      this.setState({errorMessage: 'You need to select at least one color.'})
+      this.setState({error: 'You need to select at least one color.'})
       return
     }
 
@@ -40,8 +40,8 @@ class PlayForm extends Component {
           this.props.goToGame(r.gameId)
 
         } else {
-          if (r.errorMessage) {
-            this.setState({errorMessage: r.errorMessage})
+          if (r.error) {
+            this.setState({error: r.error})
           }
           if (r.activeGameId) {
             this.setState({activeGameId: r.activeGameId})
@@ -71,11 +71,11 @@ class PlayForm extends Component {
     }
   }
 
-  displayErrorMessage() {
-    if (this.state.errorMessage) {
+  displayError() {
+    if (this.state.error) {
       return (
         <p className='message'>
-          <span className='error'>{this.state.errorMessage}</span>
+          <span className='error'>{this.state.error}</span>
           {this.displayGoToGame()}
         </p>
       )
@@ -115,7 +115,7 @@ class PlayForm extends Component {
             <label htmlFor='color-green'><img src='/img/symbols/GREEN.png' alt='green'/>Green</label>
           </li>
         </ul>
-        { this.displayErrorMessage() }
+        { this.displayError() }
         { this.displayLoader() }
         <div className='grid three-columns'>
           <div/>

@@ -25,7 +25,7 @@ export default class PlayReducer {
       if (!action.response.error) {
         newState.play.activeGame.value = {}
       } else {
-        newState.play.activeGame.deletingError = action.response.error
+        newState.play.activeGame.error = action.response.error
       }
       break
 
