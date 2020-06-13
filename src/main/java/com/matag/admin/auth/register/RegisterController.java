@@ -1,7 +1,9 @@
 package com.matag.admin.auth.register;
 
 import com.matag.admin.auth.validators.EmailValidator;
+import com.matag.admin.auth.validators.PasswordValidator;
 import com.matag.admin.auth.validators.UsernameValidator;
+import com.matag.admin.auth.validators.ValidationException;
 import com.matag.admin.config.ConfigService;
 import com.matag.admin.user.MatagUserRepository;
 import lombok.AllArgsConstructor;
@@ -21,9 +23,6 @@ import static org.springframework.http.HttpStatus.OK;
 public class RegisterController {
   private static final Logger LOGGER = LoggerFactory.getLogger(RegisterController.class);
 
-  private static final String EMAIL_IS_INVALID = "Email is invalid.";
-  private static final String USERNAME_INVALID = "Username needs to be between 4 and 25 characters and can contains only letters  number and one of the following characters: [+ - * = _ . @ &].";
-  private static final String PASSWORD_IS_INVALID = "Password is invalid.";
   private static final String EMAIL_ALREADY_REGISTERED = "This email is already registered (use reset password functionality).";
   private static final String USERNAME_ALREADY_REGISTERED = "This username is already registered (please choose a new one).";
   private static final String REGISTERED_VERIFY_EMAIL = "Registration Successful. Please check your email for a verification code.";
@@ -35,29 +34,27 @@ public class RegisterController {
   private final EmailValidator emailValidator;
   private final UsernameValidator usernameValidator;
   private final RegisterService registerService;
+  private final PasswordValidator passwordValidator;
 
   @PostMapping("/register")
   public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
     LOGGER.info("User " + request.getEmail() + " registering with username[" + request.getUsername() + "].");
 
-    if (!emailValidator.isValid(request.getEmail())) {
-      return error(EMAIL_IS_INVALID);
-    }
+    try {
+      emailValidator.validate(request.getEmail());
+      usernameValidator.validate(request.getUsername());
+      passwordValidator.validate(request.getPassword());
 
-    if (!usernameValidator.isValid(request.getUsername())) {
-      return error(USERNAME_INVALID);
-    }
+      if (userRepository.findByEmailAddress(request.getEmail()).isPresent()) {
+        throw new ValidationException(EMAIL_ALREADY_REGISTERED);
+      }
 
-    if (request.getPassword().length() < 4) {
-      return error(PASSWORD_IS_INVALID);
-    }
+      if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+        throw new ValidationException(USERNAME_ALREADY_REGISTERED);
+      }
 
-    if (userRepository.findByEmailAddress(request.getEmail()).isPresent()) {
-      return error(EMAIL_ALREADY_REGISTERED);
-    }
-
-    if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-      return error(USERNAME_ALREADY_REGISTERED);
+    } catch (ValidationException e) {
+      return error(e.getMessage());
     }
 
     registerService.register(request.getEmail(), request.getUsername(), request.getPassword());

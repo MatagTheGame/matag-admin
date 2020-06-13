@@ -5,11 +5,15 @@ import org.springframework.stereotype.Component;
 import java.util.regex.Pattern;
 
 @Component
-public class EmailValidator {
-  private final static String REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
-  private final static Pattern pattern = Pattern.compile(REGEX);
+public class EmailValidator implements Validator<String> {
+  private static final String REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
+  private static final Pattern pattern = Pattern.compile(REGEX);
+  private static final String EMAIL_IS_INVALID = "Email is invalid.";
 
-  public boolean isValid(String email) {
-    return pattern.matcher(email).matches() && email.length() <= 100;
+  @Override
+  public void validate(String email) throws ValidationException {
+    if (!pattern.matcher(email).matches() || email.length() > 100) {
+      throw new ValidationException(EMAIL_IS_INVALID);
+    }
   }
 }

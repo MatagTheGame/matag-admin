@@ -1,25 +1,29 @@
 package integration.auth.validators;
 
 import com.matag.admin.auth.validators.EmailValidator;
+import com.matag.admin.auth.validators.ValidationException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class EmailValidatorTest {
   private final EmailValidator emailValidator = new EmailValidator();
 
   @Test
-  public void invalidEmail() {
-    assertThat(emailValidator.isValid("antonio")).isFalse();
+  public void validEmail() {
+    emailValidator.validate("antonio@mtg.com");
   }
 
   @Test
-  public void validEmail() {
-    assertThat(emailValidator.isValid("antonio@mtg.com")).isTrue();
+  public void invalidEmail() {
+    Assertions.assertThrows(ValidationException.class, () ->
+      emailValidator.validate("antonio")
+    );
   }
 
   @Test
   public void tooLongEmail() {
-    assertThat(emailValidator.isValid("antonio123".repeat(10) + "@mtg.com")).isFalse();
+    Assertions.assertThrows(ValidationException.class, () ->
+      emailValidator.validate("antonio123".repeat(10) + "@mtg.com")
+    );
   }
 }

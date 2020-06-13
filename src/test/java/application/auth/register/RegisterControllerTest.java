@@ -64,7 +64,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
 
     // Then
-    assertErrorRegisterResponse(response, "Password is invalid.");
+    assertErrorRegisterResponse(response, "Password is invalid (should be at least 4 characters).");
   }
 
   @Test

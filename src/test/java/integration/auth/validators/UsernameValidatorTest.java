@@ -1,23 +1,31 @@
 package integration.auth.validators;
 
 import com.matag.admin.auth.validators.UsernameValidator;
+import com.matag.admin.auth.validators.ValidationException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class UsernameValidatorTest {
   private final UsernameValidator usernameValidator = new UsernameValidator();
 
   @Test
   public void validUsernames() {
-    assertThat(usernameValidator.isValid("antonio")).isTrue();
-    assertThat(usernameValidator.isValid("antonio e antonio")).isTrue();
-    assertThat(usernameValidator.isValid("_-.@+=*&")).isTrue();
+    usernameValidator.validate("antonio");
+    usernameValidator.validate("antonio e antonio");
+    usernameValidator.validate("_-.@+=*&");
   }
 
   @Test
-  public void invalidUsernames() {
-    assertThat(usernameValidator.isValid("012")).isFalse();
-    assertThat(usernameValidator.isValid("012345678901234567890123456")).isFalse();
+  public void tooShortUsername() {
+    Assertions.assertThrows(ValidationException.class, () ->
+      usernameValidator.validate("012")
+    );
+  }
+
+  @Test
+  public void notSureWhy() {
+    Assertions.assertThrows(ValidationException.class, () ->
+      usernameValidator.validate("012345678901234567890123456")
+    );
   }
 }

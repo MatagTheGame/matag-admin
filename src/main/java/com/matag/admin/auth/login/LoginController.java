@@ -1,6 +1,7 @@
 package com.matag.admin.auth.login;
 
 import com.matag.admin.auth.validators.EmailValidator;
+import com.matag.admin.auth.validators.ValidationException;
 import com.matag.admin.session.AuthSessionFilter;
 import com.matag.admin.session.MatagSession;
 import com.matag.admin.session.MatagSessionRepository;
@@ -52,7 +53,7 @@ public class LoginController {
       return response(BAD_REQUEST, PASSWORD_IS_INVALID);
     }
 
-    boolean email = emailValidator.isValid(loginRequest.getEmailOrUsername());
+    boolean email = isEmailLogin(loginRequest);
     Optional<MatagUser> userOptional = getUsername(loginRequest.getEmailOrUsername(), email);
 
     if (userOptional.isEmpty()) {
@@ -81,6 +82,15 @@ public class LoginController {
       .token(session.getSessionId())
       .profile(currentUserProfileService.getProfile(user))
       .build());
+  }
+
+  private boolean isEmailLogin(@RequestBody LoginRequest loginRequest) {
+    try {
+      emailValidator.validate(loginRequest.getEmailOrUsername());
+      return true;
+    } catch (ValidationException e) {
+      return false;
+    }
   }
 
   private Optional<MatagUser> getUsername(String emailOrUsername, boolean email) {
