@@ -20,6 +20,7 @@ public class TestUtils {
 
   public static final String INACTIVE_USER_USERNAME = "InactiveUser";
 
+  public static String PASSWORD = "password";
   public static String PASSWORD_ENCODED = "{argon2}$argon2id$v=19$m=65536,t=4,p=8$kfWxCBLq0XIjaaG8LxfrQg$FkuvunHdrO2m+Dw85b33OUSY7uONpyVCgppJg+BYjsM";
 
   public static MatagUser guest() {

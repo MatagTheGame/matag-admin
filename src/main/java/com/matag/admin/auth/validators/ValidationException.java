@@ -1,6 +1,8 @@
 package com.matag.admin.auth.validators;
 
-public class ValidationException extends RuntimeException {
+import com.matag.admin.exception.MatagException;
+
+public class ValidationException extends MatagException {
   public ValidationException(String message) {
     super(message);
   }

@@ -52,7 +52,7 @@ public class MatagAdminWebSecurityConfiguration extends WebSecurityConfigurerAda
         cust.logoutSuccessHandler(matagLogoutSuccessHandler);
       })
       .authorizeRequests()
-      .antMatchers("/", "/ui/**", "/stats", "/config", "/auth/**").permitAll()
+      .antMatchers("/", "/ui/**", "/stats", "/config", "/auth/login", "/auth/logout", "/auth/register", "/auth/verify").permitAll()
       .anyRequest().authenticated();
   }
 

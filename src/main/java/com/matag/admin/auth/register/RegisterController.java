@@ -5,16 +5,15 @@ import com.matag.admin.auth.validators.PasswordValidator;
 import com.matag.admin.auth.validators.UsernameValidator;
 import com.matag.admin.auth.validators.ValidationException;
 import com.matag.admin.config.ConfigService;
+import com.matag.admin.exception.MatagException;
 import com.matag.admin.user.MatagUserRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -40,26 +39,16 @@ public class RegisterController {
   public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
     LOGGER.info("User " + request.getEmail() + " registering with username[" + request.getUsername() + "].");
 
-    try {
-      emailValidator.validate(request.getEmail());
-      usernameValidator.validate(request.getUsername());
-      passwordValidator.validate(request.getPassword());
-
-      if (userRepository.findByEmailAddress(request.getEmail()).isPresent()) {
-        throw new ValidationException(EMAIL_ALREADY_REGISTERED);
-      }
-
-      if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-        throw new ValidationException(USERNAME_ALREADY_REGISTERED);
-      }
-
-    } catch (ValidationException e) {
-      return error(e.getMessage());
-    }
+    validate(request);
 
     registerService.register(request.getEmail(), request.getUsername(), request.getPassword());
+    LOGGER.info("Registration successful.");
 
-    return ok(REGISTERED_VERIFY_EMAIL);
+    return ResponseEntity
+      .status(OK)
+      .body(RegisterResponse.builder()
+        .message(REGISTERED_VERIFY_EMAIL)
+        .build());
   }
 
   @GetMapping("/verify")
@@ -76,31 +65,23 @@ public class RegisterController {
 
     } catch (Exception e) {
       LOGGER.warn(e.getMessage());
-      return ResponseEntity
-        .status(BAD_REQUEST)
-        .body(VerifyResponse.builder()
-          .error(ACCOUNT_VERIFICATION_ERROR.replace("SUPPORT_MAIL", configService.getMatagSupportEmail()))
-          .build()
-        );
+      throw new MatagException(ACCOUNT_VERIFICATION_ERROR.replace("SUPPORT_MAIL", configService.getMatagSupportEmail()));
     }
   }
 
-  private ResponseEntity<RegisterResponse> ok(String message) {
-    LOGGER.error("Registration successful.");
-    return response(OK, message, null);
+  private void validate(@RequestBody RegisterRequest request) {
+    emailValidator.validate(request.getEmail());
+    usernameValidator.validate(request.getUsername());
+    passwordValidator.validate(request.getPassword());
+
+    if (userRepository.findByEmailAddress(request.getEmail()).isPresent()) {
+      throw new ValidationException(EMAIL_ALREADY_REGISTERED);
+    }
+
+    if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+      throw new ValidationException(USERNAME_ALREADY_REGISTERED);
+    }
   }
 
-  private ResponseEntity<RegisterResponse> error(String error) {
-    LOGGER.error("Registration failed error=" + error);
-    return response(BAD_REQUEST, null, error);
-  }
 
-  private ResponseEntity<RegisterResponse> response(HttpStatus status, String message, String error) {
-    return ResponseEntity
-      .status(status)
-      .body(RegisterResponse.builder()
-        .message(message)
-        .error(error)
-        .build());
-  }
 }

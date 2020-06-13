@@ -1,6 +1,7 @@
 package com.matag.admin.auth.login;
 
 import com.matag.admin.auth.validators.EmailValidator;
+import com.matag.admin.auth.validators.PasswordValidator;
 import com.matag.admin.auth.validators.ValidationException;
 import com.matag.admin.session.AuthSessionFilter;
 import com.matag.admin.session.MatagSession;
@@ -25,7 +26,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @RestController
@@ -34,7 +34,6 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 public class LoginController {
   private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
-  public static final String PASSWORD_IS_INVALID = "Password is invalid.";
   public static final String EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT = "Email/Username or password are not correct.";
   public static final String ACCOUNT_IS_NOT_ACTIVE = "Account is not active.";
 
@@ -42,6 +41,7 @@ public class LoginController {
   private final PasswordEncoder passwordEncoder;
   private final MatagSessionRepository matagSessionRepository;
   private final EmailValidator emailValidator;
+  private final PasswordValidator passwordValidator;
   private final CurrentUserProfileService currentUserProfileService;
   private final Clock clock;
 
@@ -49,9 +49,7 @@ public class LoginController {
   public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
     LOGGER.info("User " + loginRequest.getEmailOrUsername() + " logging in.");
 
-    if (loginRequest.getPassword().length() < 4) {
-      return response(BAD_REQUEST, PASSWORD_IS_INVALID);
-    }
+    passwordValidator.validate(loginRequest.getPassword());
 
     boolean email = isEmailLogin(loginRequest);
     Optional<MatagUser> userOptional = getUsername(loginRequest.getEmailOrUsername(), email);

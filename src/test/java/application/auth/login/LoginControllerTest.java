@@ -1,5 +1,6 @@
 package application.auth.login;
 
+import static application.TestUtils.PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
@@ -23,13 +24,13 @@ public class LoginControllerTest extends AbstractApplicationTest {
     // Then
     assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getError()).isEqualTo("Password is invalid.");
+    assertThat(response.getBody().getError()).isEqualTo("Password is invalid (should be at least 4 characters).");
   }
 
   @Test
   public void shouldLoginAUserViaEmail() {
     // Given
-    LoginRequest request = new LoginRequest("user1@matag.com", "password");
+    LoginRequest request = new LoginRequest("user1@matag.com", PASSWORD);
 
     // When
     LoginResponse response = restTemplate.postForObject("/auth/login", request, LoginResponse.class);
@@ -45,7 +46,7 @@ public class LoginControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldLoginAUserViaUsername() {
     // Given
-    LoginRequest request = new LoginRequest("User1", "password");
+    LoginRequest request = new LoginRequest("User1", PASSWORD);
 
     // When
     LoginResponse response = restTemplate.postForObject("/auth/login", request, LoginResponse.class);
@@ -61,7 +62,7 @@ public class LoginControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldNotLoginANonExistingUser() {
     // Given
-    LoginRequest request = new LoginRequest("non-existing-user@matag.com", "password");
+    LoginRequest request = new LoginRequest("non-existing-user@matag.com", PASSWORD);
 
     // When
     ResponseEntity<LoginResponse> response = restTemplate.postForEntity("/auth/login", request, LoginResponse.class);
@@ -89,7 +90,7 @@ public class LoginControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldNotLoginNotActiveUser() {
     // Given
-    LoginRequest request = new LoginRequest("inactiveUser@matag.com", "password");
+    LoginRequest request = new LoginRequest("inactiveUser@matag.com", PASSWORD);
 
     // When
     ResponseEntity<LoginResponse> response = restTemplate.postForEntity("/auth/login", request, LoginResponse.class);

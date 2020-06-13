@@ -17,6 +17,7 @@ import javax.mail.internet.MimeMessage;
 
 import java.time.LocalDateTime;
 
+import static application.TestUtils.PASSWORD;
 import static com.matag.admin.user.MatagUserStatus.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -34,7 +35,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldReturnInvalidEmail() {
     // Given
-    RegisterRequest request = new RegisterRequest("invalidEmail", "username", "password");
+    RegisterRequest request = new RegisterRequest("invalidEmail", "username", PASSWORD);
 
     // When
     ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
@@ -70,7 +71,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldReturnEmailAlreadyRegistered() {
     // Given
-    RegisterRequest request = new RegisterRequest("user1@matag.com", "username", "password");
+    RegisterRequest request = new RegisterRequest("user1@matag.com", "username", PASSWORD);
 
     // When
     ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
@@ -82,7 +83,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldReturnUsernameAlreadyRegistered() {
     // Given
-    RegisterRequest request = new RegisterRequest("new-user@matag.com", "User1", "password");
+    RegisterRequest request = new RegisterRequest("new-user@matag.com", "User1", PASSWORD);
 
     // When
     ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
@@ -95,7 +96,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   @SneakyThrows
   public void registerANewUser() {
     // Given
-    RegisterRequest request = new RegisterRequest("new-user@matag.com", "NewUser", "password");
+    RegisterRequest request = new RegisterRequest("new-user@matag.com", "NewUser", PASSWORD);
     MimeMessage mimeMessage = mockMailSender();
 
     // When
@@ -118,7 +119,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   public void verifyAUser() {
     // Given
     String username = "NewUser";
-    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, "password");
+    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
     mockMailSender();
 
     restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
@@ -144,7 +145,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   public void verifyAnInactiveUser() {
     // Given
     String username = "NewUser";
-    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, "password");
+    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
     mockMailSender();
 
     restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
@@ -169,7 +170,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   public void verifyFailsWithIncorrectVerificationCode() {
     // Given
     String username = "NewUser";
-    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, "password");
+    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
     mockMailSender();
 
     restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
@@ -191,7 +192,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   public void verifyAUserFailsIfTooManyAttempts() {
     // Given
     String username = "NewUser";
-    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, "password");
+    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
     mockMailSender();
 
     restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
@@ -218,7 +219,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   public void verifyAUserFailsIfAfterValidUntilDate() {
     // Given
     String username = "NewUser";
-    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, "password");
+    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
     mockMailSender();
 
     restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
