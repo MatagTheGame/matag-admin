@@ -1,14 +1,15 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {connect} from 'react-redux'
 import get from 'lodash/get'
 import {bindActionCreators} from 'redux'
-import Loader from 'admin/Common/Loader'
+import AbstractForm from 'admin/utils/AbstractForm'
 import ApiClient from 'admin/utils/ApiClient'
 import history from 'admin/utils/history'
 import AuthHelper from '../AuthHelper'
 import './login.scss'
 
-class Login extends Component {
+
+class Login extends AbstractForm {
   constructor(props) {
     super(props)
     this.state = {
@@ -53,23 +54,6 @@ class Login extends Component {
 
   handleLoginAsGuest() {
     this.login('guest@matag.com', 'password')
-  }
-
-  displayError() {
-    if (this.props.error) {
-      return (
-        <div className='grid grid-label-value'>
-          <div/>
-          <div className='error'>{this.props.error}</div>
-        </div>
-      )
-    }
-  }
-
-  displayLoader() {
-    if (this.props.loading) {
-      return <Loader center/>
-    }
   }
 
   render() {

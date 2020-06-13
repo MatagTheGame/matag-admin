@@ -1,13 +1,13 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {connect} from 'react-redux'
 import get from 'lodash/get'
 import {bindActionCreators} from 'redux'
-import Loader from 'admin/Common/Loader'
 import ApiClient from 'admin/utils/ApiClient'
 import history from 'admin/utils/history'
 import AuthHelper from '../AuthHelper'
+import AbstractForm from 'admin/utils/AbstractForm'
 
-class ChangePassword extends Component {
+class ChangePassword extends AbstractForm {
   constructor(props) {
     super(props)
     this.state = {
@@ -41,34 +41,6 @@ class ChangePassword extends Component {
   handleSubmit(event) {
     event.preventDefault()
     this.submit(this.state.oldPassword, this.state.newPassword)
-  }
-
-  displayError() {
-    if (this.props.error) {
-      return (
-        <div className='grid grid-label-value'>
-          <div/>
-          <div className='error'>{this.props.error}</div>
-        </div>
-      )
-    }
-  }
-
-  displayMessage() {
-    if (this.props.message) {
-      return (
-        <div className='grid grid-label-value'>
-          <div/>
-          <div className='message'>{this.props.message}</div>
-        </div>
-      )
-    }
-  }
-
-  displayLoader() {
-    if (this.props.loading) {
-      return <Loader center/>
-    }
   }
 
   render() {
