@@ -9,7 +9,7 @@ import lombok.Value;
 @JsonDeserialize(builder = ErrorResponse.ErrorResponseBuilder.class)
 @Builder(toBuilder = true)
 public class ErrorResponse {
-  private String error;
+  String error;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class ErrorResponseBuilder {

@@ -25,7 +25,7 @@ public class CancelGameService {
   private final FinishGameService finishGameService;
 
   @Transactional
-  public CancelGameResponse cancel(Long gameId) {
+  public void cancel(Long gameId) {
     MatagSession session = securityContextHolderHelper.getSession();
     Optional<GameSession> activeGameSession = gameSessionRepository.findPlayerActiveGameSession(session.getSessionId());
     if (activeGameSession.isPresent()) {
@@ -42,8 +42,6 @@ public class CancelGameService {
         }
       }
     }
-
-    return CancelGameResponse.builder().build();
   }
 
   private String findOpponentSessionId(GamePlayers gamePlayers, MatagSession session) {

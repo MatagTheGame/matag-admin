@@ -1,7 +1,6 @@
 package application.game.cancel;
 
 import application.AbstractApplicationTest;
-import com.matag.admin.game.cancel.CancelGameResponse;
 import com.matag.admin.game.game.Game;
 import com.matag.admin.game.game.GameRepository;
 import com.matag.admin.game.join.JoinGameRequest;
@@ -44,7 +43,7 @@ public class CancelGameControllerTest extends AbstractApplicationTest {
     Long gameId = joinGameResponse.getGameId();
 
     // When
-    ResponseEntity<CancelGameResponse> response = restTemplate.exchange("/game/" + gameId, HttpMethod.DELETE, null, CancelGameResponse.class);
+    ResponseEntity<String> response = restTemplate.exchange("/game/" + gameId, HttpMethod.DELETE, null, String.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(OK);
@@ -72,7 +71,7 @@ public class CancelGameControllerTest extends AbstractApplicationTest {
 
     // When
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    ResponseEntity<CancelGameResponse> response = restTemplate.exchange("/game/" + gameId, HttpMethod.DELETE, null, CancelGameResponse.class);
+    ResponseEntity<String> response = restTemplate.exchange("/game/" + gameId, HttpMethod.DELETE, null, String.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(OK);

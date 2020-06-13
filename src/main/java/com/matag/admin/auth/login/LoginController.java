@@ -13,8 +13,7 @@ import com.matag.admin.user.profile.CurrentUserProfileService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,8 +24,6 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
-
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @RestController
 @RequestMapping("/auth")
@@ -46,26 +43,10 @@ public class LoginController {
   private final Clock clock;
 
   @PostMapping("/login")
-  public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+  public LoginResponse login(@RequestBody LoginRequest loginRequest) {
     LOGGER.info("User " + loginRequest.getEmailOrUsername() + " logging in.");
 
-    passwordValidator.validate(loginRequest.getPassword());
-
-    boolean email = isEmailLogin(loginRequest);
-    Optional<MatagUser> userOptional = getUsername(loginRequest.getEmailOrUsername(), email);
-
-    if (userOptional.isEmpty()) {
-      return response(UNAUTHORIZED, EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT);
-    }
-
-    MatagUser user = userOptional.get();
-    if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-      return response(UNAUTHORIZED, EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT);
-    }
-
-    if (user.getStatus() != MatagUserStatus.ACTIVE) {
-      return response(UNAUTHORIZED, ACCOUNT_IS_NOT_ACTIVE);
-    }
+    MatagUser user = validateLogin(loginRequest);
 
     MatagSession session = MatagSession.builder()
       .sessionId(UUID.randomUUID().toString())
@@ -76,10 +57,31 @@ public class LoginController {
     matagSessionRepository.save(session);
 
     LOGGER.info("Login successful.");
-    return ResponseEntity.ok(LoginResponse.builder()
+    return LoginResponse.builder()
       .token(session.getSessionId())
       .profile(currentUserProfileService.getProfile(user))
-      .build());
+      .build();
+  }
+
+  private MatagUser validateLogin(@RequestBody LoginRequest loginRequest) {
+    passwordValidator.validate(loginRequest.getPassword());
+
+    boolean email = isEmailLogin(loginRequest);
+    Optional<MatagUser> userOptional = getUsername(loginRequest.getEmailOrUsername(), email);
+
+    if (userOptional.isEmpty()) {
+      throw new InsufficientAuthenticationException(EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT);
+    }
+
+    MatagUser user = userOptional.get();
+    if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+      throw new InsufficientAuthenticationException(EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT);
+    }
+
+    if (user.getStatus() != MatagUserStatus.ACTIVE) {
+      throw new InsufficientAuthenticationException(ACCOUNT_IS_NOT_ACTIVE);
+    }
+    return user;
   }
 
   private boolean isEmailLogin(@RequestBody LoginRequest loginRequest) {
@@ -97,14 +99,5 @@ public class LoginController {
     } else {
       return userRepository.findByUsername(emailOrUsername);
     }
-  }
-
-  private ResponseEntity<LoginResponse> response(HttpStatus status, String error) {
-    LOGGER.info("Login failed with status=" + status + "; error=" + error);
-    return ResponseEntity
-      .status(status)
-      .body(LoginResponse.builder()
-        .error(error)
-        .build());
   }
 }

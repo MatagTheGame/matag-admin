@@ -4,6 +4,7 @@ import application.AbstractApplicationTest;
 import com.matag.admin.auth.register.RegisterRequest;
 import com.matag.admin.auth.register.RegisterResponse;
 import com.matag.admin.auth.register.VerifyResponse;
+import com.matag.admin.exception.ErrorResponse;
 import com.matag.admin.user.MatagUser;
 import com.matag.admin.user.MatagUserRepository;
 import lombok.SneakyThrows;
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import javax.mail.internet.MimeMessage;
-
 import java.time.LocalDateTime;
 
 import static application.TestUtils.PASSWORD;
@@ -38,7 +38,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     RegisterRequest request = new RegisterRequest("invalidEmail", "username", PASSWORD);
 
     // When
-    ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
+    ResponseEntity<ErrorResponse> response = restTemplate.postForEntity("/auth/register", request, ErrorResponse.class);
 
     // Then
     assertErrorRegisterResponse(response, "Email is invalid.");
@@ -50,7 +50,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     RegisterRequest request = new RegisterRequest("user1@matag.com", "$£", "xxx");
 
     // When
-    ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
+    ResponseEntity<ErrorResponse> response = restTemplate.postForEntity("/auth/register", request, ErrorResponse.class);
 
     // Then
     assertErrorRegisterResponse(response, "Username needs to be between 4 and 25 characters and can contains only letters  number and one of the following characters: [+ - * = _ . @ &].");
@@ -62,7 +62,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     RegisterRequest request = new RegisterRequest("user1@matag.com", "username", "xxx");
 
     // When
-    ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
+    ResponseEntity<ErrorResponse> response = restTemplate.postForEntity("/auth/register", request, ErrorResponse.class);
 
     // Then
     assertErrorRegisterResponse(response, "Password is invalid (should be at least 4 characters).");
@@ -74,7 +74,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     RegisterRequest request = new RegisterRequest("user1@matag.com", "username", PASSWORD);
 
     // When
-    ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
+    ResponseEntity<ErrorResponse> response = restTemplate.postForEntity("/auth/register", request, ErrorResponse.class);
 
     // Then
     assertErrorRegisterResponse(response, "This email is already registered (use reset password functionality).");
@@ -86,7 +86,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     RegisterRequest request = new RegisterRequest("new-user@matag.com", "User1", PASSWORD);
 
     // When
-    ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
+    ResponseEntity<ErrorResponse> response = restTemplate.postForEntity("/auth/register", request, ErrorResponse.class);
 
     // Then
     assertErrorRegisterResponse(response, "This username is already registered (please choose a new one).");
@@ -155,7 +155,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     matagUserRepository.save(newUser);
 
     // When
-    ResponseEntity<VerifyResponse> verifyResponse = restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, VerifyResponse.class);
+    ResponseEntity<ErrorResponse> verifyResponse = restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, ErrorResponse.class);
 
     // Then
     assertThat(verifyResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
@@ -176,7 +176,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
 
     // When
-    ResponseEntity<VerifyResponse> verifyResponse = restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + "incorrect-verification-code", VerifyResponse.class);
+    ResponseEntity<ErrorResponse> verifyResponse = restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + "incorrect-verification-code", ErrorResponse.class);
 
     // Then
     assertThat(verifyResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
@@ -239,17 +239,15 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(1);
   }
 
-  private void assertErrorRegisterResponse(ResponseEntity<RegisterResponse> response, String expected) {
+  private void assertErrorRegisterResponse(ResponseEntity<ErrorResponse> response, String expected) {
     assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getMessage()).isNull();
     assertThat(response.getBody().getError()).isEqualTo(expected);
   }
 
   private void assertSuccessfulRegisterResponse(ResponseEntity<RegisterResponse> response) {
     assertThat(response.getStatusCode()).isEqualTo(OK);
     assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getError()).isNull();
     assertThat(response.getBody().getMessage()).isEqualTo("Registration Successful. Please check your email for a verification code.");
   }
 

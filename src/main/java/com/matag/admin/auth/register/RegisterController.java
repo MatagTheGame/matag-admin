@@ -11,10 +11,7 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.query.Param;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/auth")
@@ -36,7 +33,7 @@ public class RegisterController {
   private final PasswordValidator passwordValidator;
 
   @PostMapping("/register")
-  public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
+  public RegisterResponse register(@RequestBody RegisterRequest request) {
     LOGGER.info("User " + request.getEmail() + " registering with username[" + request.getUsername() + "].");
 
     validate(request);
@@ -44,24 +41,19 @@ public class RegisterController {
     registerService.register(request.getEmail(), request.getUsername(), request.getPassword());
     LOGGER.info("Registration successful.");
 
-    return ResponseEntity
-      .status(OK)
-      .body(RegisterResponse.builder()
+    return RegisterResponse.builder()
         .message(REGISTERED_VERIFY_EMAIL)
-        .build());
+        .build();
   }
 
   @GetMapping("/verify")
-  public ResponseEntity<VerifyResponse> verify(@Param("username") String username, @Param("code") String code) {
+  public VerifyResponse verify(@Param("username") String username, @Param("code") String code) {
     LOGGER.info("Verifying " + username + " with code " + code);
     try {
       registerService.activate(username, code);
-      return ResponseEntity
-        .status(OK)
-        .body(VerifyResponse.builder()
+      return VerifyResponse.builder()
           .message(ACCOUNT_VERIFICATION_CORRECT)
-          .build()
-        );
+          .build();
 
     } catch (Exception e) {
       LOGGER.warn(e.getMessage());
@@ -82,6 +74,4 @@ public class RegisterController {
       throw new ValidationException(USERNAME_ALREADY_REGISTERED);
     }
   }
-
-
 }

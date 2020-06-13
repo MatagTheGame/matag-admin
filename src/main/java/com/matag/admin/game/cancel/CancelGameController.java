@@ -13,7 +13,7 @@ public class CancelGameController {
   private final CancelGameService cancelGameService;
 
   @DeleteMapping("/{id}")
-  public CancelGameResponse cancelGame(@PathVariable("id") Long gameId) {
-    return cancelGameService.cancel(gameId);
+  public void cancelGame(@PathVariable("id") Long gameId) {
+    cancelGameService.cancel(gameId);
   }
 }
