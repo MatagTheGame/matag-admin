@@ -20,7 +20,7 @@ class Stats extends Component {
           <li><small><span>TOTAL USERS: </span></small><span>{this.props.stats.totalUsers}</span></li>
           <li><small><span>ONLINE USERS: </span></small><span>{this.props.stats.onlineUsers}</span></li>
           <li><small><span>TOTAL CARDS: </span></small><span>{this.props.stats.totalCards}</span></li>
-          <li><small><span>TOTAL SETS: </span></small><span>{this.props.stats.totalSets} (from Ixalan)</span></li>
+          <li><small><span>TOTAL SETS: </span></small><span>{this.props.stats.totalSets} (from Magic Origins)</span></li>
         </ul>
       )
     }
