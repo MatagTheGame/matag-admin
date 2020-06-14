@@ -34,15 +34,8 @@ public class ChangePasswordController {
   @PostMapping("/change-password")
   public ChangePasswordResponse changePassword(@RequestBody ChangePasswordRequest request) {
     MatagUser user = securityContextHolderHelper.getUser();
-    if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-      throw new MatagException("Your password wasn't matched.");
-    }
 
-    try {
-      passwordValidator.validate(request.getNewPassword());
-    } catch (ValidationException e) {
-      throw new ValidationException("The new password you chose is invalid: " + e.getMessage());
-    }
+    validate(request, user);
 
     String newPasswordEncoded = passwordEncoder.encode(request.getNewPassword());
     user.setPassword(newPasswordEncoded);
@@ -51,5 +44,17 @@ public class ChangePasswordController {
     LOGGER.info("Password successfully changed for user " + user.getUsername());
 
     return ChangePasswordResponse.builder().message("Password changed.").build();
+  }
+
+  private void validate(@RequestBody ChangePasswordRequest request, MatagUser user) {
+    try {
+      passwordValidator.validate(request.getNewPassword());
+    } catch (ValidationException e) {
+      throw new MatagException("The new password you chose is invalid: " + e.getMessage());
+    }
+
+    if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+      throw new MatagException("Your password wasn't matched.");
+    }
   }
 }
