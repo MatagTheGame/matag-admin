@@ -20,7 +20,7 @@ public class MatagSessionsCleanup {
 
   @Transactional
   public void cleanup() {
-    int deletedRows = matagSessionRepository.deleteValidUntilBefore(LocalDateTime.now(clock));
+    var deletedRows = matagSessionRepository.deleteValidUntilBefore(LocalDateTime.now(clock));
     LOGGER.info("MatagSessionsCleanup deleted " + deletedRows + " rows.");
   }
 }

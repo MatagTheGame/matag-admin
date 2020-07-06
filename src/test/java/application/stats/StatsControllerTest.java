@@ -14,7 +14,7 @@ public class StatsControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldGetStatsAsUnauthenticatedUser() {
     // When
-    ResponseEntity<StatsResponse> response = restTemplate.getForEntity("/stats", StatsResponse.class);
+    var response = restTemplate.getForEntity("/stats", StatsResponse.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -23,7 +23,7 @@ public class StatsControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldGetTotalUsers() {
     // When
-    StatsResponse response = restTemplate.getForObject("/stats", StatsResponse.class);
+    var response = restTemplate.getForObject("/stats", StatsResponse.class);
 
     // Then
     assertThat(response.getTotalUsers()).isEqualTo(3);
@@ -38,7 +38,7 @@ public class StatsControllerTest extends AbstractApplicationTest {
     setCurrentTime(TEST_START_TIME);
 
     // When
-    StatsResponse response = restTemplate.getForObject("/stats", StatsResponse.class);
+    var response = restTemplate.getForObject("/stats", StatsResponse.class);
 
     // Then
     assertThat(response.getOnlineUsers()).isEqualTo(1);
@@ -47,7 +47,7 @@ public class StatsControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldGetNumOfCards() {
     // When
-    StatsResponse response = restTemplate.getForObject("/stats", StatsResponse.class);
+    var response = restTemplate.getForObject("/stats", StatsResponse.class);
 
     // Then
     assertThat(response.getTotalCards()).isGreaterThan(100);
@@ -56,7 +56,7 @@ public class StatsControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldGetNumOfSets() {
     // When
-    StatsResponse response = restTemplate.getForObject("/stats", StatsResponse.class);
+    var response = restTemplate.getForObject("/stats", StatsResponse.class);
 
     // Then
     assertThat(response.getTotalSets()).isGreaterThan(10);

@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 public class GameSessionService {
   public GamePlayers getGamePlayers(Game game) {
-    List<GameSession> gameSessions = game.getGameSessions();
+    var gameSessions = game.getGameSessions();
 
     if (gameSessions.size() == 1) {
       return new GamePlayers(gameSessions.get(0), null);

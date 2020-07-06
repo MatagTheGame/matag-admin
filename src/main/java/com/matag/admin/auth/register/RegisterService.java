@@ -27,7 +27,7 @@ public class RegisterService {
 
   @Transactional
   public void register(String email, String username, String password) {
-    MatagUser user = MatagUser.builder()
+    var user = MatagUser.builder()
       .username(username)
       .password(passwordEncoder.encode(password))
       .emailAddress(email)
@@ -44,12 +44,12 @@ public class RegisterService {
   }
 
   public void activate(String username, String code) {
-    Optional<MatagUser> userOptional = userRepository.findByUsername(username);
+    var userOptional = userRepository.findByUsername(username);
     if (userOptional.isEmpty()) {
       throw new RuntimeException("User " + username + " not found.");
     }
 
-    MatagUser user = userOptional.get();
+    var user = userOptional.get();
     switch (user.getStatus()) {
       case INACTIVE:
         throw new RuntimeException("User " + username + " is inactive and cannot be activated.");

@@ -29,8 +29,8 @@ public class GamesHistoryController {
 
   @GetMapping("/history")
   public GamesHistoryResponse gameHistory() {
-    MatagUser user = securityContextHolderHelper.getUser();
-    List<Game> games = gameRepository.findByPlayerIdAndStatus(user.getId(), FINISHED);
+    var user = securityContextHolderHelper.getUser();
+    var games = gameRepository.findByPlayerIdAndStatus(user.getId(), FINISHED);
     return GamesHistoryResponse.builder()
       .gamesHistory(games.stream()
         .map(game -> this.toGameHistory(game, user))
@@ -39,9 +39,9 @@ public class GamesHistoryController {
   }
 
   private GameHistory toGameHistory(Game game, MatagUser user) {
-    GamePlayers gamePlayers = gameSessionService.getGamePlayers(game);
-    GameSession player1 = gamePlayers.getPlayerSession();
-    GameSession player2 = gamePlayers.getOpponentSession();
+    var gamePlayers = gameSessionService.getGamePlayers(game);
+    var player1 = gamePlayers.getPlayerSession();
+    var player2 = gamePlayers.getOpponentSession();
     return GameHistory.builder()
       .gameId(game.getId())
       .startedTime(game.getCreatedAt())

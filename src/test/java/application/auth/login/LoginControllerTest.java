@@ -16,10 +16,10 @@ public class LoginControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldReturnInvalidPassword() {
     // Given
-    LoginRequest request = new LoginRequest("user1@matag.com", "xxx");
+    var request = new LoginRequest("user1@matag.com", "xxx");
 
     // When
-    ResponseEntity<LoginResponse> response = restTemplate.postForEntity("/auth/login", request, LoginResponse.class);
+    var response = restTemplate.postForEntity("/auth/login", request, LoginResponse.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
@@ -30,10 +30,10 @@ public class LoginControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldLoginAUserViaEmail() {
     // Given
-    LoginRequest request = new LoginRequest("user1@matag.com", PASSWORD);
+    var request = new LoginRequest("user1@matag.com", PASSWORD);
 
     // When
-    LoginResponse response = restTemplate.postForObject("/auth/login", request, LoginResponse.class);
+    var response = restTemplate.postForObject("/auth/login", request, LoginResponse.class);
 
     // Then
     assertThat(response.getToken()).isNotBlank();
@@ -46,10 +46,10 @@ public class LoginControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldLoginAUserViaUsername() {
     // Given
-    LoginRequest request = new LoginRequest("User1", PASSWORD);
+    var request = new LoginRequest("User1", PASSWORD);
 
     // When
-    LoginResponse response = restTemplate.postForObject("/auth/login", request, LoginResponse.class);
+    var response = restTemplate.postForObject("/auth/login", request, LoginResponse.class);
 
     // Then
     assertThat(response.getToken()).isNotBlank();
@@ -62,10 +62,10 @@ public class LoginControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldNotLoginANonExistingUser() {
     // Given
-    LoginRequest request = new LoginRequest("non-existing-user@matag.com", PASSWORD);
+    var request = new LoginRequest("non-existing-user@matag.com", PASSWORD);
 
     // When
-    ResponseEntity<LoginResponse> response = restTemplate.postForEntity("/auth/login", request, LoginResponse.class);
+    var response = restTemplate.postForEntity("/auth/login", request, LoginResponse.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
@@ -76,10 +76,10 @@ public class LoginControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldNotLoginWithWrongPassword() {
     // Given
-    LoginRequest request = new LoginRequest("user1@matag.com", "wrong-password");
+    var request = new LoginRequest("user1@matag.com", "wrong-password");
 
     // When
-    ResponseEntity<LoginResponse> response = restTemplate.postForEntity("/auth/login", request, LoginResponse.class);
+    var response = restTemplate.postForEntity("/auth/login", request, LoginResponse.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
@@ -90,10 +90,10 @@ public class LoginControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldNotLoginNotActiveUser() {
     // Given
-    LoginRequest request = new LoginRequest("inactiveUser@matag.com", PASSWORD);
+    var request = new LoginRequest("inactiveUser@matag.com", PASSWORD);
 
     // When
-    ResponseEntity<LoginResponse> response = restTemplate.postForEntity("/auth/login", request, LoginResponse.class);
+    var response = restTemplate.postForEntity("/auth/login", request, LoginResponse.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);

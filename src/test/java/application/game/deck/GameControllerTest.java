@@ -19,7 +19,7 @@ public class GameControllerTest extends AbstractApplicationTest {
   public void shouldRetrieveGameInfo() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    JoinGameRequest request = JoinGameRequest.builder()
+    var request = JoinGameRequest.builder()
       .gameType(UNLIMITED)
       .playerOptions("{\"randomColors\": [\"WHITE\", \"RED\"]}}")
       .build();
@@ -27,7 +27,7 @@ public class GameControllerTest extends AbstractApplicationTest {
     restTemplate.postForObject("/game", request, JoinGameResponse.class);
 
     // When
-    DeckInfo deckInfo = restTemplate.getForObject("/game/active-deck", DeckInfo.class);
+    var deckInfo = restTemplate.getForObject("/game/active-deck", DeckInfo.class);
 
     // Then
     assertThat(deckInfo.getRandomColors()).isEqualTo(Set.of(WHITE, RED));

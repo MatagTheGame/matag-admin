@@ -32,20 +32,20 @@ public class JoinGameService {
 
   @Transactional
   public JoinGameResponse joinGame(JoinGameRequest joinGameRequest) {
-    MatagUser user = securityContextHolderHelper.getUser();
-    MatagSession session = securityContextHolderHelper.getSession();
+    var user = securityContextHolderHelper.getUser();
+    var session = securityContextHolderHelper.getSession();
 
-    Optional<GameSession> activeGameOfPlayer = gameSessionRepository.findPlayerActiveGameSession(session.getSessionId());
+    var activeGameOfPlayer = gameSessionRepository.findPlayerActiveGameSession(session.getSessionId());
     if (activeGameOfPlayer.isPresent()) {
-      Long activeGameId = activeGameOfPlayer.get().getGame().getId();
+      var activeGameId = activeGameOfPlayer.get().getGame().getId();
       return JoinGameResponse.builder()
         .error("You are already in a game.")
         .activeGameId(activeGameId)
         .build();
     }
 
-    List<Game> games = gameRepository.findByTypeAndStatus(joinGameRequest.getGameType(), STARTING);
-    Game freeGame = findFreeGame(games);
+    var games = gameRepository.findByTypeAndStatus(joinGameRequest.getGameType(), STARTING);
+    var freeGame = findFreeGame(games);
 
     if (freeGame == null) {
       freeGame = Game.builder()
@@ -59,7 +59,7 @@ public class JoinGameService {
 
     gameRepository.save(freeGame);
 
-    GameSession gameSession = GameSession.builder()
+    var gameSession = GameSession.builder()
       .game(freeGame)
       .session(session)
       .player(user)
@@ -75,7 +75,7 @@ public class JoinGameService {
 
   private Game findFreeGame(List<Game> games) {
     for (Game game : games) {
-      GamePlayers gamePlayers = gameSessionService.getGamePlayers(game);
+      var gamePlayers = gameSessionService.getGamePlayers(game);
       if (gamePlayers.getOpponentSession() == null) {
         return game;
       }

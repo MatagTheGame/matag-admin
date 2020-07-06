@@ -10,7 +10,7 @@ public class RandomCodeServiceTest {
 
   @Test
   public void generateRandomCode() {
-    String code = randomCodeService.generatesRandomCode();
+    var code = randomCodeService.generatesRandomCode();
 
     assertThat(code).hasSize(10);
   }

@@ -26,12 +26,12 @@ public class CancelGameService {
 
   @Transactional
   public void cancel(Long gameId) {
-    MatagSession session = securityContextHolderHelper.getSession();
-    Optional<GameSession> activeGameSession = gameSessionRepository.findPlayerActiveGameSession(session.getSessionId());
+    var session = securityContextHolderHelper.getSession();
+    var activeGameSession = gameSessionRepository.findPlayerActiveGameSession(session.getSessionId());
     if (activeGameSession.isPresent()) {
       if (activeGameSession.get().getGame().getId().equals(gameId)) {
-        Game game = activeGameSession.get().getGame();
-        GamePlayers gamePlayers = gameSessionService.getGamePlayers(game);
+        var game = activeGameSession.get().getGame();
+        var gamePlayers = gameSessionService.getGamePlayers(game);
         if (gamePlayers.getOpponentSession() == null) {
           gameSessionRepository.delete(gamePlayers.getPlayerSession());
           gameRepository.delete(game);

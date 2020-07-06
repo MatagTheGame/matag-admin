@@ -88,8 +88,8 @@ select * from game g join game_session gs on g.id = gs.game_id;
 
 
 -- delete stuff
-delete from game_session;
-delete from game;
+delete from game_session where game_id in (select game_id from game where status != 'FINISHED');
+delete from game where status != 'FINISHED';
 delete from matag_session;
 delete from matag_session where valid_until < current_timestamp;
 delete from matag_user where username = 'antonio85';

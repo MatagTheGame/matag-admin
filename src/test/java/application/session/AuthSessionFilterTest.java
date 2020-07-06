@@ -21,7 +21,7 @@ public class AuthSessionFilterTest extends AbstractApplicationTest {
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
 
     // When
-    ResponseEntity<String> response = restTemplate.getForEntity("/path/to/a/resource", String.class);
+    var response = restTemplate.getForEntity("/path/to/a/resource", String.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -30,7 +30,7 @@ public class AuthSessionFilterTest extends AbstractApplicationTest {
   @Test
   public void shouldNotGrantAccessToAResourceToNonLoggedInUsers() {
     // When
-    ResponseEntity<String> response = restTemplate.getForEntity("/path/to/a/resource", String.class);
+    var response = restTemplate.getForEntity("/path/to/a/resource", String.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
@@ -43,7 +43,7 @@ public class AuthSessionFilterTest extends AbstractApplicationTest {
     setCurrentTime(TEST_START_TIME.plusHours(1).plusMinutes(1));
 
     // When
-    ResponseEntity<String> response = restTemplate.getForEntity("/path/to/a/resource", String.class);
+    var response = restTemplate.getForEntity("/path/to/a/resource", String.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);

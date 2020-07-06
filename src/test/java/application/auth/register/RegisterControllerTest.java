@@ -35,10 +35,10 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldReturnInvalidEmail() {
     // Given
-    RegisterRequest request = new RegisterRequest("invalidEmail", "username", PASSWORD);
+    var request = new RegisterRequest("invalidEmail", "username", PASSWORD);
 
     // When
-    ResponseEntity<ErrorResponse> response = restTemplate.postForEntity("/auth/register", request, ErrorResponse.class);
+    var response = restTemplate.postForEntity("/auth/register", request, ErrorResponse.class);
 
     // Then
     assertErrorRegisterResponse(response, "Email is invalid.");
@@ -47,10 +47,10 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldReturnInvalidUsername() {
     // Given
-    RegisterRequest request = new RegisterRequest("user1@matag.com", "$£", "xxx");
+    var request = new RegisterRequest("user1@matag.com", "$£", "xxx");
 
     // When
-    ResponseEntity<ErrorResponse> response = restTemplate.postForEntity("/auth/register", request, ErrorResponse.class);
+    var response = restTemplate.postForEntity("/auth/register", request, ErrorResponse.class);
 
     // Then
     assertErrorRegisterResponse(response, "Username needs to be between 4 and 25 characters and can contains only letters  number and one of the following characters: [+ - * = _ . @ &].");
@@ -59,10 +59,10 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldReturnInvalidPassword() {
     // Given
-    RegisterRequest request = new RegisterRequest("user1@matag.com", "username", "xxx");
+    var request = new RegisterRequest("user1@matag.com", "username", "xxx");
 
     // When
-    ResponseEntity<ErrorResponse> response = restTemplate.postForEntity("/auth/register", request, ErrorResponse.class);
+    var response = restTemplate.postForEntity("/auth/register", request, ErrorResponse.class);
 
     // Then
     assertErrorRegisterResponse(response, "Password is invalid (should be at least 4 characters).");
@@ -71,10 +71,10 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldReturnEmailAlreadyRegistered() {
     // Given
-    RegisterRequest request = new RegisterRequest("user1@matag.com", "username", PASSWORD);
+    var request = new RegisterRequest("user1@matag.com", "username", PASSWORD);
 
     // When
-    ResponseEntity<ErrorResponse> response = restTemplate.postForEntity("/auth/register", request, ErrorResponse.class);
+    var response = restTemplate.postForEntity("/auth/register", request, ErrorResponse.class);
 
     // Then
     assertErrorRegisterResponse(response, "This email is already registered (use reset password functionality).");
@@ -83,10 +83,10 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldReturnUsernameAlreadyRegistered() {
     // Given
-    RegisterRequest request = new RegisterRequest("new-user@matag.com", "User1", PASSWORD);
+    var request = new RegisterRequest("new-user@matag.com", "User1", PASSWORD);
 
     // When
-    ResponseEntity<ErrorResponse> response = restTemplate.postForEntity("/auth/register", request, ErrorResponse.class);
+    var response = restTemplate.postForEntity("/auth/register", request, ErrorResponse.class);
 
     // Then
     assertErrorRegisterResponse(response, "This username is already registered (please choose a new one).");
@@ -96,16 +96,16 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   @SneakyThrows
   public void registerANewUser() {
     // Given
-    RegisterRequest request = new RegisterRequest("new-user@matag.com", "NewUser", PASSWORD);
-    MimeMessage mimeMessage = mockMailSender();
+    var request = new RegisterRequest("new-user@matag.com", "NewUser", PASSWORD);
+    var mimeMessage = mockMailSender();
 
     // When
-    ResponseEntity<RegisterResponse> response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
+    var response = restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
 
     // Then
     assertSuccessfulRegisterResponse(response);
 
-    MatagUser user = loadUser("NewUser");
+    var user = loadUser("NewUser");
     assertThat(user.getUsername()).isEqualTo("NewUser");
     assertThat(user.getPassword()).isNotBlank();
     assertThat(user.getEmailAddress()).isEqualTo("new-user@matag.com");
@@ -119,15 +119,15 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   public void verifyAUser() {
     // Given
     String username = "NewUser";
-    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
+    var request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
     mockMailSender();
 
     restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
-    MatagUser user = loadUser(username);
-    String verificationCode = user.getMatagUserVerification().getVerificationCode();
+    var user = loadUser(username);
+    var verificationCode = user.getMatagUserVerification().getVerificationCode();
 
     // When
-    ResponseEntity<VerifyResponse> verifyResponse = restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, VerifyResponse.class);
+    var verifyResponse = restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, VerifyResponse.class);
 
     // Then
     assertThat(verifyResponse.getStatusCode()).isEqualTo(OK);
@@ -144,46 +144,46 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   @Test
   public void verifyAnInactiveUser() {
     // Given
-    String username = "NewUser";
-    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
+    var username = "NewUser";
+    var request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
     mockMailSender();
 
     restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
-    MatagUser newUser = loadUser(username);
-    String verificationCode = newUser.getMatagUserVerification().getVerificationCode();
+    var newUser = loadUser(username);
+    var verificationCode = newUser.getMatagUserVerification().getVerificationCode();
     newUser.setStatus(INACTIVE);
     matagUserRepository.save(newUser);
 
     // When
-    ResponseEntity<ErrorResponse> verifyResponse = restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, ErrorResponse.class);
+    var verifyResponse = restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, ErrorResponse.class);
 
     // Then
     assertThat(verifyResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
     assertThat(verifyResponse.getBody()).isNotNull();
     assertThat(verifyResponse.getBody().getError()).isEqualTo("Your account could not be verified. Please send a message to matag.the.game@gmail.com.");
 
-    MatagUser user = loadUser(username);
+    var user = loadUser(username);
     assertThat(user.getStatus()).isEqualTo(INACTIVE);
   }
 
   @Test
   public void verifyFailsWithIncorrectVerificationCode() {
     // Given
-    String username = "NewUser";
-    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
+    var username = "NewUser";
+    var request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
     mockMailSender();
 
     restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
 
     // When
-    ResponseEntity<ErrorResponse> verifyResponse = restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + "incorrect-verification-code", ErrorResponse.class);
+    var verifyResponse = restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + "incorrect-verification-code", ErrorResponse.class);
 
     // Then
     assertThat(verifyResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
     assertThat(verifyResponse.getBody()).isNotNull();
     assertThat(verifyResponse.getBody().getError()).isEqualTo("Your account could not be verified. Please send a message to matag.the.game@gmail.com.");
 
-    MatagUser user = loadUser(username);
+    var user = loadUser(username);
     assertThat(user.getStatus()).isEqualTo(VERIFYING);
     assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(1);
   }
@@ -191,13 +191,13 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   @Test
   public void verifyAUserFailsIfTooManyAttempts() {
     // Given
-    String username = "NewUser";
-    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
+    var username = "NewUser";
+    var request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
     mockMailSender();
 
     restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
-    MatagUser user = loadUser(username);
-    String verificationCode = user.getMatagUserVerification().getVerificationCode();
+    var user = loadUser(username);
+    var verificationCode = user.getMatagUserVerification().getVerificationCode();
 
     // When
     restTemplate.getForEntity("/auth/verify?username=" + username + "&code=incorrect-code", VerifyResponse.class);
@@ -218,18 +218,18 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   @Test
   public void verifyAUserFailsIfAfterValidUntilDate() {
     // Given
-    String username = "NewUser";
-    RegisterRequest request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
+    var username = "NewUser";
+    var request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
     mockMailSender();
 
     restTemplate.postForEntity("/auth/register", request, RegisterResponse.class);
-    MatagUser user = loadUser(username);
-    String verificationCode = user.getMatagUserVerification().getVerificationCode();
+    var user = loadUser(username);
+    var verificationCode = user.getMatagUserVerification().getVerificationCode();
 
     setCurrentTime(LocalDateTime.now().plusDays(2));
 
     // When
-    ResponseEntity<VerifyResponse> verifyResponse = restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, VerifyResponse.class);
+    var verifyResponse = restTemplate.getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, VerifyResponse.class);
 
     // Then
     assertThat(verifyResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
@@ -252,7 +252,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   }
 
   private MimeMessage mockMailSender() {
-    MimeMessage mimeMessage = Mockito.mock(MimeMessage.class);
+    var mimeMessage = Mockito.mock(MimeMessage.class);
     given(javaMailSender.createMimeMessage()).willReturn(mimeMessage);
     return mimeMessage;
   }

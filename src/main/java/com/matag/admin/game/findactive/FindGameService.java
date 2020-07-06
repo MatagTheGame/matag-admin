@@ -20,15 +20,15 @@ public class FindGameService {
   private final GameSessionService gameSessionService;
 
   public ActiveGameResponse findActiveGame() {
-    MatagSession session = securityContextHolderHelper.getSession();
-    Optional<GameSession> activeGameSession = gameSessionRepository.findPlayerActiveGameSession(session.getSessionId());
+    var session = securityContextHolderHelper.getSession();
+    var activeGameSession = gameSessionRepository.findPlayerActiveGameSession(session.getSessionId());
 
     if (activeGameSession.isEmpty()) {
       return ActiveGameResponse.builder().build();
     }
 
-    Game game = activeGameSession.get().getGame();
-    GamePlayers gamePlayers = gameSessionService.getGamePlayers(game);
+    var game = activeGameSession.get().getGame();
+    var gamePlayers = gameSessionService.getGamePlayers(game);
 
     return ActiveGameResponse.builder()
       .gameId(game.getId())

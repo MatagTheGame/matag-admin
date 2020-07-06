@@ -16,7 +16,7 @@ public class EmailConfiguration {
       @Value("${matag.email.username}") String matagEmailUsername,
       @Value("${matag.email.password}") String matagEmailPassword
   ) {
-    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+    var mailSender = new JavaMailSenderImpl();
     mailSender.setHost("smtp.gmail.com");
     mailSender.setPort(587);
 

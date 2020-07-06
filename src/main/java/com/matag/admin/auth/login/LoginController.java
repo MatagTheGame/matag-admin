@@ -46,7 +46,7 @@ public class LoginController {
   public LoginResponse login(@RequestBody LoginRequest loginRequest) {
     LOGGER.info("User " + loginRequest.getEmailOrUsername() + " logging in.");
 
-    MatagUser user = validateLogin(loginRequest);
+    var user = validateLogin(loginRequest);
 
     MatagSession session = MatagSession.builder()
       .sessionId(UUID.randomUUID().toString())
@@ -66,14 +66,14 @@ public class LoginController {
   private MatagUser validateLogin(@RequestBody LoginRequest loginRequest) {
     passwordValidator.validate(loginRequest.getPassword());
 
-    boolean email = isEmailLogin(loginRequest);
+    var email = isEmailLogin(loginRequest);
     Optional<MatagUser> userOptional = getUsername(loginRequest.getEmailOrUsername(), email);
 
     if (userOptional.isEmpty()) {
       throw new InsufficientAuthenticationException(EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT);
     }
 
-    MatagUser user = userOptional.get();
+    var user = userOptional.get();
     if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
       throw new InsufficientAuthenticationException(EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT);
     }

@@ -17,7 +17,7 @@ public class FindActiveGameControllerTest extends AbstractApplicationTest {
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
 
     // When
-    ActiveGameResponse response = restTemplate.getForObject("/game", ActiveGameResponse.class);
+    var response = restTemplate.getForObject("/game", ActiveGameResponse.class);
 
     // Then
     assertThat(response.getGameId()).isNull();
@@ -28,14 +28,14 @@ public class FindActiveGameControllerTest extends AbstractApplicationTest {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
 
-    JoinGameRequest request = JoinGameRequest.builder()
+    var request = JoinGameRequest.builder()
       .gameType(UNLIMITED)
       .playerOptions("player1 options")
       .build();
     restTemplate.postForObject("/game", request, JoinGameResponse.class);
 
     // When
-    ActiveGameResponse response = restTemplate.getForObject("/game", ActiveGameResponse.class);
+    var response = restTemplate.getForObject("/game", ActiveGameResponse.class);
 
     // Then
     assertThat(response.getGameId()).isGreaterThan(0);

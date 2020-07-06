@@ -30,10 +30,10 @@ public class FinishGameService {
 
   @Transactional
   public void finish(Long gameId, FinishGameRequest request) {
-    Optional<Game> gameOptional = gameRepository.findById(gameId);
+    var gameOptional = gameRepository.findById(gameId);
     gameOptional.ifPresent(game -> {
       if (game.getStatus() == IN_PROGRESS) {
-        GamePlayers gamePlayers = gameSessionService.getGamePlayers(game);
+        var gamePlayers = gameSessionService.getGamePlayers(game);
         finishGame(game, gamePlayers, request.getWinnerSessionId());
       }
     });
@@ -42,7 +42,7 @@ public class FinishGameService {
   public void finishGame(Game game, GamePlayers gamePlayers, String winnerSessionId) {
     game.setStatus(GameStatusType.FINISHED);
 
-    GameResultType gameResultType = resultService.getResult(gamePlayers, winnerSessionId);
+    var gameResultType = resultService.getResult(gamePlayers, winnerSessionId);
     game.setResult(gameResultType);
     game.setFinishedAt(LocalDateTime.now(clock));
     gameRepository.save(game);

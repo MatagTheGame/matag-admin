@@ -21,7 +21,7 @@ public class DeckRetrieverController {
 
   @GetMapping
   public DeckInfo deckInfo() {
-    String sessionId = securityContextHolderHelper.getSession().getSessionId();
+    var sessionId = securityContextHolderHelper.getSession().getSessionId();
     return gameSessionRepository.findPlayerActiveGameSession(sessionId)
       .map(this::readDeckInfo)
       .orElseThrow(() -> new RuntimeException("Active deck not found."));

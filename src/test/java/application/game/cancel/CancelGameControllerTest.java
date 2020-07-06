@@ -35,15 +35,15 @@ public class CancelGameControllerTest extends AbstractApplicationTest {
   public void shouldCancelAGameWhereNobodyJoined() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    JoinGameRequest request = JoinGameRequest.builder()
+    var request = JoinGameRequest.builder()
       .gameType(UNLIMITED)
       .playerOptions("player1 options")
       .build();
-    JoinGameResponse joinGameResponse = restTemplate.postForObject("/game", request, JoinGameResponse.class);
-    Long gameId = joinGameResponse.getGameId();
+    var joinGameResponse = restTemplate.postForObject("/game", request, JoinGameResponse.class);
+    var gameId = joinGameResponse.getGameId();
 
     // When
-    ResponseEntity<String> response = restTemplate.exchange("/game/" + gameId, HttpMethod.DELETE, null, String.class);
+    var response = restTemplate.exchange("/game/" + gameId, HttpMethod.DELETE, null, String.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(OK);
@@ -55,15 +55,15 @@ public class CancelGameControllerTest extends AbstractApplicationTest {
   public void shouldCancelAGameWhereSomebodyJoined() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    JoinGameRequest request1 = JoinGameRequest.builder()
+    var request1 = JoinGameRequest.builder()
       .gameType(UNLIMITED)
       .playerOptions("player1 options")
       .build();
-    JoinGameResponse joinGameResponse = restTemplate.postForObject("/game", request1, JoinGameResponse.class);
-    Long gameId = joinGameResponse.getGameId();
+    var joinGameResponse = restTemplate.postForObject("/game", request1, JoinGameResponse.class);
+    var gameId = joinGameResponse.getGameId();
 
     userIsLoggedIn(USER_2_SESSION_TOKEN, USER_2_USERNAME);
-    JoinGameRequest request2 = JoinGameRequest.builder()
+    var request2 = JoinGameRequest.builder()
       .gameType(UNLIMITED)
       .playerOptions("player2 options")
       .build();
@@ -71,11 +71,11 @@ public class CancelGameControllerTest extends AbstractApplicationTest {
 
     // When
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    ResponseEntity<String> response = restTemplate.exchange("/game/" + gameId, HttpMethod.DELETE, null, String.class);
+    var response = restTemplate.exchange("/game/" + gameId, HttpMethod.DELETE, null, String.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(OK);
-    Optional<Game> game = gameRepository.findById(gameId);
+    var game = gameRepository.findById(gameId);
     assertThat(game).isPresent();
     assertThat(game.get().getStatus()).isEqualTo(FINISHED);
     assertThat(game.get().getResult()).isEqualTo(R2);

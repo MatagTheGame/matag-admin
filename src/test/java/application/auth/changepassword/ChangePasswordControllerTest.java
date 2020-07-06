@@ -20,10 +20,10 @@ public class ChangePasswordControllerTest extends AbstractApplicationTest {
   public void shouldReturnInvalidOldPassword() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    ChangePasswordRequest request = new ChangePasswordRequest("wrong-password", "new-password");
+    var request = new ChangePasswordRequest("wrong-password", "new-password");
 
     // When
-    ResponseEntity<ErrorResponse> response = restTemplate.postForEntity("/auth/change-password", request, ErrorResponse.class);
+    var response = restTemplate.postForEntity("/auth/change-password", request, ErrorResponse.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
@@ -35,10 +35,10 @@ public class ChangePasswordControllerTest extends AbstractApplicationTest {
   public void shouldReturnInvalidNewPassword() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    ChangePasswordRequest request = new ChangePasswordRequest("password", "xxx");
+    var request = new ChangePasswordRequest("password", "xxx");
 
     // When
-    ResponseEntity<ErrorResponse> response = restTemplate.postForEntity("/auth/change-password", request, ErrorResponse.class);
+    var response = restTemplate.postForEntity("/auth/change-password", request, ErrorResponse.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
@@ -50,10 +50,10 @@ public class ChangePasswordControllerTest extends AbstractApplicationTest {
   public void shouldChangeThePassword() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    ChangePasswordRequest request = new ChangePasswordRequest("password", "new-password");
+    var request = new ChangePasswordRequest("password", "new-password");
 
     // When
-    ResponseEntity<ChangePasswordResponse> response = restTemplate.postForEntity("/auth/change-password", request, ChangePasswordResponse.class);
+    var response = restTemplate.postForEntity("/auth/change-password", request, ChangePasswordResponse.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(OK);

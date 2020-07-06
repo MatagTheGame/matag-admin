@@ -20,7 +20,7 @@ public class LogoutControllerTest extends AbstractApplicationTest {
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
 
     // When
-    ResponseEntity<String> logoutResponse = restTemplate.getForEntity("/auth/logout", String.class);
+    var logoutResponse = restTemplate.getForEntity("/auth/logout", String.class);
 
     // Then
     assertThat(logoutResponse.getStatusCode()).isEqualTo(OK);
@@ -30,7 +30,7 @@ public class LogoutControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldLogoutANonLoggedInUser() {
     // When
-    ResponseEntity<String> logoutResponse = restTemplate.getForEntity("/auth/logout", String.class);
+    var logoutResponse = restTemplate.getForEntity("/auth/logout", String.class);
 
     // Then
     assertThat(logoutResponse.getStatusCode()).isEqualTo(OK);

@@ -22,8 +22,8 @@ public class UserVerifyService {
   private final Clock clock;
 
   public MatagUserVerification createVerification(MatagUser user) {
-    String verificationCode = randomCodeService.generatesRandomCode();
-    MatagUserVerification matagUserVerification = MatagUserVerification.builder()
+    var verificationCode = randomCodeService.generatesRandomCode();
+    var matagUserVerification = MatagUserVerification.builder()
       .verificationCode(verificationCode)
       .matagUser(user)
       .validUntil(LocalDateTime.now(clock).plusDays(1))
@@ -36,7 +36,7 @@ public class UserVerifyService {
   }
 
   public void verify(MatagUser user, String code) {
-    MatagUserVerification matagUserVerification = user.getMatagUserVerification();
+    var matagUserVerification = user.getMatagUserVerification();
     if (matagUserVerification.getAttempts() >= MAX_ATTEMPTS) {
       increaseAttempts(matagUserVerification);
       throw new RuntimeException("User " + user.getUsername() + " too many attempts. times: " + matagUserVerification.getAttempts());

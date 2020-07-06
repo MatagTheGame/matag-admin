@@ -4,6 +4,6 @@ import lombok.Value;
 
 @Value
 public class GamePlayers {
-  private final GameSession playerSession;
-  private final GameSession opponentSession;
+  GameSession playerSession;
+  GameSession opponentSession;
 }

@@ -43,8 +43,8 @@ public class AuthSessionFilter extends GenericFilterBean {
   }
 
   private void applySecurity(FirewalledRequest request) {
-    String adminPassword = request.getHeader(ADMIN_NAME);
-    String userSessionId = request.getHeader(SESSION_NAME);
+    var adminPassword = request.getHeader(ADMIN_NAME);
+    var userSessionId = request.getHeader(SESSION_NAME);
 
     if (StringUtils.hasText(adminPassword)) {
       adminAuthentication(adminPassword);
@@ -56,19 +56,19 @@ public class AuthSessionFilter extends GenericFilterBean {
 
   private void adminAuthentication(String adminPassword) {
     if (Objects.equals(configService.getMatagAdminPassword(), adminPassword)) {
-      List<SimpleGrantedAuthority> authorities = singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
-      PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken("admin", configService.getMatagAdminPassword(), authorities);
+      var authorities = singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+      var authentication = new PreAuthenticatedAuthenticationToken("admin", configService.getMatagAdminPassword(), authorities);
       SecurityContextHolder.getContext().setAuthentication(authentication);
     }
   }
 
   private void userAuthentication(String sessionId) {
-    Optional<MatagSession> matagSession = matagSessionRepository.findBySessionId(sessionId);
+    var matagSession = matagSessionRepository.findBySessionId(sessionId);
 
     matagSession.ifPresent(session -> {
       if (LocalDateTime.now(clock).isBefore(session.getValidUntil())) {
-        List<SimpleGrantedAuthority> authorities = singletonList(new SimpleGrantedAuthority("ROLE_" + session.getMatagUser().getType().toString()));
-        PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(session.getMatagUser(), session, authorities);
+        var authorities = singletonList(new SimpleGrantedAuthority("ROLE_" + session.getMatagUser().getType().toString()));
+        var authentication = new PreAuthenticatedAuthenticationToken(session.getMatagUser(), session, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         if (LocalDateTime.now(clock).plusSeconds(SESSION_DURATION_TIME / 2).isAfter(session.getValidUntil())) {

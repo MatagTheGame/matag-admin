@@ -58,8 +58,8 @@ public class MatagAdminWebSecurityConfiguration extends WebSecurityConfigurerAda
 
   @Bean
   public PasswordEncoder passwordEncoder() {
-    String defaultEncodingId = "argon2";
-    Map<String, PasswordEncoder> encoders = new HashMap<>();
+    var defaultEncodingId = "argon2";
+    var encoders = new HashMap<String, PasswordEncoder>();
     encoders.put(defaultEncodingId, new Argon2PasswordEncoder(16, 32, 8, 1 << 16, 4));
     return new DelegatingPasswordEncoder(defaultEncodingId, encoders);
   }

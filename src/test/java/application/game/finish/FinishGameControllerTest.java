@@ -38,8 +38,8 @@ public class FinishGameControllerTest extends AbstractApplicationTest {
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
 
     // When
-    FinishGameRequest finishGameRequest = new FinishGameRequest(USER_1_SESSION_TOKEN);
-    ResponseEntity<Object> response = restTemplate.postForEntity("/game/1/finish", finishGameRequest, Object.class);
+    var finishGameRequest = new FinishGameRequest(USER_1_SESSION_TOKEN);
+    var response = restTemplate.postForEntity("/game/1/finish", finishGameRequest, Object.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
@@ -49,15 +49,15 @@ public class FinishGameControllerTest extends AbstractApplicationTest {
   public void shouldFinishAGame() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    JoinGameRequest request1 = JoinGameRequest.builder()
+    var request1 = JoinGameRequest.builder()
       .gameType(UNLIMITED)
       .playerOptions("player1 options")
       .build();
-    JoinGameResponse joinGameResponse = restTemplate.postForObject("/game", request1, JoinGameResponse.class);
+    var joinGameResponse = restTemplate.postForObject("/game", request1, JoinGameResponse.class);
     Long gameId = joinGameResponse.getGameId();
 
     userIsLoggedIn(USER_2_SESSION_TOKEN, USER_2_USERNAME);
-    JoinGameRequest request2 = JoinGameRequest.builder()
+    var request2 = JoinGameRequest.builder()
       .gameType(UNLIMITED)
       .playerOptions("player2 options")
       .build();
@@ -65,18 +65,18 @@ public class FinishGameControllerTest extends AbstractApplicationTest {
 
     // When
     adminAuthentication();
-    FinishGameRequest finishGameRequest = new FinishGameRequest(USER_1_SESSION_TOKEN);
-    ResponseEntity<Object> response = restTemplate.postForEntity("/game/" + gameId + "/finish", finishGameRequest, Object.class);
+    var finishGameRequest = new FinishGameRequest(USER_1_SESSION_TOKEN);
+    var response = restTemplate.postForEntity("/game/" + gameId + "/finish", finishGameRequest, Object.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(OK);
-    Optional<Game> game = gameRepository.findById(gameId);
+    var game = gameRepository.findById(gameId);
     assertThat(game).isPresent();
     assertThat(game.get().getStatus()).isEqualTo(FINISHED);
     assertThat(game.get().getResult()).isEqualTo(R1);
     assertThat(game.get().getFinishedAt()).isNotNull();
 
-    List<GameSession> gameSessions = StreamSupport.stream(gameSessionRepository.findAll().spliterator(), false).collect(Collectors.toList());
+    var gameSessions = StreamSupport.stream(gameSessionRepository.findAll().spliterator(), false).collect(Collectors.toList());
     assertThat(gameSessions).hasSize(2);
     assertThat(gameSessions.get(0).getSession()).isNull();
     assertThat(gameSessions.get(1).getSession()).isNull();

@@ -16,8 +16,8 @@ public class RegisterEmailService {
 
   @SneakyThrows
   public void sendRegistrationEmail(String email, String username, String verificationCode) {
-    MimeMessage mimeMessage = emailSender.createMimeMessage();
-    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+    var mimeMessage = emailSender.createMimeMessage();
+    var helper = new MimeMessageHelper(mimeMessage, "utf-8");
     helper.setTo(email);
     helper.setSubject(configService.getMatagName() + " - Registration");
     helper.setText(createBody(username, verificationCode), true);
@@ -25,7 +25,7 @@ public class RegisterEmailService {
   }
 
   private String createBody(String username, String verificationCode) {
-    String verificationLink = configService.getMatagAdminUrl() + "/ui/admin/auth/verify?" +
+    var verificationLink = configService.getMatagAdminUrl() + "/ui/admin/auth/verify?" +
       "username=" + username + "&" +
       "code=" + verificationCode;
 

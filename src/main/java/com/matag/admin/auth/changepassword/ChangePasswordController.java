@@ -33,11 +33,11 @@ public class ChangePasswordController {
 
   @PostMapping("/change-password")
   public ChangePasswordResponse changePassword(@RequestBody ChangePasswordRequest request) {
-    MatagUser user = securityContextHolderHelper.getUser();
+    var user = securityContextHolderHelper.getUser();
 
     validate(request, user);
 
-    String newPasswordEncoded = passwordEncoder.encode(request.getNewPassword());
+    var newPasswordEncoded = passwordEncoder.encode(request.getNewPassword());
     user.setPassword(newPasswordEncoded);
     user.setUpdatedAt(LocalDateTime.now(clock));
     userRepository.save(user);

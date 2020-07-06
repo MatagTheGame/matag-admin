@@ -91,7 +91,7 @@ public abstract class AbstractApplicationTest {
   }
 
   public void loginUser(String userToken, String username) {
-    String sessionId = UUID.fromString(userToken).toString();
+    var sessionId = UUID.fromString(userToken).toString();
     if (!matagSessionRepository.existsBySessionId(sessionId)) {
 
       matagSessionRepository.save(MatagSession.builder()

@@ -27,7 +27,7 @@ public class GamesHistoryControllerTest extends AbstractApplicationTest {
   @Test
   public void returnsForbiddenForNonLoggedInUsers() {
     // When
-    ResponseEntity<GamesHistoryResponse> response = restTemplate.getForEntity("/game/history", GamesHistoryResponse.class);
+    var response = restTemplate.getForEntity("/game/history", GamesHistoryResponse.class);
 
     // Then
     assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
@@ -37,23 +37,23 @@ public class GamesHistoryControllerTest extends AbstractApplicationTest {
   public void retrieveGameHistory() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    MatagUser user1 = loadUser(USER_1_USERNAME);
-    MatagUser user2 = loadUser(USER_2_USERNAME);
+    var user1 = loadUser(USER_1_USERNAME);
+    var user2 = loadUser(USER_2_USERNAME);
 
-    Game game1 = createGame(GameResultType.R1);
+    var game1 = createGame(GameResultType.R1);
     createGameSession(game1, user1);
     createGameSession(game1, user2);
 
-    Game game2 = createGame(GameResultType.R2);
+    var game2 = createGame(GameResultType.R2);
     createGameSession(game2, user1);
     createGameSession(game2, user2);
 
-    Game game3 = createGame(GameResultType.RX);
+    var game3 = createGame(GameResultType.RX);
     createGameSession(game3, user2);
     createGameSession(game3, user1);
 
     // When
-    GamesHistoryResponse gamesHistoryResponse = restTemplate.getForObject("/game/history", GamesHistoryResponse.class);
+    var gamesHistoryResponse = restTemplate.getForObject("/game/history", GamesHistoryResponse.class);
 
     // Then
     assertThat(gamesHistoryResponse.getGamesHistory()).hasSize(3);
@@ -99,7 +99,7 @@ public class GamesHistoryControllerTest extends AbstractApplicationTest {
   }
 
   private Game createGame(GameResultType result) {
-    Game game = Game.builder()
+    var game = Game.builder()
       .createdAt(LocalDateTime.now(clock))
       .type(GameType.UNLIMITED)
       .status(GameStatusType.FINISHED)
@@ -111,7 +111,7 @@ public class GamesHistoryControllerTest extends AbstractApplicationTest {
   }
 
   private void createGameSession(Game game, MatagUser user) {
-    GameSession gameSession = GameSession.builder()
+    var gameSession = GameSession.builder()
       .game(game)
       .player(user)
       .playerOptions(user.getUsername() + " options")

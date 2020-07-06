@@ -23,7 +23,7 @@ public class ResultService {
   }
 
   public GameUserResultType toUserResult(Game game, MatagUser user) {
-    GamePlayers gamePlayers = gameSessionService.getGamePlayers(game);
+    var gamePlayers = gameSessionService.getGamePlayers(game);
 
     switch (game.getResult()) {
       case R1:

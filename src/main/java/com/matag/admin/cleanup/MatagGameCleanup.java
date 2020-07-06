@@ -28,13 +28,12 @@ public class MatagGameCleanup {
 
   @Transactional
   public void cleanup() {
-    List<Game> oldNotFinishedGames = gameRepository.findOldGameByStatus(List.of(STARTING, IN_PROGRESS), LocalDateTime.now(clock).minusDays(2));
+    var oldNotFinishedGames = gameRepository.findOldGameByStatus(List.of(STARTING, IN_PROGRESS), LocalDateTime.now(clock).minusDays(2));
     LOGGER.info("MatagGameCleanup identified " + oldNotFinishedGames.size() + " entries to delete.");
-    int totalGameDeleted = 0;
+    var totalGameDeleted = 0;
     for (Game game : oldNotFinishedGames) {
       try {
-        List<GameSession> gameSessions = game.getGameSessions();
-        for (GameSession gameSession : gameSessions) {
+        for (GameSession gameSession : game.getGameSessions()) {
           gameSessionRepository.delete(gameSession);
           gameRepository.delete(game);
           totalGameDeleted++;

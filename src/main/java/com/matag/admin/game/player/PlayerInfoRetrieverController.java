@@ -18,12 +18,12 @@ public class PlayerInfoRetrieverController {
 
   @GetMapping
   public PlayerInfo deckInfo() {
-    MatagSession session = securityContextHolderHelper.getSession();
+    var session = securityContextHolderHelper.getSession();
     return new PlayerInfo(getUsername(session));
   }
 
   private String getUsername(MatagSession session) {
-    MatagUser matagUser = session.getMatagUser();
+    var matagUser = session.getMatagUser();
     if (matagUser.getType() == MatagUserType.GUEST) {
       return matagUser.getUsername() +  "-" + session.getId();
     } else {

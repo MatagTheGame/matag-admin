@@ -22,7 +22,7 @@ public class MatagLogoutSuccessHandler implements LogoutSuccessHandler {
   @Transactional
   @Override
   public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-    String sessionId = request.getHeader(SESSION_NAME);
+    var sessionId = request.getHeader(SESSION_NAME);
     if (StringUtils.hasText(sessionId)) {
       matagSessionRepository.deleteBySessionId(sessionId);
     }
