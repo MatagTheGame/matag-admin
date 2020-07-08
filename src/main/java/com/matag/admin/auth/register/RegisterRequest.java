@@ -1,9 +1,7 @@
 package com.matag.admin.auth.register;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
-public record RegisterRequest(
-  @JsonProperty("email")String email,
-  @JsonProperty("username")String username,
-  @JsonProperty("password")String password) {
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public record RegisterRequest(String email, String username, String password) {
 }

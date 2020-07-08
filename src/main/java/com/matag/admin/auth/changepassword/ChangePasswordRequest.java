@@ -1,8 +1,7 @@
 package com.matag.admin.auth.changepassword;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
-public record ChangePasswordRequest(
-  @JsonProperty("oldPassword")String oldPassword,
-  @JsonProperty("newPassword")String newPassword) {
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public record ChangePasswordRequest(String oldPassword, String newPassword) {
 }

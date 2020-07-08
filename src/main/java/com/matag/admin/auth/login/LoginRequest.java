@@ -1,8 +1,7 @@
 package com.matag.admin.auth.login;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
-public record LoginRequest(
-  @JsonProperty("emailOrUsername")String emailOrUsername,
-  @JsonProperty("password")String password) {
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public record LoginRequest(String emailOrUsername, String password) {
 }

@@ -1,9 +1,8 @@
 package com.matag.admin.game.join;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.matag.admin.game.game.GameType;
 
-public record JoinGameRequest(
-  @JsonProperty("gameType")GameType gameType,
-  @JsonProperty("playerOptions")String playerOptions) {
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public record JoinGameRequest(GameType gameType, String playerOptions) {
 }
