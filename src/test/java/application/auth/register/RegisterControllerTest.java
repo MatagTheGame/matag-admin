@@ -5,6 +5,7 @@ import com.matag.admin.auth.register.RegisterRequest;
 import com.matag.admin.auth.register.RegisterResponse;
 import com.matag.admin.auth.register.VerifyResponse;
 import com.matag.admin.exception.ErrorResponse;
+import com.matag.admin.user.MatagUser;
 import com.matag.admin.user.MatagUserRepository;
 import lombok.SneakyThrows;
 import org.junit.Test;
@@ -247,7 +248,7 @@ public class RegisterControllerTest extends AbstractApplicationTest {
   private void assertSuccessfulRegisterResponse(ResponseEntity<RegisterResponse> response) {
     assertThat(response.getStatusCode()).isEqualTo(OK);
     assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().message()).isEqualTo("Registration Successful. Please check your email for a verification code.");
+    assertThat(response.getBody().getMessage()).isEqualTo("Registration Successful. Please check your email for a verification code.");
   }
 
   private MimeMessage mockMailSender() {
@@ -255,4 +256,5 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     given(javaMailSender.createMimeMessage()).willReturn(mimeMessage);
     return mimeMessage;
   }
+
 }

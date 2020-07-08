@@ -1,6 +1,18 @@
 package com.matag.admin.auth.register;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.Builder;
+import lombok.Value;
 
-public record RegisterResponse(@JsonProperty("message")String message) {
+@Value
+@JsonDeserialize(builder = RegisterResponse.RegisterResponseBuilder.class)
+@Builder(toBuilder = true)
+public class RegisterResponse {
+  String message;
+
+  @JsonPOJOBuilder(withPrefix = "")
+  public static class RegisterResponseBuilder {
+
+  }
 }

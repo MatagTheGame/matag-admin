@@ -32,9 +32,12 @@ public class CancelGameControllerTest extends AbstractApplicationTest {
   public void shouldCancelAGameWhereNobodyJoined() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    var request = new JoinGameRequest(UNLIMITED, "player1 options");
+    var request = JoinGameRequest.builder()
+      .gameType(UNLIMITED)
+      .playerOptions("player1 options")
+      .build();
     var joinGameResponse = restTemplate.postForObject("/game", request, JoinGameResponse.class);
-    var gameId = joinGameResponse.gameId();
+    var gameId = joinGameResponse.getGameId();
 
     // When
     var response = restTemplate.exchange("/game/" + gameId, HttpMethod.DELETE, null, String.class);
@@ -49,12 +52,18 @@ public class CancelGameControllerTest extends AbstractApplicationTest {
   public void shouldCancelAGameWhereSomebodyJoined() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    var request1 = new JoinGameRequest(UNLIMITED, "player1 options");
+    var request1 = JoinGameRequest.builder()
+      .gameType(UNLIMITED)
+      .playerOptions("player1 options")
+      .build();
     var joinGameResponse = restTemplate.postForObject("/game", request1, JoinGameResponse.class);
-    var gameId = joinGameResponse.gameId();
+    var gameId = joinGameResponse.getGameId();
 
     userIsLoggedIn(USER_2_SESSION_TOKEN, USER_2_USERNAME);
-    var request2 = new JoinGameRequest(UNLIMITED, "player2 options");
+    var request2 = JoinGameRequest.builder()
+      .gameType(UNLIMITED)
+      .playerOptions("player2 options")
+      .build();
     restTemplate.postForObject("/game", request2, JoinGameResponse.class);
 
     // When

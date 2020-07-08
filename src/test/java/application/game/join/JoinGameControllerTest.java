@@ -1,6 +1,7 @@
 package application.game.join;
 
 import application.AbstractApplicationTest;
+import com.matag.admin.game.game.Game;
 import com.matag.admin.game.game.GameRepository;
 import com.matag.admin.game.join.JoinGameRequest;
 import com.matag.admin.game.join.JoinGameResponse;
@@ -8,6 +9,8 @@ import com.matag.admin.game.session.GameSession;
 import com.matag.admin.game.session.GameSessionRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Iterator;
 
 import static application.TestUtils.*;
 import static com.matag.admin.game.game.GameStatusType.IN_PROGRESS;
@@ -26,18 +29,21 @@ public class JoinGameControllerTest extends AbstractApplicationTest {
   public void shouldCreateAGame() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    var request = new JoinGameRequest(UNLIMITED, "player1 options");
+    var request = JoinGameRequest.builder()
+      .gameType(UNLIMITED)
+      .playerOptions("player1 options")
+      .build();
 
     // When
     var response = restTemplate.postForObject("/game", request, JoinGameResponse.class);
 
     // Then
-    assertThat(response.gameId()).isGreaterThan(0);
+    assertThat(response.getGameId()).isGreaterThan(0);
 
     var games = gameRepository.findAll();
     assertThat(games).hasSize(1);
     var game = games.iterator().next();
-    assertThat(game.getId()).isEqualTo(response.gameId());
+    assertThat(game.getId()).isEqualTo(response.getGameId());
     assertThat(game.getType()).isEqualTo(UNLIMITED);
     assertThat(game.getStatus()).isEqualTo(STARTING);
 
@@ -54,24 +60,30 @@ public class JoinGameControllerTest extends AbstractApplicationTest {
   public void aDifferentPlayerShouldJoinAnExistingGame() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    var player1JoinRequest = new JoinGameRequest(UNLIMITED, "player1 options");
+    var player1JoinRequest = JoinGameRequest.builder()
+      .gameType(UNLIMITED)
+      .playerOptions("player1 options")
+      .build();
 
     restTemplate.postForObject("/game", player1JoinRequest, JoinGameResponse.class);
 
     userIsLoggedIn(USER_2_SESSION_TOKEN, USER_2_USERNAME);
 
-    var player2JoinRequest = new JoinGameRequest(UNLIMITED, "player2 options");
+    var player2JoinRequest = JoinGameRequest.builder()
+      .gameType(UNLIMITED)
+      .playerOptions("player2 options")
+      .build();
 
     // When
     var response = restTemplate.postForObject("/game", player2JoinRequest, JoinGameResponse.class);
 
     // Then
-    assertThat(response.gameId()).isGreaterThan(0);
+    assertThat(response.getGameId()).isGreaterThan(0);
 
     var games = gameRepository.findAll();
     assertThat(games).hasSize(1);
     var game = games.iterator().next();
-    assertThat(game.getId()).isEqualTo(response.gameId());
+    assertThat(game.getId()).isEqualTo(response.getGameId());
     assertThat(game.getType()).isEqualTo(UNLIMITED);
     assertThat(game.getStatus()).isEqualTo(IN_PROGRESS);
 
@@ -95,25 +107,34 @@ public class JoinGameControllerTest extends AbstractApplicationTest {
   public void samePlayerShouldNotBeAbleToJoinItsOwnGame() {
     // Given
     userIsLoggedIn(GUEST_SESSION_TOKEN_1, GUEST_USERNAME);
-    var player1JoinRequest = new JoinGameRequest(UNLIMITED, "player1 options");
+    var player1JoinRequest = JoinGameRequest.builder()
+      .gameType(UNLIMITED)
+      .playerOptions("player1 options")
+      .build();
 
     restTemplate.postForObject("/game", player1JoinRequest, JoinGameResponse.class);
 
     userIsLoggedIn(GUEST_SESSION_TOKEN_2, GUEST_USERNAME);
-    var player2JoinRequest = new JoinGameRequest(UNLIMITED, "player2 options");
+    var player2JoinRequest = JoinGameRequest.builder()
+      .gameType(UNLIMITED)
+      .playerOptions("player2 options")
+      .build();
 
     // When
     var response = restTemplate.postForObject("/game", player2JoinRequest, JoinGameResponse.class);
 
     // Then
-    assertThat(response.gameId()).isGreaterThan(0);
+    assertThat(response.getGameId()).isGreaterThan(0);
   }
 
   @Test
   public void userCannotStartAnotherGameIfAlreadyInOne() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    var player1JoinRequest = new JoinGameRequest(UNLIMITED, "player1 options");
+    var player1JoinRequest = JoinGameRequest.builder()
+      .gameType(UNLIMITED)
+      .playerOptions("player1 options")
+      .build();
 
     restTemplate.postForObject("/game", player1JoinRequest, JoinGameResponse.class);
 
@@ -121,7 +142,7 @@ public class JoinGameControllerTest extends AbstractApplicationTest {
     var response = restTemplate.postForObject("/game", player1JoinRequest, JoinGameResponse.class);
 
     // Then
-    assertThat(response.error()).isEqualTo("You are already in a game.");
-    assertThat(response.activeGameId()).isGreaterThan(0);
+    assertThat(response.getError()).isEqualTo("You are already in a game.");
+    assertThat(response.getActiveGameId()).isGreaterThan(0);
   }
 }

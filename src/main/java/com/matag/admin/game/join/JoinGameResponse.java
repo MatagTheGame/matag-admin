@@ -1,9 +1,22 @@
 package com.matag.admin.game.join;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Value;
 
-public record JoinGameResponse(
-  @JsonProperty("gameId")Long gameId,
-  @JsonProperty("error")String error,
-  @JsonProperty("activeGameId")Long activeGameId) {
+@Value
+@AllArgsConstructor
+@JsonDeserialize(builder = JoinGameResponse.JoinGameResponseBuilder.class)
+@Builder(toBuilder = true)
+public class JoinGameResponse {
+  Long gameId;
+  String error;
+  Long activeGameId;
+
+  @JsonPOJOBuilder(withPrefix = "")
+  public static class JoinGameResponseBuilder {
+
+  }
 }

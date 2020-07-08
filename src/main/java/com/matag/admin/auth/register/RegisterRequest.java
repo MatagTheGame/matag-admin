@@ -1,7 +1,22 @@
 package com.matag.admin.auth.register;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Value;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public record RegisterRequest(String email, String username, String password) {
+@Value
+@AllArgsConstructor
+@JsonDeserialize(builder = RegisterRequest.RegisterRequestBuilder.class)
+@Builder(toBuilder = true)
+public class RegisterRequest {
+  String email;
+  String username;
+  String password;
+
+  @JsonPOJOBuilder(withPrefix = "")
+  public static class RegisterRequestBuilder {
+
+  }
 }

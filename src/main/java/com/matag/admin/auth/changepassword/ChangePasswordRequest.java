@@ -1,7 +1,21 @@
 package com.matag.admin.auth.changepassword;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Value;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public record ChangePasswordRequest(String oldPassword, String newPassword) {
+@Value
+@AllArgsConstructor
+@JsonDeserialize(builder = ChangePasswordRequest.ChangePasswordRequestBuilder.class)
+@Builder(toBuilder = true)
+public class ChangePasswordRequest {
+  String oldPassword;
+  String newPassword;
+
+  @JsonPOJOBuilder(withPrefix = "")
+  public static class ChangePasswordRequestBuilder {
+
+  }
 }

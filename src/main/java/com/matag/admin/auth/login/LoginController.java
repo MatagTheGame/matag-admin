@@ -44,7 +44,7 @@ public class LoginController {
 
   @PostMapping("/login")
   public LoginResponse login(@RequestBody LoginRequest loginRequest) {
-    LOGGER.info("User " + loginRequest.emailOrUsername() + " logging in.");
+    LOGGER.info("User " + loginRequest.getEmailOrUsername() + " logging in.");
 
     var user = validateLogin(loginRequest);
 
@@ -57,21 +57,24 @@ public class LoginController {
     matagSessionRepository.save(session);
 
     LOGGER.info("Login successful.");
-    return new LoginResponse(session.getSessionId(), currentUserProfileService.getProfile(user), null);
+    return LoginResponse.builder()
+      .token(session.getSessionId())
+      .profile(currentUserProfileService.getProfile(user))
+      .build();
   }
 
   private MatagUser validateLogin(@RequestBody LoginRequest loginRequest) {
-    passwordValidator.validate(loginRequest.password());
+    passwordValidator.validate(loginRequest.getPassword());
 
     var email = isEmailLogin(loginRequest);
-    Optional<MatagUser> userOptional = getUsername(loginRequest.emailOrUsername(), email);
+    Optional<MatagUser> userOptional = getUsername(loginRequest.getEmailOrUsername(), email);
 
     if (userOptional.isEmpty()) {
       throw new InsufficientAuthenticationException(EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT);
     }
 
     var user = userOptional.get();
-    if (!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
+    if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
       throw new InsufficientAuthenticationException(EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT);
     }
 
@@ -83,7 +86,7 @@ public class LoginController {
 
   private boolean isEmailLogin(@RequestBody LoginRequest loginRequest) {
     try {
-      emailValidator.validate(loginRequest.emailOrUsername());
+      emailValidator.validate(loginRequest.getEmailOrUsername());
       return true;
     } catch (ValidationException e) {
       return false;
