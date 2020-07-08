@@ -37,23 +37,23 @@ public class ChangePasswordController {
 
     validate(request, user);
 
-    var newPasswordEncoded = passwordEncoder.encode(request.getNewPassword());
+    var newPasswordEncoded = passwordEncoder.encode(request.newPassword());
     user.setPassword(newPasswordEncoded);
     user.setUpdatedAt(LocalDateTime.now(clock));
     userRepository.save(user);
     LOGGER.info("Password successfully changed for user " + user.getUsername());
 
-    return ChangePasswordResponse.builder().message("Password changed.").build();
+    return new ChangePasswordResponse("Password changed.");
   }
 
   private void validate(@RequestBody ChangePasswordRequest request, MatagUser user) {
     try {
-      passwordValidator.validate(request.getNewPassword());
+      passwordValidator.validate(request.newPassword());
     } catch (ValidationException e) {
       throw new MatagException("The new password you chose is invalid: " + e.getMessage());
     }
 
-    if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+    if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {
       throw new MatagException("Your password wasn't matched.");
     }
   }

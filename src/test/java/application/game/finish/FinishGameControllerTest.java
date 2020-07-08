@@ -49,18 +49,12 @@ public class FinishGameControllerTest extends AbstractApplicationTest {
   public void shouldFinishAGame() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    var request1 = JoinGameRequest.builder()
-      .gameType(UNLIMITED)
-      .playerOptions("player1 options")
-      .build();
+    var request1 = new JoinGameRequest(UNLIMITED, "player1 options");
     var joinGameResponse = restTemplate.postForObject("/game", request1, JoinGameResponse.class);
-    Long gameId = joinGameResponse.getGameId();
+    Long gameId = joinGameResponse.gameId();
 
     userIsLoggedIn(USER_2_SESSION_TOKEN, USER_2_USERNAME);
-    var request2 = JoinGameRequest.builder()
-      .gameType(UNLIMITED)
-      .playerOptions("player2 options")
-      .build();
+    var request2 = new JoinGameRequest(UNLIMITED, "player2 options");
     restTemplate.postForObject("/game", request2, JoinGameResponse.class);
 
     // When

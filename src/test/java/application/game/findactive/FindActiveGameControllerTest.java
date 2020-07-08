@@ -6,7 +6,8 @@ import com.matag.admin.game.join.JoinGameRequest;
 import com.matag.admin.game.join.JoinGameResponse;
 import org.junit.Test;
 
-import static application.TestUtils.*;
+import static application.TestUtils.USER_1_SESSION_TOKEN;
+import static application.TestUtils.USER_1_USERNAME;
 import static com.matag.admin.game.game.GameType.UNLIMITED;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,10 +29,7 @@ public class FindActiveGameControllerTest extends AbstractApplicationTest {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
 
-    var request = JoinGameRequest.builder()
-      .gameType(UNLIMITED)
-      .playerOptions("player1 options")
-      .build();
+    var request = new JoinGameRequest(UNLIMITED, "player1 options");
     restTemplate.postForObject("/game", request, JoinGameResponse.class);
 
     // When

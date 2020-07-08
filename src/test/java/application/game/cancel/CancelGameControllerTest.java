@@ -1,7 +1,6 @@
 package application.game.cancel;
 
 import application.AbstractApplicationTest;
-import com.matag.admin.game.game.Game;
 import com.matag.admin.game.game.GameRepository;
 import com.matag.admin.game.join.JoinGameRequest;
 import com.matag.admin.game.join.JoinGameResponse;
@@ -10,10 +9,8 @@ import com.matag.admin.game.session.GameSessionRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -35,12 +32,9 @@ public class CancelGameControllerTest extends AbstractApplicationTest {
   public void shouldCancelAGameWhereNobodyJoined() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    var request = JoinGameRequest.builder()
-      .gameType(UNLIMITED)
-      .playerOptions("player1 options")
-      .build();
+    var request = new JoinGameRequest(UNLIMITED, "player1 options");
     var joinGameResponse = restTemplate.postForObject("/game", request, JoinGameResponse.class);
-    var gameId = joinGameResponse.getGameId();
+    var gameId = joinGameResponse.gameId();
 
     // When
     var response = restTemplate.exchange("/game/" + gameId, HttpMethod.DELETE, null, String.class);
@@ -55,18 +49,12 @@ public class CancelGameControllerTest extends AbstractApplicationTest {
   public void shouldCancelAGameWhereSomebodyJoined() {
     // Given
     userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    var request1 = JoinGameRequest.builder()
-      .gameType(UNLIMITED)
-      .playerOptions("player1 options")
-      .build();
+    var request1 = new JoinGameRequest(UNLIMITED, "player1 options");
     var joinGameResponse = restTemplate.postForObject("/game", request1, JoinGameResponse.class);
-    var gameId = joinGameResponse.getGameId();
+    var gameId = joinGameResponse.gameId();
 
     userIsLoggedIn(USER_2_SESSION_TOKEN, USER_2_USERNAME);
-    var request2 = JoinGameRequest.builder()
-      .gameType(UNLIMITED)
-      .playerOptions("player2 options")
-      .build();
+    var request2 = new JoinGameRequest(UNLIMITED, "player2 options");
     restTemplate.postForObject("/game", request2, JoinGameResponse.class);
 
     // When

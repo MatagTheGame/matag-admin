@@ -34,16 +34,14 @@ public class RegisterController {
 
   @PostMapping("/register")
   public RegisterResponse register(@RequestBody RegisterRequest request) {
-    LOGGER.info("User " + request.getEmail() + " registering with username[" + request.getUsername() + "].");
+    LOGGER.info("User " + request.email() + " registering with username[" + request.username() + "].");
 
     validate(request);
 
-    registerService.register(request.getEmail(), request.getUsername(), request.getPassword());
+    registerService.register(request.email(), request.username(), request.password());
     LOGGER.info("Registration successful.");
 
-    return RegisterResponse.builder()
-        .message(REGISTERED_VERIFY_EMAIL)
-        .build();
+    return new RegisterResponse(REGISTERED_VERIFY_EMAIL);
   }
 
   @GetMapping("/verify")
@@ -62,15 +60,15 @@ public class RegisterController {
   }
 
   private void validate(@RequestBody RegisterRequest request) {
-    emailValidator.validate(request.getEmail());
-    usernameValidator.validate(request.getUsername());
-    passwordValidator.validate(request.getPassword());
+    emailValidator.validate(request.email());
+    usernameValidator.validate(request.username());
+    passwordValidator.validate(request.password());
 
-    if (userRepository.findByEmailAddress(request.getEmail()).isPresent()) {
+    if (userRepository.findByEmailAddress(request.email()).isPresent()) {
       throw new ValidationException(EMAIL_ALREADY_REGISTERED);
     }
 
-    if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+    if (userRepository.findByUsername(request.username()).isPresent()) {
       throw new ValidationException(USERNAME_ALREADY_REGISTERED);
     }
   }

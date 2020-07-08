@@ -7,7 +7,6 @@ import com.matag.admin.auth.login.LoginRequest;
 import com.matag.admin.auth.login.LoginResponse;
 import com.matag.admin.exception.ErrorResponse;
 import org.junit.Test;
-import org.springframework.http.ResponseEntity;
 
 import static application.TestUtils.USER_1_SESSION_TOKEN;
 import static application.TestUtils.USER_1_USERNAME;
@@ -58,11 +57,11 @@ public class ChangePasswordControllerTest extends AbstractApplicationTest {
     // Then
     assertThat(response.getStatusCode()).isEqualTo(OK);
     assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getMessage()).isEqualTo("Password changed.");
+    assertThat(response.getBody().message()).isEqualTo("Password changed.");
 
     // And user can login with the new password
     LoginRequest loginRequest = new LoginRequest("user1@matag.com", "new-password");
     LoginResponse loginResponse = restTemplate.postForObject("/auth/login", loginRequest, LoginResponse.class);
-    assertThat(loginResponse.getToken()).isNotBlank();
+    assertThat(loginResponse.token()).isNotBlank();
   }
 }

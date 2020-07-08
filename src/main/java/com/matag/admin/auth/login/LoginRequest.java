@@ -1,21 +1,8 @@
 package com.matag.admin.auth.login;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Value
-@AllArgsConstructor
-@JsonDeserialize(builder = LoginRequest.LoginRequestBuilder.class)
-@Builder(toBuilder = true)
-public class LoginRequest {
-  String emailOrUsername;
-  String password;
-
-  @JsonPOJOBuilder(withPrefix = "")
-  public static class LoginRequestBuilder {
-
-  }
+public record LoginRequest(
+  @JsonProperty("emailOrUsername")String emailOrUsername,
+  @JsonProperty("password")String password) {
 }

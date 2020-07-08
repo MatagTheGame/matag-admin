@@ -1,21 +1,9 @@
 package com.matag.admin.auth.login;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.matag.admin.user.profile.CurrentUserProfileDto;
-import lombok.Builder;
-import lombok.Value;
 
-@Value
-@JsonDeserialize(builder = LoginResponse.LoginResponseBuilder.class)
-@Builder(toBuilder = true)
-public class LoginResponse {
-  String token;
-  CurrentUserProfileDto profile;
-  String error;
-
-  @JsonPOJOBuilder(withPrefix = "")
-  public static class LoginResponseBuilder {
-
-  }
-}
+public record LoginResponse (
+  @JsonProperty("token")String token,
+  @JsonProperty("profile")CurrentUserProfileDto profile,
+  @JsonProperty("error")String error) {}
