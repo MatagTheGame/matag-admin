@@ -9,7 +9,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @JsonDeserialize(builder = JoinGameResponse.JoinGameResponseBuilder.class)
-@Builder(toBuilder = true)
+@Builder
 public class JoinGameResponse {
   Long gameId;
   String error;

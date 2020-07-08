@@ -10,7 +10,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @JsonDeserialize(builder = JoinGameRequest.JoinGameRequestBuilder.class)
-@Builder(toBuilder = true)
+@Builder
 public class JoinGameRequest {
   GameType gameType;
   String playerOptions;

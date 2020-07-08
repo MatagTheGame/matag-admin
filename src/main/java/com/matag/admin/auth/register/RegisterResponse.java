@@ -7,7 +7,7 @@ import lombok.Value;
 
 @Value
 @JsonDeserialize(builder = RegisterResponse.RegisterResponseBuilder.class)
-@Builder(toBuilder = true)
+@Builder
 public class RegisterResponse {
   String message;
 

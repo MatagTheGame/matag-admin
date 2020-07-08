@@ -8,7 +8,7 @@ import lombok.Value;
 
 @Value
 @JsonDeserialize(builder = LoginResponse.LoginResponseBuilder.class)
-@Builder(toBuilder = true)
+@Builder
 public class LoginResponse {
   String token;
   CurrentUserProfileDto profile;

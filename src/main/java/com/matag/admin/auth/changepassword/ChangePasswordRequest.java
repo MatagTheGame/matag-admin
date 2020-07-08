@@ -9,7 +9,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @JsonDeserialize(builder = ChangePasswordRequest.ChangePasswordRequestBuilder.class)
-@Builder(toBuilder = true)
+@Builder
 public class ChangePasswordRequest {
   String oldPassword;
   String newPassword;

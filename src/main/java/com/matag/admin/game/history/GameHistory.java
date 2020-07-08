@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Value
 @AllArgsConstructor
 @JsonDeserialize(builder = GameHistory.GameHistoryBuilder.class)
-@Builder(toBuilder = true)
+@Builder
 public class GameHistory {
   Long gameId;
   LocalDateTime startedTime;

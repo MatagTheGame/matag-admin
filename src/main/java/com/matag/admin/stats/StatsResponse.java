@@ -7,7 +7,7 @@ import lombok.Value;
 
 @Value
 @JsonDeserialize(builder = StatsResponse.StatsResponseBuilder.class)
-@Builder(toBuilder = true)
+@Builder
 public class StatsResponse {
   long totalUsers;
   long onlineUsers;

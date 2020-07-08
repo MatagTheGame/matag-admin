@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Value
 @AllArgsConstructor
 @JsonDeserialize(builder = ActiveGameResponse.ActiveGameResponseBuilder.class)
-@Builder(toBuilder = true)
+@Builder
 public class ActiveGameResponse {
   Long gameId;
   LocalDateTime createdAt;

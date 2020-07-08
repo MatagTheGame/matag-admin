@@ -9,7 +9,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @JsonDeserialize(builder = LoginRequest.LoginRequestBuilder.class)
-@Builder(toBuilder = true)
+@Builder
 public class LoginRequest {
   String emailOrUsername;
   String password;

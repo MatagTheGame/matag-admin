@@ -7,7 +7,7 @@ import lombok.Value;
 
 @Value
 @JsonDeserialize(builder = ChangePasswordResponse.ChangePasswordResponseBuilder.class)
-@Builder(toBuilder = true)
+@Builder
 public class ChangePasswordResponse {
   String message;
 

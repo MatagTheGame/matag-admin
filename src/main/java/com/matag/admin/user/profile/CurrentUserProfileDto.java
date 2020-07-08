@@ -7,7 +7,7 @@ import lombok.Value;
 
 @Value
 @JsonDeserialize(builder = CurrentUserProfileDto.CurrentUserProfileDtoBuilder.class)
-@Builder(toBuilder = true)
+@Builder
 public class CurrentUserProfileDto {
   String username;
   String type;

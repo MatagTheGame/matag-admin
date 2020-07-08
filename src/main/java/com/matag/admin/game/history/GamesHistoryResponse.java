@@ -11,7 +11,7 @@ import java.util.List;
 @Value
 @AllArgsConstructor
 @JsonDeserialize(builder = GamesHistoryResponse.GamesHistoryResponseBuilder.class)
-@Builder(toBuilder = true)
+@Builder
 public class GamesHistoryResponse {
   List<GameHistory> gamesHistory;
 
