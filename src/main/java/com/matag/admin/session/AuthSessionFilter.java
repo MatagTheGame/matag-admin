@@ -17,9 +17,7 @@ import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static java.util.Collections.singletonList;
 
@@ -36,8 +34,8 @@ public class AuthSessionFilter extends GenericFilterBean {
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-    if (request instanceof FirewalledRequest) {
-      applySecurity((FirewalledRequest)request);
+    if (request instanceof FirewalledRequest firewalledRequest) {
+      applySecurity(firewalledRequest);
     }
     filterChain.doFilter(request, response);
   }
