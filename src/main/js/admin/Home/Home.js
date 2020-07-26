@@ -6,6 +6,7 @@ import Login from 'admin/Auth/Login/Login'
 import Play from 'admin/Play/Play'
 import Stats from './Stats/Stats'
 import Intro from './Intro/Intro'
+import './home.scss'
 
 class Home extends Component {
   displayMainAction() {

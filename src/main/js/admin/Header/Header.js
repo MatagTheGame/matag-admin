@@ -20,6 +20,7 @@ class Header extends Component {
           <nav>
             <Link to="/ui/admin/play">Play</Link>
             <ul className="dropdown">
+              <li><Link to="/ui/admin/play">Play</Link></li>
               <li><Link to="/ui/admin/play/game-history">Game History</Link></li>
               <li><Link to="/ui/admin/play/score-board">Score Board</Link></li>
             </ul>
