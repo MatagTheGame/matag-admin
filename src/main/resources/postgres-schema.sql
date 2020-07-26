@@ -17,7 +17,7 @@ create table matag_user_verification
     verification_code char(10),
     valid_until       timestamp,
     attempts          int not null,
-    foreign key (id) references matag_user (id) on delete cascade
+    foreign key (matag_user_id) references matag_user (id) on delete cascade
 );
 
 create table matag_session
