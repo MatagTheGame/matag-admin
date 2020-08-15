@@ -1,7 +1,7 @@
 export default class PlayReducer {
   static getActions() {
     return ['ACTIVE_GAME_LOADING', 'ACTIVE_GAME_LOADED', 'ACTIVE_GAME_DELETING', 'ACTIVE_GAME_DELETED',
-      'GAME_HISTORY_LOADING', 'GAME_HISTORY_LOADED']
+      'GAME_HISTORY_LOADING', 'GAME_HISTORY_LOADED', 'GAME_SCORES_LOADING', 'GAME_SCORES_LOADED']
   }
 
   static reduceAction(newState, action) {
@@ -36,6 +36,15 @@ export default class PlayReducer {
     case 'GAME_HISTORY_LOADED':
       newState.play.gameHistory.loading = false
       newState.play.gameHistory.value = action.value
+      break
+
+    case 'GAME_SCORES_LOADING':
+      newState.play.gameScores = {loading: true}
+      break
+
+    case 'GAME_SCORES_LOADED':
+      newState.play.gameScores.loading = false
+      newState.play.gameScores.value = action.value
       break
     }
   }

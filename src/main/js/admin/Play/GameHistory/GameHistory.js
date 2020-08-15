@@ -85,7 +85,7 @@ const gameHistoryLoaded = (gameHistory) => {
 const mapStateToProps = state => {
   return {
     isNonGuest: AuthHelper.isNonGuest(state),
-    loadingGameHistory: get(state, 'play.gameHistory.loading', false),
+    loadingGameHistory: get(state, 'play.gameHistory.loading', true),
     gamesHistory: get(state, 'play.gameHistory.value.gamesHistory', [])
   }
 }

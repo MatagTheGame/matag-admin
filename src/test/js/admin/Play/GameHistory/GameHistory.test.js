@@ -47,7 +47,6 @@ describe('GameHistory', () => {
     await browser.waitForTitleToBe('Game History')
 
     // Then
-    browser.getGameHistorySection()
     expect(browser.getGameHistorySection().getGameHistoryTableRows()).toEqual([
       ['5/16/2020, 4:00:00 PM', 'Guest', 'Antonio85', 'LOST', 'UNLIMITED'],
       ['5/16/2020, 5:00:00 PM', 'Guest', 'Antonio85', 'WIN', 'UNLIMITED'],

@@ -34,6 +34,10 @@ export default class ApiClientStub {
     fetchMock.get('/game/history', gameHistoryResponse)
   }
 
+  static stubGameScores(gameScoresResponse) {
+    fetchMock.get('/game/scores', gameScoresResponse)
+  }
+
   static resetStubs() {
     fetchMock.reset()
   }

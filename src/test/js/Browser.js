@@ -8,6 +8,7 @@ import ProfileSection from './admin/Profile/ProfileSection'
 import RegisterSection from './admin/Auth/Register/RegisterSection'
 import GameHistorySection from './admin/Play/GameHistory/GameHistorySection'
 import ChangePasswordSection from './admin/Auth/ChangePassword/ChangePasswordSection'
+import GameScoresSection from './admin/Play/GameScores/GameScoresSection'
 
 export default class Browser {
   constructor(app) {
@@ -52,6 +53,10 @@ export default class Browser {
 
   getGameHistorySection() {
     return new GameHistorySection(this.app.container.querySelector('#game-history'))
+  }
+
+  getGameScoresSection() {
+    return new GameScoresSection(this.app.container.querySelector('#game-scores'))
   }
 
   getProfileSection() {

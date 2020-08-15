@@ -15,7 +15,7 @@ import ApiClient from 'admin/utils/ApiClient'
 import history from 'admin/utils/history'
 import Play from './Play/Play'
 import GameHistory from 'admin/Play/GameHistory/GameHistory'
-import ScoreBoard from 'admin/Play/ScoreBoard/ScoreBoard'
+import GameScores from 'admin/Play/GameScores/GameScores'
 import Profile from 'admin/Profile/Profile'
 import ProfileUtils from 'admin/Profile/ProfileUtils'
 import './admin.scss'
@@ -65,11 +65,15 @@ class AdminApp extends Component {
                 <div className='page with-margin'><GameHistory/></div>
               </Route>
               <Route path="/ui/admin/play/score-board">
-                <div className='page with-margin'><ScoreBoard/></div>
+                <div className='page with-margin'><GameScores/></div>
               </Route>
 
               <Route path="/ui/admin/profile">
                 <div className='page with-margin'><Profile/></div>
+              </Route>
+
+              <Route>
+                <div className='page with-margin'><Home/></div>
               </Route>
             </Switch>
           </div>
