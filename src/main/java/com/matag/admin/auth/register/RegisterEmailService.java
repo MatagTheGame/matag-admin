@@ -14,7 +14,7 @@ public class RegisterEmailService {
 
   @SneakyThrows
   public void sendRegistrationEmail(String receiver, String username, String verificationCode) {
-    emailSender.send(receiver, createBody(username, verificationCode));
+    emailSender.send(receiver, "Registration", createBody(username, verificationCode));
   }
 
   private String createBody(String username, String verificationCode) {

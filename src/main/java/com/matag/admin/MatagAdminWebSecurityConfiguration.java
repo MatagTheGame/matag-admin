@@ -21,7 +21,6 @@ import org.springframework.security.web.context.SecurityContextPersistenceFilter
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 
 import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
@@ -52,7 +51,8 @@ public class MatagAdminWebSecurityConfiguration extends WebSecurityConfigurerAda
         cust.logoutSuccessHandler(matagLogoutSuccessHandler);
       })
       .authorizeRequests()
-      .antMatchers("/", "/ui/**", "/stats", "/config", "/auth/login", "/auth/logout", "/auth/register", "/auth/verify").permitAll()
+      .antMatchers("/", "/test/**", "ui/**", "/stats", "/config",
+        "/auth/login", "/auth/logout", "/auth/register", "/auth/verify").permitAll()
       .anyRequest().authenticated();
   }
 

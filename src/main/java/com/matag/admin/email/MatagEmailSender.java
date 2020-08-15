@@ -14,11 +14,11 @@ public class MatagEmailSender {
   private final ConfigService configService;
 
   @SneakyThrows
-  public void send(String receiver, String body) {
+  public void send(String receiver, String subject, String body) {
     var mimeMessage = emailSender.createMimeMessage();
     var helper = new MimeMessageHelper(mimeMessage, "utf-8");
     helper.setTo(receiver);
-    helper.setSubject(configService.getMatagName() + " - Registration");
+    helper.setSubject(configService.getMatagName() + " - " + subject);
     helper.setText(body, true);
     emailSender.send(mimeMessage);
   }
