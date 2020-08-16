@@ -39,7 +39,7 @@ public class ScoresControllerTest extends AbstractApplicationTest {
     var response = restTemplate.getForObject("/game/scores", ScoresResponse.class);
 
     // Then
-    assertThat(response.getScores()).containsExactly(
+    assertThat(response.getScores()).contains(
       ScoreResponse.builder().rank(1).player(user1.getUsername()).elo(1600).wins(1).draws(0).losses(0).build(),
       ScoreResponse.builder().rank(2).player(user2.getUsername()).elo(1400).wins(0).draws(0).losses(1).build()
     );

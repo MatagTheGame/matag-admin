@@ -2,10 +2,11 @@ package com.matag.admin.game.finish;
 
 import com.matag.admin.game.game.Game;
 import com.matag.admin.game.game.GameRepository;
-import com.matag.admin.game.game.GameResultType;
 import com.matag.admin.game.game.GameStatusType;
 import com.matag.admin.game.result.ResultService;
+import com.matag.admin.game.score.EloApplyService;
 import com.matag.admin.game.session.GamePlayers;
+import com.matag.admin.game.session.GameSession;
 import com.matag.admin.game.session.GameSessionRepository;
 import com.matag.admin.game.session.GameSessionService;
 import com.matag.adminentities.FinishGameRequest;
@@ -15,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static com.matag.admin.game.game.GameStatusType.IN_PROGRESS;
 
@@ -27,6 +27,7 @@ public class FinishGameService {
   private final GameSessionRepository gameSessionRepository;
   private final GameSessionService gameSessionService;
   private final ResultService resultService;
+  private final EloApplyService eloApplyService;
 
   @Transactional
   public void finish(Long gameId, FinishGameRequest request) {
@@ -40,16 +41,20 @@ public class FinishGameService {
   }
 
   public void finishGame(Game game, GamePlayers gamePlayers, String winnerSessionId) {
-    game.setStatus(GameStatusType.FINISHED);
+    GameSession session1 = gamePlayers.getPlayerSession();
+    GameSession session2 = gamePlayers.getOpponentSession();
 
     var gameResultType = resultService.getResult(gamePlayers, winnerSessionId);
+    game.setStatus(GameStatusType.FINISHED);
     game.setResult(gameResultType);
     game.setFinishedAt(LocalDateTime.now(clock));
     gameRepository.save(game);
 
     gamePlayers.getPlayerSession().setSession(null);
-    gameSessionRepository.save(gamePlayers.getPlayerSession());
+    gameSessionRepository.save(session1);
     gamePlayers.getOpponentSession().setSession(null);
-    gameSessionRepository.save(gamePlayers.getOpponentSession());
+    gameSessionRepository.save(session2);
+
+    eloApplyService.apply(session1.getPlayer(), session2.getPlayer(), gameResultType);
   }
 }

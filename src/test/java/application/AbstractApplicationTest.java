@@ -4,6 +4,7 @@ import com.matag.admin.MatagAdminApplication;
 import com.matag.admin.config.ConfigService;
 import com.matag.admin.game.game.GameRepository;
 import com.matag.admin.game.score.ScoreRepository;
+import com.matag.admin.game.score.ScoreService;
 import com.matag.admin.game.session.GameSessionRepository;
 import com.matag.admin.session.MatagSession;
 import com.matag.admin.session.MatagSessionRepository;
@@ -33,6 +34,7 @@ import java.util.UUID;
 import static application.TestUtils.*;
 import static com.matag.admin.session.AuthSessionFilter.SESSION_DURATION_TIME;
 import static com.matag.admin.session.AuthSessionFilter.SESSION_NAME;
+import static com.matag.admin.user.MatagUserType.USER;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @RunWith(SpringRunner.class)
@@ -47,6 +49,7 @@ public abstract class AbstractApplicationTest {
   @Autowired private GameRepository gameRepository;
   @Autowired private GameSessionRepository gameSessionRepository;
   @Autowired private ScoreRepository scoreRepository;
+  @Autowired private ScoreService scoreService;
 
   @Autowired
   protected Clock clock;
@@ -61,10 +64,17 @@ public abstract class AbstractApplicationTest {
   public void setup() {
     setCurrentTime(TEST_START_TIME);
 
-    matagUserRepository.save(guest());
-    matagUserRepository.save(user1());
-    matagUserRepository.save(user2());
-    matagUserRepository.save(inactive());
+    saveUser(guest());
+    saveUser(user1());
+    saveUser(user2());
+    saveUser(inactive());
+  }
+
+  private void saveUser(MatagUser inactive) {
+    var user = matagUserRepository.save(inactive);
+    if (user.getType() == USER) {
+      scoreService.createStartingScore(user);
+    }
   }
 
   @After

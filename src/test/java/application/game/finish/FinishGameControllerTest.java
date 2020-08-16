@@ -1,19 +1,15 @@
 package application.game.finish;
 
 import application.AbstractApplicationTest;
-import com.matag.admin.game.game.Game;
 import com.matag.admin.game.game.GameRepository;
 import com.matag.admin.game.join.JoinGameRequest;
 import com.matag.admin.game.join.JoinGameResponse;
-import com.matag.admin.game.session.GameSession;
+import com.matag.admin.game.score.ScoreRepository;
 import com.matag.admin.game.session.GameSessionRepository;
 import com.matag.adminentities.FinishGameRequest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -26,11 +22,9 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.OK;
 
 public class FinishGameControllerTest extends AbstractApplicationTest {
-  @Autowired
-  private GameRepository gameRepository;
-
-  @Autowired
-  private GameSessionRepository gameSessionRepository;
+  @Autowired private GameRepository gameRepository;
+  @Autowired private GameSessionRepository gameSessionRepository;
+  @Autowired private ScoreRepository scoreRepository;
 
   @Test
   public void requiresAdminAuthentication() {
@@ -80,5 +74,9 @@ public class FinishGameControllerTest extends AbstractApplicationTest {
     assertThat(gameSessions).hasSize(2);
     assertThat(gameSessions.get(0).getSession()).isNull();
     assertThat(gameSessions.get(1).getSession()).isNull();
+
+    // Check elo score
+    assertThat(scoreRepository.findByUsername(USER_1_USERNAME).getElo()).isEqualTo(1050);
+    assertThat(scoreRepository.findByUsername(USER_2_USERNAME).getElo()).isEqualTo(950);
   }
 }

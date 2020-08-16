@@ -115,8 +115,8 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     assertThat(user.getStatus()).isEqualTo(VERIFYING);
     assertThat(user.getCreatedAt()).isNotNull();
 
-    var score = scoreRepository.findByUser(user);
-    assertThat(score).isPresent();
+    var score = scoreRepository.findByMatagUser(user);
+    assertThat(score.getElo()).isEqualTo(1000);
 
     verify(javaMailSender).send(mimeMessage);
   }
