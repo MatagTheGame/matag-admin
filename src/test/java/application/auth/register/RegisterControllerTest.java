@@ -5,7 +5,7 @@ import com.matag.admin.auth.register.RegisterRequest;
 import com.matag.admin.auth.register.RegisterResponse;
 import com.matag.admin.auth.register.VerifyResponse;
 import com.matag.admin.exception.ErrorResponse;
-import com.matag.admin.user.MatagUser;
+import com.matag.admin.game.score.ScoreRepository;
 import com.matag.admin.user.MatagUserRepository;
 import lombok.SneakyThrows;
 import org.junit.Test;
@@ -28,6 +28,9 @@ import static org.springframework.http.HttpStatus.OK;
 public class RegisterControllerTest extends AbstractApplicationTest {
   @Autowired
   private MatagUserRepository matagUserRepository;
+
+  @Autowired
+  private ScoreRepository scoreRepository;
 
   @Autowired
   private JavaMailSender javaMailSender;
@@ -111,6 +114,9 @@ public class RegisterControllerTest extends AbstractApplicationTest {
     assertThat(user.getEmailAddress()).isEqualTo("new-user@matag.com");
     assertThat(user.getStatus()).isEqualTo(VERIFYING);
     assertThat(user.getCreatedAt()).isNotNull();
+
+    var score = scoreRepository.findByUser(user);
+    assertThat(score).isPresent();
 
     verify(javaMailSender).send(mimeMessage);
   }

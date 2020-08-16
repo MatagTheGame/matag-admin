@@ -1,15 +1,13 @@
 package com.matag.admin.user;
 
 import com.matag.admin.user.verification.MatagUserVerification;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
+@ToString(exclude = {"password", "matagUserVerification"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

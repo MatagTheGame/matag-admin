@@ -1,5 +1,7 @@
 package com.matag.admin.auth.register;
 
+import com.matag.admin.game.score.ScoreRepository;
+import com.matag.admin.game.score.ScoreService;
 import com.matag.admin.user.MatagUser;
 import com.matag.admin.user.MatagUserRepository;
 import com.matag.admin.user.verification.MatagUserVerification;
@@ -22,6 +24,7 @@ public class RegisterService {
   private final PasswordEncoder passwordEncoder;
   private final Clock clock;
   private final MatagUserRepository userRepository;
+  private final ScoreService scoreService;
   private final RegisterEmailService registerEmailService;
   private final UserVerifyService userVerifyService;
 
@@ -37,6 +40,7 @@ public class RegisterService {
       .type(USER)
       .build();
     userRepository.save(user);
+    scoreService.createStartingScore(user);
 
     MatagUserVerification verification = userVerifyService.createVerification(user);
 

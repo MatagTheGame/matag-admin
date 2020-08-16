@@ -105,7 +105,7 @@ delete from game_session where game_id in (select game_id from game where status
 delete from game where status != 'FINISHED';
 delete from matag_session;
 delete from matag_session where valid_until < current_timestamp;
-delete from matag_user where username = 'antonio85';
+delete from matag_user where id in (24, 25);
 
 
 -- drop everything
