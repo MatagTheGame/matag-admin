@@ -27,5 +27,4 @@ public class GameSession {
   @JoinColumn(referencedColumnName = "id")
   private MatagUser player;
   private String playerOptions;
-
 }

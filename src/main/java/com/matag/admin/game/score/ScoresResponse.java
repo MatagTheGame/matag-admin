@@ -10,13 +10,13 @@ import java.util.List;
 
 @Value
 @AllArgsConstructor
-@JsonDeserialize(builder = GameScoresResponse.GamesScoreResponseBuilder.class)
+@JsonDeserialize(builder = ScoresResponse.ScoresResponseBuilder.class)
 @Builder
-public class GameScoresResponse {
-  List<GameScore> gameScores;
+public class ScoresResponse {
+  List<ScoreResponse> scores;
 
   @JsonPOJOBuilder(withPrefix = "")
-  public static class GamesScoreResponseBuilder {
+  public static class ScoresResponseBuilder {
 
   }
 }

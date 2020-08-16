@@ -4,8 +4,6 @@ import com.matag.admin.auth.SecurityContextHolderHelper;
 import com.matag.admin.game.game.Game;
 import com.matag.admin.game.game.GameRepository;
 import com.matag.admin.game.result.ResultService;
-import com.matag.admin.game.session.GamePlayers;
-import com.matag.admin.game.session.GameSession;
 import com.matag.admin.game.session.GameSessionService;
 import com.matag.admin.user.MatagUser;
 import lombok.AllArgsConstructor;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.matag.admin.game.game.GameStatusType.FINISHED;

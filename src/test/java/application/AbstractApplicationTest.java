@@ -3,6 +3,7 @@ package application;
 import com.matag.admin.MatagAdminApplication;
 import com.matag.admin.config.ConfigService;
 import com.matag.admin.game.game.GameRepository;
+import com.matag.admin.game.score.ScoreRepository;
 import com.matag.admin.game.session.GameSessionRepository;
 import com.matag.admin.session.MatagSession;
 import com.matag.admin.session.MatagSessionRepository;
@@ -41,17 +42,11 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 public abstract class AbstractApplicationTest {
   public static final LocalDateTime TEST_START_TIME = LocalDateTime.parse("2020-01-01T00:00:00");
 
-  @Autowired
-  private MatagUserRepository matagUserRepository;
-
-  @Autowired
-  private MatagSessionRepository matagSessionRepository;
-
-  @Autowired
-  private GameRepository gameRepository;
-
-  @Autowired
-  private GameSessionRepository gameSessionRepository;
+  @Autowired private MatagUserRepository matagUserRepository;
+  @Autowired private MatagSessionRepository matagSessionRepository;
+  @Autowired private GameRepository gameRepository;
+  @Autowired private GameSessionRepository gameSessionRepository;
+  @Autowired private ScoreRepository scoreRepository;
 
   @Autowired
   protected Clock clock;
@@ -79,6 +74,7 @@ public abstract class AbstractApplicationTest {
     gameSessionRepository.deleteAll();
     gameRepository.deleteAll();
     matagSessionRepository.deleteAll();
+    scoreRepository.deleteAll();
     matagUserRepository.deleteAll();
   }
 

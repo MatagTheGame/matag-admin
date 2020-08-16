@@ -16,7 +16,7 @@ describe('GameScores', () => {
   test('Should see score board', async () => {
     // Given
     ApiClientStub.stubGameScores({
-      'gameScores': [{
+      'scores': [{
         'rank': 1,
         'player': 'Foo',
         'elo' : 1600,

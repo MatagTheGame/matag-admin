@@ -7,16 +7,16 @@ import Loader from 'admin/Common/Loader'
 import LoggedInFunctionalityErrorMessage from 'admin/Common/LoggedInFunctionalityErrorMessage'
 import AuthHelper from 'admin/Auth/AuthHelper'
 
-class GameScoreRow extends Component {
+class ScoreRow extends Component {
   render() {
     return (
-      <tr key={this.props.gameScore.rank}>
-        <td>{this.props.gameScore.rank}</td>
-        <td>{this.props.gameScore.player}</td>
-        <td>{this.props.gameScore.elo}</td>
-        <td>{this.props.gameScore.wins}</td>
-        <td>{this.props.gameScore.draws}</td>
-        <td>{this.props.gameScore.losses}</td>
+      <tr key={this.props.score.id}>
+        <td>{this.props.score.rank}</td>
+        <td>{this.props.score.player}</td>
+        <td>{this.props.score.elo}</td>
+        <td>{this.props.score.wins}</td>
+        <td>{this.props.score.draws}</td>
+        <td>{this.props.score.losses}</td>
       </tr>
     )
   }
@@ -42,8 +42,8 @@ class GameScores extends Component {
           </tr>
         </thead>
         <tbody>
-          {this.props.gameScores.map((gameScore) =>
-            <GameScoreRow key={gameScore.rank} gameScore={gameScore} />
+          {this.props.scores.map((score) =>
+            <ScoreRow key={score.id} score={score} />
           )}
         </tbody>
       </table>
@@ -85,7 +85,7 @@ const mapStateToProps = state => {
   return {
     isLoggedIn: AuthHelper.isLoggedIn(state),
     loadingGameScores: get(state, 'play.gameScores.loading', true),
-    gameScores: get(state, 'play.gameScores.value.gameScores', [])
+    scores: get(state, 'play.gameScores.value.scores', [])
   }
 }
 

@@ -52,6 +52,19 @@ create table game_session
     foreign key (player_id) references matag_user (id) on delete set null
 );
 
+create table score
+(
+    id                  bigserial primary key,
+    matag_user_id       bigint unique not null,
+    type                varchar(20)   not null,
+    elo                 integer       not null,
+    wins                integer       not null,
+    draws               integer       not null,
+    losses              integer       not null,
+    last_game_played_at timestamp,
+    foreign key (matag_user_id) references matag_user (id) on delete cascade
+);
+
 -- insert Guest (password: password)
 insert into matag_user(username, password, email_address, status, type, created_at, updated_at)
 values ('Guest', '{argon2}$argon2id$v=19$m=65536,t=4,p=8$LI8W+vC+a36vqqNbKu9RXw$/PGm7X3l6DEro/p7KYnOmKUW7a0+vX4NeynAP6QEV7M', 'guest@matag.com', 'ACTIVE', 'GUEST', current_timestamp, current_timestamp);
@@ -67,7 +80,7 @@ select * from matag_user_verification;
 select * from matag_session;
 select * from game;
 select * from game_session;
-
+select * from score;
 
 -- composite
 select * from game g join game_session gs on g.id = gs.game_id;
@@ -101,6 +114,11 @@ drop table game;
 drop table matag_session;
 drop table matag_user_verification;
 drop table matag_user;
+drop table score;
+
+--2/17/21/22
+insert into score values (4, 22, 'UNLIMITED', 1000, 0, 0, 0, current_timestamp);
+commit;
 
 
 
