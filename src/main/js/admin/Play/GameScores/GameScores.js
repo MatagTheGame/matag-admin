@@ -9,16 +9,23 @@ import AuthHelper from 'admin/Auth/AuthHelper'
 
 class ScoreRow extends Component {
   render() {
+    const isRowSelected = this.isSelected(this.props.score.player)
     return (
       <tr key={this.props.score.id}>
-        <td>{this.props.score.rank}</td>
-        <td>{this.props.score.player}</td>
-        <td>{this.props.score.elo}</td>
-        <td>{this.props.score.wins}</td>
-        <td>{this.props.score.draws}</td>
-        <td>{this.props.score.losses}</td>
+        <td className={isRowSelected}>{this.props.score.rank}</td>
+        <td className={isRowSelected}>{this.props.score.player}</td>
+        <td className={isRowSelected}>{this.props.score.elo}</td>
+        <td className={isRowSelected}>{this.props.score.wins}</td>
+        <td className={isRowSelected}>{this.props.score.draws}</td>
+        <td className={isRowSelected}>{this.props.score.losses}</td>
       </tr>
     )
+  }
+
+  isSelected(player) {
+    if (player === this.props.username) {
+      return 'player-selected'
+    }
   }
 }
 
@@ -43,7 +50,7 @@ class GameScores extends Component {
         </thead>
         <tbody>
           {this.props.scores.map((score) =>
-            <ScoreRow key={score.id} score={score} />
+            <ScoreRow key={score.id} score={score} username={this.props.username} />
           )}
         </tbody>
       </table>
@@ -85,7 +92,8 @@ const mapStateToProps = state => {
   return {
     isLoggedIn: AuthHelper.isLoggedIn(state),
     loadingGameScores: get(state, 'play.gameScores.loading', true),
-    scores: get(state, 'play.gameScores.value.scores', [])
+    scores: get(state, 'play.gameScores.value.scores', []),
+    username: get(state, 'session.profile.username', '')
   }
 }
 

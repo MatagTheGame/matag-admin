@@ -13,12 +13,18 @@ class GameHistoryRow extends Component {
     return (
       <tr key={this.props.gameHistory.gameId}>
         <td>{DateUtils.formatDateTime(DateUtils.parse(this.props.gameHistory.startedTime))}</td>
-        <td>{this.props.gameHistory.player1Name}</td>
-        <td>{this.props.gameHistory.player2Name}</td>
+        <td className={this.isSelected(this.props.gameHistory.player1Name)}>{this.props.gameHistory.player1Name}</td>
+        <td className={this.isSelected(this.props.gameHistory.player2Name)}>{this.props.gameHistory.player2Name}</td>
         <td>{this.props.gameHistory.result}</td>
         <td>{this.props.gameHistory.type}</td>
       </tr>
     )
+  }
+
+  isSelected(player) {
+    if (player === this.props.username) {
+      return 'player-selected'
+    }
   }
 }
 
@@ -44,7 +50,7 @@ class GameHistory extends Component {
         </thead>
         <tbody>
           {this.props.gamesHistory.map((gameHistory) =>
-            <GameHistoryRow key={gameHistory.gameId} gameHistory={gameHistory} />
+            <GameHistoryRow key={gameHistory.gameId} gameHistory={gameHistory} username={this.props.username} />
           )}
         </tbody>
       </table>
@@ -86,7 +92,8 @@ const mapStateToProps = state => {
   return {
     isNonGuest: AuthHelper.isNonGuest(state),
     loadingGameHistory: get(state, 'play.gameHistory.loading', true),
-    gamesHistory: get(state, 'play.gameHistory.value.gamesHistory', [])
+    gamesHistory: get(state, 'play.gameHistory.value.gamesHistory', []),
+    username: get(state, 'session.profile.username', '')
   }
 }
 
