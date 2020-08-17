@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.matag.admin.game.game.GameStatusType.IN_PROGRESS;
 import static com.matag.admin.game.game.GameStatusType.STARTING;
@@ -28,10 +30,30 @@ public class MatagGameCleanup {
 
   @Transactional
   public void cleanup() {
+    cleanupOldUnfinishedGames();
+    cleanupFinishedGuestGames();
+  }
+
+  private void cleanupOldUnfinishedGames() {
     var oldNotFinishedGames = gameRepository.findOldGameByStatus(List.of(STARTING, IN_PROGRESS), LocalDateTime.now(clock).minusDays(2));
-    LOGGER.info("MatagGameCleanup identified " + oldNotFinishedGames.size() + " entries to delete.");
+    LOGGER.info("cleanupOldUnfinishedGames...");
+    deleteGames(oldNotFinishedGames);
+  }
+
+  private void cleanupFinishedGuestGames() {
+    LOGGER.info("cleanupFinishedGuestGames...");
+    var oldGuestGamesIds = gameRepository.findFinishedGuestGames(LocalDateTime.now(clock).minusDays(2));
+    var oldGuestGames = oldGuestGamesIds.stream()
+      .map(gameRepository::findById)
+      .flatMap(Optional::stream)
+      .collect(Collectors.toList());
+    deleteGames(oldGuestGames);
+  }
+
+  private void deleteGames(List<Game> games) {
+    LOGGER.info("MatagGameCleanup identified " + games.size() + " entries to delete.");
     var totalGameDeleted = 0;
-    for (Game game : oldNotFinishedGames) {
+    for (var game : games) {
       try {
         for (GameSession gameSession : game.getGameSessions()) {
           gameSessionRepository.delete(gameSession);
