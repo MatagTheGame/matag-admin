@@ -5,12 +5,14 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Value;
 
+import java.util.List;
+
 @Value
 @JsonDeserialize(builder = StatsResponse.StatsResponseBuilder.class)
 @Builder
 public class StatsResponse {
   long totalUsers;
-  long onlineUsers;
+  List<String> onlineUsers;
   int totalCards;
   int totalSets;
 

@@ -13,9 +13,6 @@ import java.util.Optional;
 public interface MatagSessionRepository extends CrudRepository<MatagSession, Long> {
   Optional<MatagSession> findBySessionId(String sessionId);
 
-  @Query("SELECT COUNT(sessionId) FROM MatagSession WHERE validUntil > ?1")
-  long countOnlineUsers(LocalDateTime now);
-
   @Modifying
   @Transactional
   @Query("DELETE FROM MatagSession WHERE validUntil < ?1")

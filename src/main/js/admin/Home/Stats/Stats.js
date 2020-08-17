@@ -17,10 +17,10 @@ class Stats extends Component {
     } else {
       return (
         <ul>
-          <li><small><span>TOTAL USERS: </span></small><span>{this.props.stats.totalUsers}</span></li>
-          <li><small><span>ONLINE USERS: </span></small><span>{this.props.stats.onlineUsers}</span></li>
-          <li><small><span>TOTAL CARDS: </span></small><span>{this.props.stats.totalCards}</span></li>
-          <li><small><span>TOTAL SETS: </span></small><span>{this.props.stats.totalSets} (from Magic Origins)</span></li>
+          <li><small><span>TOTAL USERS: </span></small><span>{this.props.totalUsers}</span></li>
+          <li><small><span>ONLINE USERS: </span></small><span>{this.props.onlineUsers.length} ({this.props.onlineUsers.map((user) => <span className="online-user" key="{user}">{user}</span>)})</span></li>
+          <li><small><span>TOTAL CARDS: </span></small><span>{this.props.totalCards}</span></li>
+          <li><small><span>TOTAL SETS: </span></small><span>{this.props.totalSets} (from Magic Origins)</span></li>
         </ul>
       )
     }
@@ -51,7 +51,10 @@ const statsLoaded = (stats) => {
 const mapStateToProps = state => {
   return {
     loading: get(state, 'stats.loading', false),
-    stats: get(state, 'stats.value', {})
+    totalUsers: get(state, 'stats.value.totalUsers', 0),
+    onlineUsers: get(state, 'stats.value.onlineUsers', []),
+    totalCards: get(state, 'stats.value.totalCards', 0),
+    totalSets: get(state, 'stats.value.totalSets', 0)
   }
 }
 

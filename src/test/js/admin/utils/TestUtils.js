@@ -57,7 +57,7 @@ TestUtils.DEFAULT_CONFIG = {
 
 TestUtils.DEFAULT_STATS = {
   'totalUsers': 2,
-  'onlineUsers': 1,
+  'onlineUsers': ['Player1', 'Player2'],
   'totalCards': 300,
   'totalSets': 10
 }

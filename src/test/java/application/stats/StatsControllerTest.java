@@ -1,14 +1,14 @@
 package application.stats;
 
-import static application.TestUtils.*;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import application.AbstractApplicationTest;
 import com.matag.admin.stats.StatsResponse;
-import java.time.LocalDateTime;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
+import java.time.LocalDateTime;
+
+import static application.TestUtils.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class StatsControllerTest extends AbstractApplicationTest {
   @Test
@@ -36,12 +36,14 @@ public class StatsControllerTest extends AbstractApplicationTest {
     setCurrentTime(LocalDateTime.parse("2000-01-01T00:00:00"));
     loginUser(USER_2_SESSION_TOKEN, USER_2_USERNAME);
     setCurrentTime(TEST_START_TIME);
+    loginUser(GUEST_SESSION_TOKEN_1, GUEST_USERNAME);
+    loginUser(GUEST_SESSION_TOKEN_2, GUEST_USERNAME);
 
     // When
     var response = restTemplate.getForObject("/stats", StatsResponse.class);
 
     // Then
-    assertThat(response.getOnlineUsers()).isEqualTo(1);
+    assertThat(response.getOnlineUsers()).containsExactlyInAnyOrder("User1", "Guest", "Guest");
   }
 
   @Test
