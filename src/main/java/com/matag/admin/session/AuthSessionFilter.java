@@ -34,8 +34,8 @@ public class AuthSessionFilter extends GenericFilterBean {
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-    if (request instanceof FirewalledRequest firewalledRequest) {
-      applySecurity(firewalledRequest);
+    if (request instanceof FirewalledRequest) {
+      applySecurity((FirewalledRequest)request);
     }
     filterChain.doFilter(request, response);
   }

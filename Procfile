@@ -1,1 +1,1 @@
-web: java --enable-preview -Dserver.port=$PORT $JAVA_OPTS -jar target/admin-1.0-SNAPSHOT.jar
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar target/admin-1.0-SNAPSHOT.jar
