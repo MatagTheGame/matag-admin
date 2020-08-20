@@ -59,7 +59,7 @@ public class LoginController {
     LOGGER.info("Login successful.");
     return LoginResponse.builder()
       .token(session.getSessionId())
-      .profile(currentUserProfileService.getProfile(user))
+      .profile(currentUserProfileService.getProfile(user, session))
       .build();
   }
 

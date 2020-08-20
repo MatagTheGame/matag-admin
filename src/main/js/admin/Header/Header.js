@@ -29,7 +29,7 @@ class Header extends Component {
             <Link to="/ui/admin/profile">{this.props.profile.username}</Link>
             <ul className="dropdown">
               <li><Link to="/ui/admin/profile">Profile</Link></li>
-              <li><Link to="/ui/admin/auth/change-password">Change Password</Link></li>
+              { this.props.isNonGuest && <li><Link to="/ui/admin/auth/change-password">Change Password</Link></li> }
               <li><Logout/></li>
             </ul>
           </nav>
@@ -68,6 +68,7 @@ class Header extends Component {
 const mapStateToProps = state => {
   return {
     isLoggedIn: AuthHelper.isLoggedIn(state),
+    isNonGuest: AuthHelper.isNonGuest(state),
     profile: get(state, 'session.profile', {}),
     config: get(state, 'config', {})
   }

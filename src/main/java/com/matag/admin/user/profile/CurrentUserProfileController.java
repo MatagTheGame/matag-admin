@@ -15,6 +15,9 @@ public class CurrentUserProfileController {
 
   @GetMapping
   public CurrentUserProfileDto getProfile() {
-    return currentUserProfileService.getProfile(securityContextHolderHelper.getUser());
+    return currentUserProfileService.getProfile(
+      securityContextHolderHelper.getUser(),
+      securityContextHolderHelper.getSession()
+    );
   }
 }
