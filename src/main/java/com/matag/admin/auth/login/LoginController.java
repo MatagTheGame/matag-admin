@@ -25,6 +25,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.matag.admin.user.MatagUserType.GUEST;
+
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
@@ -48,6 +50,14 @@ public class LoginController {
 
     var user = validateLogin(loginRequest);
 
+    if (user.getType() != GUEST) {
+      var existingSession = matagSessionRepository.findByMatagUserId(user.getId());
+      if (existingSession.isPresent()) {
+        LOGGER.info("User was already logged in... restored its session.");
+        return buildResponse(user, existingSession.get());
+      }
+    }
+
     MatagSession session = MatagSession.builder()
       .sessionId(UUID.randomUUID().toString())
       .matagUser(user)
@@ -57,10 +67,7 @@ public class LoginController {
     matagSessionRepository.save(session);
 
     LOGGER.info("Login successful.");
-    return LoginResponse.builder()
-      .token(session.getSessionId())
-      .profile(currentUserProfileService.getProfile(user, session))
-      .build();
+    return buildResponse(user, session);
   }
 
   private MatagUser validateLogin(@RequestBody LoginRequest loginRequest) {
@@ -99,5 +106,12 @@ public class LoginController {
     } else {
       return userRepository.findByUsername(emailOrUsername);
     }
+  }
+
+  private LoginResponse buildResponse(MatagUser user, MatagSession session) {
+    return LoginResponse.builder()
+      .token(session.getSessionId())
+      .profile(currentUserProfileService.getProfile(user, session))
+      .build();
   }
 }

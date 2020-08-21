@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface MatagSessionRepository extends CrudRepository<MatagSession, Long> {
   Optional<MatagSession> findBySessionId(String sessionId);
 
+  Optional<MatagSession> findByMatagUserId(Long id);
+
   @Modifying
   @Transactional
   @Query("DELETE FROM MatagSession WHERE validUntil < ?1")

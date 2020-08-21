@@ -1,16 +1,15 @@
 package application.auth.login;
 
-import static application.TestUtils.PASSWORD;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-
 import application.AbstractApplicationTest;
 import com.matag.admin.auth.login.LoginRequest;
 import com.matag.admin.auth.login.LoginResponse;
 import com.matag.admin.user.profile.CurrentUserProfileDto;
 import org.junit.Test;
-import org.springframework.http.ResponseEntity;
+
+import static application.TestUtils.PASSWORD;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 public class LoginControllerTest extends AbstractApplicationTest {
   @Test
@@ -99,5 +98,20 @@ public class LoginControllerTest extends AbstractApplicationTest {
     assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getError()).isEqualTo("Account is not active.");
+  }
+
+  @Test
+  public void shouldNotCreateTwoSessionsForSameUser() {
+    // Given a user already logged in once
+    var request = new LoginRequest("User1", PASSWORD);
+    var response = restTemplate.postForObject("/auth/login", request, LoginResponse.class);
+    String firstToken = response.getToken();
+
+    // When user login twice
+    response = restTemplate.postForObject("/auth/login", request, LoginResponse.class);
+    String secondToken = response.getToken();
+
+    // Then
+    assertThat(firstToken).isEqualTo(secondToken);
   }
 }
