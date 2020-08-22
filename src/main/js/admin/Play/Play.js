@@ -24,7 +24,7 @@ class Play extends Component {
       return <ActiveGame activeGame={this.props.activeGame} goToGame={this.goToGame} />
 
     } else {
-      return <DecksSelector/>
+      return <DecksSelector goToGame={this.goToGame} />
     }
   }
 

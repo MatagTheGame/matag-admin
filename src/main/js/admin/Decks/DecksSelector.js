@@ -5,11 +5,15 @@ import {bindActionCreators} from 'redux'
 import RandomColorDeckForm from 'admin/Decks/RandomColorDeckForm'
 
 class DecksSelector extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return (
       <section>
         <h3>Random Colors</h3>
-        <RandomColorDeckForm />
+        <RandomColorDeckForm goToGame={this.props.goToGame}  />
       </section>
     )
   }
