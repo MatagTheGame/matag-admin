@@ -30,6 +30,6 @@ public class GameControllerTest extends AbstractApplicationTest {
     var deckInfo = restTemplate.getForObject("/game/active-deck", DeckInfo.class);
 
     // Then
-    assertThat(deckInfo.getRandomColors()).isEqualTo(Set.of(WHITE, RED));
+    assertThat(deckInfo.getCards()).hasSize(60);
   }
 }
