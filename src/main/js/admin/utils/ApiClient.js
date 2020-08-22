@@ -24,7 +24,7 @@ export default class ApiClient {
   static execute(url, request, method = 'GET') {
     return ApiClient.executeNoJsonResponse(url, request, method)
       .then(response => response.json())
-      .catch(() => {return {'error': 'Server is down'}})
+      .catch(() => {return {'error': 'An error occurred while executing the request.'}})
   }
 
   static executeNoJsonResponse(url, request, method = 'GET') {
