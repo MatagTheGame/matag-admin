@@ -1,5 +1,6 @@
 import AuthHelper from 'admin/Auth/AuthHelper'
 import AuthReducer from 'admin/Auth/AuthReducer'
+import DecksReducer from 'admin/Decks/DecksReducer'
 import PlayReducer from 'admin/Play/PlayReducer'
 
 const clone = (object) => {
@@ -17,7 +18,8 @@ export default (state, action) => {
       session: {
         loading: true, token: AuthHelper.getToken()
       },
-      play: {}
+      play: {},
+      decks: {}
     }
   } else if (action.type.indexOf('@@') > -1) {
     // ignore all of these action types
@@ -41,6 +43,9 @@ export default (state, action) => {
 
   } else if (PlayReducer.getActions().indexOf(action.type) >= 0) {
     PlayReducer.reduceAction(newState, action)
+
+  } else if (DecksReducer.getActions().indexOf(action.type) >= 0) {
+    DecksReducer.reduceAction(newState, action)
 
   } else {
     throw new Error(`Unknown action type ${action.type}`)

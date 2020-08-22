@@ -6,7 +6,7 @@ import AuthHelper from 'admin/Auth/AuthHelper'
 import Loader from 'admin/Common/Loader'
 import ApiClient from 'admin/utils/ApiClient'
 import ActiveGame from './ActiveGame'
-import PlayForm from './PlayForm'
+import DecksSelector from '../Decks/DecksSelector'
 import './play.scss'
 
 class Play extends Component {
@@ -24,7 +24,7 @@ class Play extends Component {
       return <ActiveGame activeGame={this.props.activeGame} goToGame={this.goToGame} />
 
     } else {
-      return <PlayForm goToGame={this.goToGame} />
+      return <DecksSelector/>
     }
   }
 
