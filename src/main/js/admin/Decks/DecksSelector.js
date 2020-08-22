@@ -6,7 +6,7 @@ import RandomColorDeckForm from 'admin/Decks/RandomColorDeckForm'
 
 class DecksSelector extends Component {
   constructor(props) {
-    super(props);
+    super(props)
   }
 
   render() {
