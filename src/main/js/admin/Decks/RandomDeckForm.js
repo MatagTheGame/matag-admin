@@ -5,7 +5,7 @@ import AuthHelper from 'admin/Auth/AuthHelper'
 import Loader from 'admin/Common/Loader'
 import ApiClient from 'admin/utils/ApiClient'
 
-class RandomColorDeckForm extends Component {
+class RandomDeckForm extends Component {
   constructor(props) {
     super(props)
     this.handlePlay = this.handlePlay.bind(this)
@@ -137,4 +137,4 @@ const mapDispatchToProps = () => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RandomColorDeckForm)
+export default connect(mapStateToProps, mapDispatchToProps)(RandomDeckForm)

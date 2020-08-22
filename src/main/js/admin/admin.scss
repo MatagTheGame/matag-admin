@@ -135,5 +135,34 @@ table {
   }
 }
 
+.tab-container {
+  .tab-list {
+    display: flex;
+    background-color: $tab-headers-background-color;
+    cursor: hand;
+
+    .tab-header {
+      padding-left: 1rem;
+      padding-right: 2rem;
+
+      &:hover {
+        background-color: $tab-headers-hover-background-color;
+        color: $tab-selected-headers-text-color;
+      }
+    }
+
+    .selected {
+      background-color: $tab-selected-headers-background-color;
+      color: $tab-selected-headers-text-color;
+    }
+  }
+
+  .tab-content {
+    padding: 1rem;
+    background-color: $tab-body-background-color;
+  }
+}
+
+
 @import 'form';
 @import 'card';
