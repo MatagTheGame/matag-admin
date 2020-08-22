@@ -15,7 +15,7 @@ public class StatsController {
   public StatsResponse stats() {
     return StatsResponse.builder()
       .totalUsers(statsService.countTotalUsers())
-      .onlineUsers(statsService.countOnlineUsers())
+      .onlineUsers(statsService.onlineUsers())
       .totalCards(statsService.countCards())
       .totalSets(statsService.countSets())
       .build();

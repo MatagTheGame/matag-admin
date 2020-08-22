@@ -24,7 +24,7 @@ public class StatsService {
     return matagUserRepository.countUsersByStatus(ACTIVE);
   }
 
-  public List<String> countOnlineUsers() {
+  public List<String> onlineUsers() {
     return matagUserRepository.retrieveOnlineUsers(LocalDateTime.now(clock));
   }
 
