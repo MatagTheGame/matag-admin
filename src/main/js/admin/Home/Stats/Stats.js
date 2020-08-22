@@ -2,28 +2,32 @@ import React, {Component} from 'react'
 import get from 'lodash/get'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import Loader from 'admin/Common/Loader'
 import ApiClient from 'admin/utils/ApiClient'
 
 class Stats extends Component {
   componentDidMount() {
+    this.updateStats()
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.updateStatsRefresher)
+  }
+
+  updateStats() {
     this.props.loadStats()
     ApiClient.get('/stats').then(this.props.statsLoaded)
+    this.updateStatsRefresher = setTimeout(this.updateStats.bind(this),10000)
   }
 
   stats() {
-    if (this.props.loading) {
-      return <Loader/>
-    } else {
-      return (
-        <ul>
-          <li><small><span>TOTAL USERS: </span></small><span>{this.props.totalUsers}</span></li>
-          <li><small><span>ONLINE USERS: </span></small><span>{this.props.onlineUsers.length} ({this.props.onlineUsers.map((user) => <span className="online-user" key="{user}">{user}</span>)})</span></li>
-          <li><small><span>TOTAL CARDS: </span></small><span>{this.props.totalCards}</span></li>
-          <li><small><span>TOTAL SETS: </span></small><span>{this.props.totalSets} (from Magic Origins)</span></li>
-        </ul>
-      )
-    }
+    return (
+      <ul>
+        <li><small><span>TOTAL USERS: </span></small><span>{this.props.totalUsers}</span></li>
+        <li><small><span>ONLINE USERS: </span></small><span>{this.props.onlineUsers.length} ({this.props.onlineUsers.map((user) => <span className="online-user" key="{user}">{user}</span>)})</span></li>
+        <li><small><span>TOTAL CARDS: </span></small><span>{this.props.totalCards}</span></li>
+        <li><small><span>TOTAL SETS: </span></small><span>{this.props.totalSets} (from Magic Origins)</span></li>
+      </ul>
+    )
   }
 
   render() {
