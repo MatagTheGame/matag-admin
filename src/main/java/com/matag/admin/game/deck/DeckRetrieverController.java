@@ -43,7 +43,7 @@ public class DeckRetrieverController {
       throw new RuntimeException("Could not build decks from metadata: " + deckMetadata);
     }
 
-    return DeckInfo.builder().build();
+    return DeckInfo.builder().cards(cards).build();
   }
 
   @SneakyThrows
