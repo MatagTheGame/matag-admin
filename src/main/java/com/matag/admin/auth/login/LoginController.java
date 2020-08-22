@@ -54,6 +54,8 @@ public class LoginController {
       var existingSession = matagSessionRepository.findByMatagUserId(user.getId());
       if (existingSession.isPresent()) {
         LOGGER.info("User was already logged in... restored its session.");
+        existingSession.get().setValidUntil(LocalDateTime.now(clock).plusSeconds(AuthSessionFilter.SESSION_DURATION_TIME));
+        matagSessionRepository.save(existingSession.get());
         return buildResponse(user, existingSession.get());
       }
     }
