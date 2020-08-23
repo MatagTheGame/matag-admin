@@ -1,6 +1,5 @@
 package com.matag.admin.game.deck;
 
-import com.matag.adminentities.DeckMetadata;
 import com.matag.cards.Card;
 import com.matag.cards.Cards;
 import com.matag.cards.properties.Color;
@@ -23,8 +22,8 @@ import static java.util.Collections.nCopies;
 public class RandomColorsDeckFactory {
   private final Cards cards;
 
-  public List<Card> create(DeckMetadata deckMetadata) {
-    var randomColors = deckMetadata.getRandomColors();
+  public List<Card> create(DeckMetadataOptions deckMetadata) {
+    var randomColors = deckMetadata.getColors();
     var cards = new ArrayList<Card>();
 
     // Lands

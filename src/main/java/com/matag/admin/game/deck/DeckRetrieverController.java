@@ -5,7 +5,6 @@ import com.matag.admin.auth.SecurityContextHolderHelper;
 import com.matag.admin.game.session.GameSession;
 import com.matag.admin.game.session.GameSessionRepository;
 import com.matag.adminentities.DeckInfo;
-import com.matag.adminentities.DeckMetadata;
 import com.matag.cards.Card;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -34,14 +33,12 @@ public class DeckRetrieverController {
   }
 
   private DeckInfo buildDeck(DeckMetadata deckMetadata) {
-    List<Card> cards = null;
-    if (deckMetadata.getRandomColors() != null && !deckMetadata.getRandomColors().isEmpty()) {
-      cards = randomColorsDeckFactory.create(deckMetadata);
-    }
-
-    if (cards == null) {
-      throw new RuntimeException("Could not build decks from metadata: " + deckMetadata);
-    }
+    List<Card> cards = switch (deckMetadata.getType()) {
+      case "random" -> randomColorsDeckFactory.create(deckMetadata.getOptions());
+      case "pre-constructed" -> throw new RuntimeException("pre-constructed not implemented.");
+      case "custom" -> throw new RuntimeException("pre-constructed not implemented.");
+      default -> throw new RuntimeException(deckMetadata.getType() + " not recognised.");
+    };
 
     return DeckInfo.builder().cards(cards).build();
   }

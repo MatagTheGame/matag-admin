@@ -19,7 +19,10 @@ export default (state, action) => {
         loading: true, token: AuthHelper.getToken()
       },
       play: {},
-      decks: {}
+      decks: {
+        select: {},
+        start: {}
+      }
     }
   } else if (action.type.indexOf('@@') > -1) {
     // ignore all of these action types

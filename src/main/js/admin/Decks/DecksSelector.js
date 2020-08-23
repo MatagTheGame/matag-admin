@@ -1,24 +1,15 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import get from 'lodash/get'
 import {bindActionCreators} from 'redux'
-import RandomDeckForm from 'admin/Decks/RandomDeckForm'
+import AbstractDeckForm from 'admin/Decks/AbstractDeckForm'
+import RandomDeckForm from 'admin/Decks/random/RandomDeckForm'
+import DecksSelectorUtils from 'admin/Decks/DecksSelectorUtils'
+import PreConstructedDeckForm from 'admin/Decks/pre-constructed/PreConstructedDeckForm'
+import CustomDeckForm from 'admin/Decks/custom/CustomForm'
 
 class DecksSelector extends Component {
   constructor(props) {
     super(props)
-  }
-
-  renderRandomColors() {
-    return <RandomDeckForm goToGame={this.props.goToGame}  />
-  }
-
-  renderPreConstructed() {
-    return <div>Pre-Constructed Decks coming soon</div>
-  }
-
-  renderCustom() {
-    return <div>Custom Decks coming soon</div>
   }
 
   getTabHeaderClassName(headerName) {
@@ -40,9 +31,9 @@ class DecksSelector extends Component {
           <div className={this.getTabHeaderClassName('custom')} onClick={() => this.props.changeDeckType('custom')}><h3>Custom</h3></div>
         </div>
         <div className='tab-content'>
-          {this.props.deckType === 'random' && this.renderRandomColors()}
-          {this.props.deckType === 'pre-constructed' && this.renderPreConstructed()}
-          {this.props.deckType === 'custom' && this.renderCustom()}
+          {this.props.deckType === 'random' && <AbstractDeckForm goToGame={this.props.goToGame}><RandomDeckForm /></AbstractDeckForm>}
+          {this.props.deckType === 'pre-constructed' && <AbstractDeckForm goToGame={this.props.goToGame}><PreConstructedDeckForm /></AbstractDeckForm>}
+          {this.props.deckType === 'custom' && <AbstractDeckForm goToGame={this.props.goToGame}><CustomDeckForm /></AbstractDeckForm>}
         </div>
       </section>
     )
@@ -58,7 +49,7 @@ const changeDeckType = (deckType) => {
 
 const mapStateToProps = state => {
   return {
-    deckType: get(state, 'decks.type', 'random')
+    deckType: DecksSelectorUtils.getDeckType(state)
   }
 }
 
