@@ -1,16 +1,12 @@
 package com.matag.admin.game.findactive;
 
-import com.matag.admin.auth.SecurityContextHolderHelper;
-import com.matag.admin.game.game.Game;
-import com.matag.admin.game.session.GamePlayers;
-import com.matag.admin.game.session.GameSession;
-import com.matag.admin.game.session.GameSessionRepository;
-import com.matag.admin.game.session.GameSessionService;
-import com.matag.admin.session.MatagSession;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import com.matag.admin.auth.SecurityContextHolderHelper;
+import com.matag.admin.game.session.GameSessionRepository;
+import com.matag.admin.game.session.GameSessionService;
+
+import lombok.AllArgsConstructor;
 
 @Component
 @AllArgsConstructor

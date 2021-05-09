@@ -1,10 +1,11 @@
 package com.matag.admin.config;
 
-import lombok.Getter;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
+import lombok.Getter;
 
 @Component
 @Getter

@@ -1,8 +1,8 @@
 package com.matag.admin.auth.codes;
 
-import org.springframework.stereotype.Component;
-
 import java.util.Random;
+
+import org.springframework.stereotype.Component;
 
 @Component
 public class RandomCodeService {

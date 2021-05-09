@@ -1,18 +1,21 @@
 package com.matag.admin.auth.logout;
 
-import com.matag.admin.session.MatagSessionRepository;
-import lombok.AllArgsConstructor;
+import static com.matag.admin.session.AuthSessionFilter.SESSION_NAME;
+
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import com.matag.admin.session.MatagSessionRepository;
 
-import static com.matag.admin.session.AuthSessionFilter.SESSION_NAME;
+import lombok.AllArgsConstructor;
 
 @Component
 @AllArgsConstructor

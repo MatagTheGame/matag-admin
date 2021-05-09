@@ -1,14 +1,22 @@
 package application.stats;
 
-import application.AbstractApplicationTest;
-import com.matag.admin.stats.StatsResponse;
-import org.junit.Test;
-import org.springframework.http.HttpStatus;
+import static application.TestUtils.GUEST_SESSION_TOKEN_1;
+import static application.TestUtils.GUEST_SESSION_TOKEN_2;
+import static application.TestUtils.GUEST_USERNAME;
+import static application.TestUtils.USER_1_SESSION_TOKEN;
+import static application.TestUtils.USER_1_USERNAME;
+import static application.TestUtils.USER_2_SESSION_TOKEN;
+import static application.TestUtils.USER_2_USERNAME;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 
-import static application.TestUtils.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+import org.springframework.http.HttpStatus;
+
+import com.matag.admin.stats.StatsResponse;
+
+import application.AbstractApplicationTest;
 
 public class StatsControllerTest extends AbstractApplicationTest {
   @Test

@@ -1,15 +1,17 @@
 package application.auth.login;
 
-import application.AbstractApplicationTest;
-import com.matag.admin.auth.login.LoginRequest;
-import com.matag.admin.auth.login.LoginResponse;
-import com.matag.admin.user.profile.CurrentUserProfileDto;
-import org.junit.Test;
-
 import static application.TestUtils.PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
+import org.junit.Test;
+
+import com.matag.admin.auth.login.LoginRequest;
+import com.matag.admin.auth.login.LoginResponse;
+import com.matag.admin.user.profile.CurrentUserProfileDto;
+
+import application.AbstractApplicationTest;
 
 public class LoginControllerTest extends AbstractApplicationTest {
   @Test

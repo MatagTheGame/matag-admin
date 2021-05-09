@@ -1,21 +1,23 @@
 package com.matag.admin.game.join;
 
+import static com.matag.admin.game.game.GameStatusType.IN_PROGRESS;
+import static com.matag.admin.game.game.GameStatusType.STARTING;
+
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.matag.admin.auth.SecurityContextHolderHelper;
 import com.matag.admin.game.game.Game;
 import com.matag.admin.game.game.GameRepository;
 import com.matag.admin.game.session.GameSession;
 import com.matag.admin.game.session.GameSessionRepository;
 import com.matag.admin.game.session.GameSessionService;
+
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static com.matag.admin.game.game.GameStatusType.IN_PROGRESS;
-import static com.matag.admin.game.game.GameStatusType.STARTING;
 
 @Component
 @AllArgsConstructor

@@ -1,29 +1,34 @@
 package application.auth.register;
 
-import application.AbstractApplicationTest;
-import com.matag.admin.auth.register.RegisterRequest;
-import com.matag.admin.auth.register.RegisterResponse;
-import com.matag.admin.auth.register.VerifyResponse;
-import com.matag.admin.exception.ErrorResponse;
-import com.matag.admin.game.score.ScoreRepository;
-import com.matag.admin.user.MatagUserRepository;
-import lombok.SneakyThrows;
+import static application.TestUtils.PASSWORD;
+import static com.matag.admin.user.MatagUserStatus.ACTIVE;
+import static com.matag.admin.user.MatagUserStatus.INACTIVE;
+import static com.matag.admin.user.MatagUserStatus.VERIFYING;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.OK;
+
+import java.time.LocalDateTime;
+
+import javax.mail.internet.MimeMessage;
+
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import javax.mail.internet.MimeMessage;
-import java.time.LocalDateTime;
+import com.matag.admin.auth.register.RegisterRequest;
+import com.matag.admin.auth.register.RegisterResponse;
+import com.matag.admin.auth.register.VerifyResponse;
+import com.matag.admin.exception.ErrorResponse;
+import com.matag.admin.game.score.ScoreRepository;
+import com.matag.admin.user.MatagUserRepository;
 
-import static application.TestUtils.PASSWORD;
-import static com.matag.admin.user.MatagUserStatus.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.OK;
+import application.AbstractApplicationTest;
+import lombok.SneakyThrows;
 
 public class RegisterControllerTest extends AbstractApplicationTest {
   @Autowired

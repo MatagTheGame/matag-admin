@@ -1,22 +1,27 @@
 package application.game.join;
 
-import application.AbstractApplicationTest;
-import com.matag.admin.game.game.Game;
+import static application.TestUtils.GUEST_SESSION_TOKEN_1;
+import static application.TestUtils.GUEST_SESSION_TOKEN_2;
+import static application.TestUtils.GUEST_USERNAME;
+import static application.TestUtils.USER_1_SESSION_TOKEN;
+import static application.TestUtils.USER_1_USERNAME;
+import static application.TestUtils.USER_2_SESSION_TOKEN;
+import static application.TestUtils.USER_2_USERNAME;
+import static com.matag.admin.game.game.GameStatusType.IN_PROGRESS;
+import static com.matag.admin.game.game.GameStatusType.STARTING;
+import static com.matag.admin.game.game.GameType.UNLIMITED;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.matag.admin.game.game.GameRepository;
 import com.matag.admin.game.join.JoinGameRequest;
 import com.matag.admin.game.join.JoinGameResponse;
 import com.matag.admin.game.session.GameSession;
 import com.matag.admin.game.session.GameSessionRepository;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Iterator;
-
-import static application.TestUtils.*;
-import static com.matag.admin.game.game.GameStatusType.IN_PROGRESS;
-import static com.matag.admin.game.game.GameStatusType.STARTING;
-import static com.matag.admin.game.game.GameType.UNLIMITED;
-import static org.assertj.core.api.Assertions.assertThat;
+import application.AbstractApplicationTest;
 
 public class JoinGameControllerTest extends AbstractApplicationTest {
   @Autowired

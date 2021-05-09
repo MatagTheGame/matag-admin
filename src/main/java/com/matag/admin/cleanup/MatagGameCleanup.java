@@ -1,14 +1,7 @@
 package com.matag.admin.cleanup;
 
-import com.matag.admin.game.game.Game;
-import com.matag.admin.game.game.GameRepository;
-import com.matag.admin.game.session.GameSession;
-import com.matag.admin.game.session.GameSessionRepository;
-import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import static com.matag.admin.game.game.GameStatusType.IN_PROGRESS;
+import static com.matag.admin.game.game.GameStatusType.STARTING;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -16,8 +9,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.matag.admin.game.game.GameStatusType.IN_PROGRESS;
-import static com.matag.admin.game.game.GameStatusType.STARTING;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.matag.admin.game.game.Game;
+import com.matag.admin.game.game.GameRepository;
+import com.matag.admin.game.session.GameSession;
+import com.matag.admin.game.session.GameSessionRepository;
+
+import lombok.AllArgsConstructor;
 
 @Component
 @AllArgsConstructor

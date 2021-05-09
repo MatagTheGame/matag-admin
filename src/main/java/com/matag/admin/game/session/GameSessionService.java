@@ -1,10 +1,10 @@
 package com.matag.admin.game.session;
 
-import com.matag.admin.game.game.Game;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import com.matag.admin.game.game.Game;
+
+import lombok.AllArgsConstructor;
 
 @Component
 @AllArgsConstructor

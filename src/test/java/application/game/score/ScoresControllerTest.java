@@ -1,16 +1,20 @@
 package application.game.score;
 
-import application.AbstractApplicationTest;
+import static application.TestUtils.USER_1_SESSION_TOKEN;
+import static application.TestUtils.USER_1_USERNAME;
+import static application.TestUtils.USER_2_USERNAME;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.matag.admin.game.score.Score;
 import com.matag.admin.game.score.ScoreRepository;
 import com.matag.admin.game.score.ScoreResponse;
 import com.matag.admin.game.score.ScoresResponse;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import static application.TestUtils.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
+import application.AbstractApplicationTest;
 
 public class ScoresControllerTest extends AbstractApplicationTest {
   @Autowired

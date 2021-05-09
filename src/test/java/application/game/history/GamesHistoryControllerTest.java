@@ -1,21 +1,29 @@
 package application.game.history;
 
-import application.AbstractApplicationTest;
-import com.matag.admin.game.game.*;
+import static application.TestUtils.USER_1_SESSION_TOKEN;
+import static application.TestUtils.USER_1_USERNAME;
+import static application.TestUtils.USER_2_USERNAME;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+
+import java.time.LocalDateTime;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.matag.admin.game.game.Game;
+import com.matag.admin.game.game.GameRepository;
+import com.matag.admin.game.game.GameResultType;
+import com.matag.admin.game.game.GameStatusType;
+import com.matag.admin.game.game.GameType;
+import com.matag.admin.game.game.GameUserResultType;
 import com.matag.admin.game.history.GameHistory;
 import com.matag.admin.game.history.GamesHistoryResponse;
 import com.matag.admin.game.session.GameSession;
 import com.matag.admin.game.session.GameSessionRepository;
 import com.matag.admin.user.MatagUser;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
-
-import static application.TestUtils.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
+import application.AbstractApplicationTest;
 
 public class GamesHistoryControllerTest extends AbstractApplicationTest {
   @Autowired

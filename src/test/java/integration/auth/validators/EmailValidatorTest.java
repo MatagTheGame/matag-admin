@@ -1,9 +1,10 @@
 package integration.auth.validators;
 
-import com.matag.admin.auth.validators.EmailValidator;
-import com.matag.admin.auth.validators.ValidationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import com.matag.admin.auth.validators.EmailValidator;
+import com.matag.admin.auth.validators.ValidationException;
 
 public class EmailValidatorTest {
   private final EmailValidator emailValidator = new EmailValidator();

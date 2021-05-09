@@ -1,13 +1,15 @@
 package com.matag.admin.game.score;
 
-import com.matag.admin.user.MatagUser;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import static com.matag.admin.game.game.GameType.UNLIMITED;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
 
-import static com.matag.admin.game.game.GameType.UNLIMITED;
+import org.springframework.stereotype.Component;
+
+import com.matag.admin.user.MatagUser;
+
+import lombok.AllArgsConstructor;
 
 @Component
 @AllArgsConstructor

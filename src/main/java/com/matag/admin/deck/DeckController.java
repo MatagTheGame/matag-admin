@@ -1,12 +1,12 @@
 package com.matag.admin.deck;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import static java.util.Collections.emptyList;
 
 import java.util.List;
 
-import static java.util.Collections.emptyList;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/deck")

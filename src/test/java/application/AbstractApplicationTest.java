@@ -1,15 +1,20 @@
 package application;
 
-import com.matag.admin.MatagAdminApplication;
-import com.matag.admin.config.ConfigService;
-import com.matag.admin.game.game.GameRepository;
-import com.matag.admin.game.score.ScoreRepository;
-import com.matag.admin.game.score.ScoreService;
-import com.matag.admin.game.session.GameSessionRepository;
-import com.matag.admin.session.MatagSession;
-import com.matag.admin.session.MatagSessionRepository;
-import com.matag.admin.user.MatagUser;
-import com.matag.admin.user.MatagUserRepository;
+import static application.TestUtils.guest;
+import static application.TestUtils.inactive;
+import static application.TestUtils.user1;
+import static application.TestUtils.user2;
+import static com.matag.admin.session.AuthSessionFilter.SESSION_DURATION_TIME;
+import static com.matag.admin.session.AuthSessionFilter.SESSION_NAME;
+import static com.matag.admin.user.MatagUserType.USER;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Collections;
+import java.util.UUID;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -25,17 +30,16 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.Collections;
-import java.util.UUID;
-
-import static application.TestUtils.*;
-import static com.matag.admin.session.AuthSessionFilter.SESSION_DURATION_TIME;
-import static com.matag.admin.session.AuthSessionFilter.SESSION_NAME;
-import static com.matag.admin.user.MatagUserType.USER;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import com.matag.admin.MatagAdminApplication;
+import com.matag.admin.config.ConfigService;
+import com.matag.admin.game.game.GameRepository;
+import com.matag.admin.game.score.ScoreRepository;
+import com.matag.admin.game.score.ScoreService;
+import com.matag.admin.game.session.GameSessionRepository;
+import com.matag.admin.session.MatagSession;
+import com.matag.admin.session.MatagSessionRepository;
+import com.matag.admin.user.MatagUser;
+import com.matag.admin.user.MatagUserRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MatagAdminApplication.class, webEnvironment = RANDOM_PORT)

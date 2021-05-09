@@ -1,12 +1,13 @@
 package com.matag.admin.game.score;
 
-import lombok.AllArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/game")

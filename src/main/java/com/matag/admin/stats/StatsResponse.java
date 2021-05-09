@@ -1,11 +1,12 @@
 package com.matag.admin.stats;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+
 import lombok.Builder;
 import lombok.Value;
-
-import java.util.List;
 
 @Value
 @JsonDeserialize(builder = StatsResponse.StatsResponseBuilder.class)

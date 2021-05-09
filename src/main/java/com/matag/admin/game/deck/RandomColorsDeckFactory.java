@@ -1,12 +1,7 @@
 package com.matag.admin.game.deck;
 
-import com.matag.cards.Card;
-import com.matag.cards.Cards;
-import com.matag.cards.properties.Color;
-import com.matag.cards.properties.Type;
-import com.matag.cards.search.CardSearch;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import static com.matag.cards.ability.type.AbilityType.TAP_ADD_MANA;
+import static java.util.Collections.nCopies;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,8 +9,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.matag.cards.ability.type.AbilityType.TAP_ADD_MANA;
-import static java.util.Collections.nCopies;
+import org.springframework.stereotype.Component;
+
+import com.matag.cards.Card;
+import com.matag.cards.Cards;
+import com.matag.cards.properties.Color;
+import com.matag.cards.properties.Type;
+import com.matag.cards.search.CardSearch;
+
+import lombok.AllArgsConstructor;
 
 @Component
 @AllArgsConstructor

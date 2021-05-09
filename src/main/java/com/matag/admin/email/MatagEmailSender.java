@@ -1,11 +1,13 @@
 package com.matag.admin.email;
 
-import com.matag.admin.config.ConfigService;
-import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+
+import com.matag.admin.config.ConfigService;
+
+import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 
 @Component
 @AllArgsConstructor

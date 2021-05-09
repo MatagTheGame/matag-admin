@@ -2,12 +2,10 @@ package com.matag.admin.game.score;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.matag.admin.game.game.GameType;
-import com.matag.admin.game.history.GamesHistoryResponse;
-import lombok.*;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Value;
 
 @Value
 @AllArgsConstructor

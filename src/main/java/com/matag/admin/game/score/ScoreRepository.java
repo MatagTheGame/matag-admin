@@ -1,11 +1,12 @@
 package com.matag.admin.game.score;
 
-import com.matag.admin.user.MatagUser;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.matag.admin.user.MatagUser;
 
 @Repository
 public interface ScoreRepository extends CrudRepository<Score, Long> {

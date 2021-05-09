@@ -1,19 +1,20 @@
 package application.auth.changepassword;
 
-import application.AbstractApplicationTest;
-import com.matag.admin.auth.changepassword.ChangePasswordRequest;
-import com.matag.admin.auth.changepassword.ChangePasswordResponse;
-import com.matag.admin.auth.login.LoginRequest;
-import com.matag.admin.auth.login.LoginResponse;
-import com.matag.admin.exception.ErrorResponse;
-import org.junit.Test;
-import org.springframework.http.ResponseEntity;
-
 import static application.TestUtils.USER_1_SESSION_TOKEN;
 import static application.TestUtils.USER_1_USERNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
+
+import org.junit.Test;
+
+import com.matag.admin.auth.changepassword.ChangePasswordRequest;
+import com.matag.admin.auth.changepassword.ChangePasswordResponse;
+import com.matag.admin.auth.login.LoginRequest;
+import com.matag.admin.auth.login.LoginResponse;
+import com.matag.admin.exception.ErrorResponse;
+
+import application.AbstractApplicationTest;
 
 public class ChangePasswordControllerTest extends AbstractApplicationTest {
   @Test

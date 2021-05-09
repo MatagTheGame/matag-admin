@@ -1,13 +1,8 @@
 package com.matag.admin.auth.changepassword;
 
-import com.matag.admin.auth.SecurityContextHolderHelper;
-import com.matag.admin.auth.login.LoginController;
-import com.matag.admin.auth.validators.PasswordValidator;
-import com.matag.admin.auth.validators.ValidationException;
-import com.matag.admin.exception.MatagException;
-import com.matag.admin.user.MatagUser;
-import com.matag.admin.user.MatagUserRepository;
-import lombok.AllArgsConstructor;
+import java.time.Clock;
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,8 +11,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
+import com.matag.admin.auth.SecurityContextHolderHelper;
+import com.matag.admin.auth.login.LoginController;
+import com.matag.admin.auth.validators.PasswordValidator;
+import com.matag.admin.auth.validators.ValidationException;
+import com.matag.admin.exception.MatagException;
+import com.matag.admin.user.MatagUser;
+import com.matag.admin.user.MatagUserRepository;
+
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/auth")

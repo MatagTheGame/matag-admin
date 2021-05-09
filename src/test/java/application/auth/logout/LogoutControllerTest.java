@@ -1,14 +1,16 @@
 package application.auth.logout;
 
-import static application.TestUtils.*;
+import static application.TestUtils.USER_1_SESSION_TOKEN;
+import static application.TestUtils.USER_1_USERNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.OK;
 
-import application.AbstractApplicationTest;
-import com.matag.admin.session.MatagSessionRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+
+import com.matag.admin.session.MatagSessionRepository;
+
+import application.AbstractApplicationTest;
 
 public class LogoutControllerTest extends AbstractApplicationTest {
   @Autowired

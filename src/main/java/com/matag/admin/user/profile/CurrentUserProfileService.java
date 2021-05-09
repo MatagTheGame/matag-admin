@@ -1,10 +1,11 @@
 package com.matag.admin.user.profile;
 
-import com.matag.admin.session.MatagSession;
-import com.matag.admin.user.MatagUser;
+import static com.matag.admin.user.MatagUserType.GUEST;
+
 import org.springframework.stereotype.Component;
 
-import static com.matag.admin.user.MatagUserType.GUEST;
+import com.matag.admin.session.MatagSession;
+import com.matag.admin.user.MatagUser;
 
 @Component
 public class CurrentUserProfileService {

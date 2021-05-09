@@ -1,16 +1,18 @@
 package com.matag.admin.auth.register;
 
-import com.matag.admin.auth.codes.RandomCodeService;
-import com.matag.admin.user.MatagUser;
-import com.matag.admin.user.verification.MatagUserVerification;
-import com.matag.admin.user.verification.MatagUserVerificationRepository;
-import lombok.AllArgsConstructor;
+import java.time.Clock;
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
+import com.matag.admin.auth.codes.RandomCodeService;
+import com.matag.admin.user.MatagUser;
+import com.matag.admin.user.verification.MatagUserVerification;
+import com.matag.admin.user.verification.MatagUserVerificationRepository;
+
+import lombok.AllArgsConstructor;
 
 @Component
 @AllArgsConstructor

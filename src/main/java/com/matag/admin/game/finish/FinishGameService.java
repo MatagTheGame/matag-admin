@@ -1,5 +1,13 @@
 package com.matag.admin.game.finish;
 
+import static com.matag.admin.game.game.GameStatusType.IN_PROGRESS;
+
+import java.time.Clock;
+import java.time.LocalDateTime;
+
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.matag.admin.game.game.Game;
 import com.matag.admin.game.game.GameRepository;
 import com.matag.admin.game.game.GameStatusType;
@@ -10,14 +18,8 @@ import com.matag.admin.game.session.GameSession;
 import com.matag.admin.game.session.GameSessionRepository;
 import com.matag.admin.game.session.GameSessionService;
 import com.matag.adminentities.FinishGameRequest;
+
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Clock;
-import java.time.LocalDateTime;
-
-import static com.matag.admin.game.game.GameStatusType.IN_PROGRESS;
 
 @Component
 @AllArgsConstructor

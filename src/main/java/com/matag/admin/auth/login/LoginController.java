@@ -1,5 +1,21 @@
 package com.matag.admin.auth.login;
 
+import static com.matag.admin.user.MatagUserType.GUEST;
+
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.matag.admin.auth.validators.EmailValidator;
 import com.matag.admin.auth.validators.PasswordValidator;
 import com.matag.admin.auth.validators.ValidationException;
@@ -10,22 +26,8 @@ import com.matag.admin.user.MatagUser;
 import com.matag.admin.user.MatagUserRepository;
 import com.matag.admin.user.MatagUserStatus;
 import com.matag.admin.user.profile.CurrentUserProfileService;
+
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
-
-import static com.matag.admin.user.MatagUserType.GUEST;
 
 @RestController
 @RequestMapping("/auth")

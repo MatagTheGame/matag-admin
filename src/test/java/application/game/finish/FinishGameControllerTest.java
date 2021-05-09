@@ -1,25 +1,30 @@
 package application.game.finish;
 
-import application.AbstractApplicationTest;
-import com.matag.admin.game.game.GameRepository;
-import com.matag.admin.game.join.JoinGameRequest;
-import com.matag.admin.game.join.JoinGameResponse;
-import com.matag.admin.game.score.ScoreRepository;
-import com.matag.admin.game.session.GameSessionRepository;
-import com.matag.adminentities.FinishGameRequest;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static application.TestUtils.*;
+import static application.TestUtils.USER_1_SESSION_TOKEN;
+import static application.TestUtils.USER_1_USERNAME;
+import static application.TestUtils.USER_2_SESSION_TOKEN;
+import static application.TestUtils.USER_2_USERNAME;
 import static com.matag.admin.game.game.GameResultType.R1;
 import static com.matag.admin.game.game.GameStatusType.FINISHED;
 import static com.matag.admin.game.game.GameType.UNLIMITED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.OK;
+
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.matag.admin.game.game.GameRepository;
+import com.matag.admin.game.join.JoinGameRequest;
+import com.matag.admin.game.join.JoinGameResponse;
+import com.matag.admin.game.score.ScoreRepository;
+import com.matag.admin.game.session.GameSessionRepository;
+import com.matag.adminentities.FinishGameRequest;
+
+import application.AbstractApplicationTest;
 
 public class FinishGameControllerTest extends AbstractApplicationTest {
   @Autowired private GameRepository gameRepository;

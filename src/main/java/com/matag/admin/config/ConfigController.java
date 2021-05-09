@@ -1,11 +1,12 @@
 package com.matag.admin.config;
 
-import lombok.AllArgsConstructor;
+import java.util.Map;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/config")

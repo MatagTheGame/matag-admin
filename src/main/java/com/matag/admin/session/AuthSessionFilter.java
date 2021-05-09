@@ -1,7 +1,17 @@
 package com.matag.admin.session;
 
-import com.matag.admin.config.ConfigService;
-import lombok.AllArgsConstructor;
+import static java.util.Collections.singletonList;
+
+import java.io.IOException;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
@@ -10,16 +20,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import java.io.IOException;
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.util.Objects;
+import com.matag.admin.config.ConfigService;
 
-import static java.util.Collections.singletonList;
+import lombok.AllArgsConstructor;
 
 @Component
 @AllArgsConstructor

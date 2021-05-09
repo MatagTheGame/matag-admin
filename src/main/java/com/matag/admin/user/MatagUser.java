@@ -1,10 +1,24 @@
 package com.matag.admin.user;
 
-import com.matag.admin.user.verification.MatagUserVerification;
-import lombok.*;
-
-import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import com.matag.admin.user.verification.MatagUserVerification;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @ToString(exclude = {"password", "matagUserVerification"})

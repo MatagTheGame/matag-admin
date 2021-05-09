@@ -1,22 +1,22 @@
 package com.matag.admin.auth.register;
 
-import com.matag.admin.game.score.ScoreRepository;
-import com.matag.admin.game.score.ScoreService;
-import com.matag.admin.user.MatagUser;
-import com.matag.admin.user.MatagUserRepository;
-import com.matag.admin.user.verification.MatagUserVerification;
-import lombok.AllArgsConstructor;
+import static com.matag.admin.user.MatagUserStatus.ACTIVE;
+import static com.matag.admin.user.MatagUserStatus.VERIFYING;
+import static com.matag.admin.user.MatagUserType.USER;
+
+import java.time.Clock;
+import java.time.LocalDateTime;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.util.Optional;
+import com.matag.admin.game.score.ScoreService;
+import com.matag.admin.user.MatagUser;
+import com.matag.admin.user.MatagUserRepository;
+import com.matag.admin.user.verification.MatagUserVerification;
 
-import static com.matag.admin.user.MatagUserStatus.ACTIVE;
-import static com.matag.admin.user.MatagUserStatus.VERIFYING;
-import static com.matag.admin.user.MatagUserType.USER;
+import lombok.AllArgsConstructor;
 
 @Component
 @AllArgsConstructor

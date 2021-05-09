@@ -1,5 +1,14 @@
 package com.matag.admin.auth.register;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.repository.query.Param;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.matag.admin.auth.validators.EmailValidator;
 import com.matag.admin.auth.validators.PasswordValidator;
 import com.matag.admin.auth.validators.UsernameValidator;
@@ -7,11 +16,8 @@ import com.matag.admin.auth.validators.ValidationException;
 import com.matag.admin.config.ConfigService;
 import com.matag.admin.exception.MatagException;
 import com.matag.admin.user.MatagUserRepository;
+
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.repository.query.Param;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")

@@ -1,8 +1,8 @@
 package com.matag.admin.auth.validators;
 
-import org.springframework.stereotype.Component;
-
 import java.util.regex.Pattern;
+
+import org.springframework.stereotype.Component;
 
 @Component
 public class UsernameValidator implements Validator<String> {

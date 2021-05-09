@@ -1,11 +1,13 @@
 package com.matag.admin.game.score;
 
-import com.matag.admin.game.game.GameResultType;
-import com.matag.admin.user.MatagUser;
-import lombok.AllArgsConstructor;
+import static com.matag.admin.user.MatagUserType.USER;
+
 import org.springframework.stereotype.Component;
 
-import static com.matag.admin.user.MatagUserType.USER;
+import com.matag.admin.game.game.GameResultType;
+import com.matag.admin.user.MatagUser;
+
+import lombok.AllArgsConstructor;
 
 @Component
 @AllArgsConstructor

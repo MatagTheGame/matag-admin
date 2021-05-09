@@ -1,9 +1,10 @@
 package integration.auth.validators;
 
-import com.matag.admin.auth.validators.UsernameValidator;
-import com.matag.admin.auth.validators.ValidationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import com.matag.admin.auth.validators.UsernameValidator;
+import com.matag.admin.auth.validators.ValidationException;
 
 public class UsernameValidatorTest {
   private final UsernameValidator usernameValidator = new UsernameValidator();

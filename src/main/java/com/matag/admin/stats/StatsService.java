@@ -1,16 +1,18 @@
 package com.matag.admin.stats;
 
-import com.matag.admin.user.MatagUserRepository;
-import com.matag.cards.Cards;
-import com.matag.cards.sets.MtgSets;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import static com.matag.admin.user.MatagUserStatus.ACTIVE;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.matag.admin.user.MatagUserStatus.ACTIVE;
+import org.springframework.stereotype.Component;
+
+import com.matag.admin.user.MatagUserRepository;
+import com.matag.cards.Cards;
+import com.matag.cards.sets.MtgSets;
+
+import lombok.AllArgsConstructor;
 
 @Component
 @AllArgsConstructor

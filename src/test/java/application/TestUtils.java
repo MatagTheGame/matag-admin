@@ -1,11 +1,11 @@
 package application;
 
-import com.matag.admin.user.MatagUser;
-
 import static com.matag.admin.user.MatagUserStatus.ACTIVE;
 import static com.matag.admin.user.MatagUserStatus.INACTIVE;
 import static com.matag.admin.user.MatagUserType.GUEST;
 import static com.matag.admin.user.MatagUserType.USER;
+
+import com.matag.admin.user.MatagUser;
 
 public class TestUtils {
   public static final String GUEST_USERNAME = "Guest";

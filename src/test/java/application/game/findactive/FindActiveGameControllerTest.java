@@ -1,14 +1,17 @@
 package application.game.findactive;
 
-import application.AbstractApplicationTest;
+import static application.TestUtils.USER_1_SESSION_TOKEN;
+import static application.TestUtils.USER_1_USERNAME;
+import static com.matag.admin.game.game.GameType.UNLIMITED;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
+
 import com.matag.admin.game.findactive.ActiveGameResponse;
 import com.matag.admin.game.join.JoinGameRequest;
 import com.matag.admin.game.join.JoinGameResponse;
-import org.junit.Test;
 
-import static application.TestUtils.*;
-import static com.matag.admin.game.game.GameType.UNLIMITED;
-import static org.assertj.core.api.Assertions.assertThat;
+import application.AbstractApplicationTest;
 
 public class FindActiveGameControllerTest extends AbstractApplicationTest {
   @Test

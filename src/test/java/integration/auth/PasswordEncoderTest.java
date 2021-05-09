@@ -1,7 +1,8 @@
 package integration.auth;
 
-import com.matag.admin.MatagAdminWebSecurityConfiguration;
 import org.junit.Test;
+
+import com.matag.admin.MatagAdminWebSecurityConfiguration;
 
 public class PasswordEncoderTest {
   @Test

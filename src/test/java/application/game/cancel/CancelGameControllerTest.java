@@ -1,25 +1,30 @@
 package application.game.cancel;
 
-import application.AbstractApplicationTest;
-import com.matag.admin.game.game.GameRepository;
-import com.matag.admin.game.join.JoinGameRequest;
-import com.matag.admin.game.join.JoinGameResponse;
-import com.matag.admin.game.session.GameSession;
-import com.matag.admin.game.session.GameSessionRepository;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static application.TestUtils.*;
+import static application.TestUtils.USER_1_SESSION_TOKEN;
+import static application.TestUtils.USER_1_USERNAME;
+import static application.TestUtils.USER_2_SESSION_TOKEN;
+import static application.TestUtils.USER_2_USERNAME;
 import static com.matag.admin.game.game.GameResultType.R2;
 import static com.matag.admin.game.game.GameStatusType.FINISHED;
 import static com.matag.admin.game.game.GameType.UNLIMITED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.OK;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+
+import com.matag.admin.game.game.GameRepository;
+import com.matag.admin.game.join.JoinGameRequest;
+import com.matag.admin.game.join.JoinGameResponse;
+import com.matag.admin.game.session.GameSession;
+import com.matag.admin.game.session.GameSessionRepository;
+
+import application.AbstractApplicationTest;
 
 public class CancelGameControllerTest extends AbstractApplicationTest {
   @Autowired

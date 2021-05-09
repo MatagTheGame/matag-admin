@@ -1,7 +1,7 @@
 package com.matag.admin;
 
-import com.matag.admin.auth.logout.MatagLogoutSuccessHandler;
-import com.matag.admin.session.AuthSessionFilter;
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +20,8 @@ import org.springframework.security.web.authentication.logout.HeaderWriterLogout
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 
-import java.util.HashMap;
+import com.matag.admin.auth.logout.MatagLogoutSuccessHandler;
+import com.matag.admin.session.AuthSessionFilter;
 
 @Configuration
 @EnableWebSecurity

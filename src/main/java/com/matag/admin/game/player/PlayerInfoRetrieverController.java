@@ -1,14 +1,15 @@
 package com.matag.admin.game.player;
 
-import com.matag.admin.auth.SecurityContextHolderHelper;
-import com.matag.admin.session.MatagSession;
-import com.matag.admin.user.MatagUser;
-import com.matag.admin.user.MatagUserType;
-import com.matag.adminentities.PlayerInfo;
-import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.matag.admin.auth.SecurityContextHolderHelper;
+import com.matag.admin.session.MatagSession;
+import com.matag.admin.user.MatagUserType;
+import com.matag.adminentities.PlayerInfo;
+
+import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController

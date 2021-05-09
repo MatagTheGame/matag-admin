@@ -1,10 +1,12 @@
 package com.matag.admin.auth.register;
 
+import org.springframework.stereotype.Component;
+
 import com.matag.admin.config.ConfigService;
 import com.matag.admin.email.MatagEmailSender;
+
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor

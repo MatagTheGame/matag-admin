@@ -1,13 +1,15 @@
 package com.matag.admin.game.result;
 
+import org.springframework.stereotype.Component;
+
 import com.matag.admin.game.game.Game;
 import com.matag.admin.game.game.GameResultType;
 import com.matag.admin.game.game.GameUserResultType;
 import com.matag.admin.game.session.GamePlayers;
 import com.matag.admin.game.session.GameSessionService;
 import com.matag.admin.user.MatagUser;
+
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor

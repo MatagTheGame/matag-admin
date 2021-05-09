@@ -1,12 +1,13 @@
 package com.matag.admin.game.deck;
 
+import java.util.Set;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.matag.cards.properties.Color;
+
 import lombok.Builder;
 import lombok.Value;
-
-import java.util.Set;
 
 @Value
 @JsonDeserialize(builder = DeckMetadataOptions.DeckMetadataOptionsBuilder.class)

@@ -1,15 +1,17 @@
 package application.session;
 
-import application.AbstractApplicationTest;
-import com.matag.admin.session.MatagSessionRepository;
+import static application.TestUtils.USER_1_SESSION_TOKEN;
+import static application.TestUtils.USER_1_USERNAME;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
-import static application.TestUtils.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
+import com.matag.admin.session.MatagSessionRepository;
+
+import application.AbstractApplicationTest;
 
 public class AuthSessionFilterTest extends AbstractApplicationTest {
   @Autowired

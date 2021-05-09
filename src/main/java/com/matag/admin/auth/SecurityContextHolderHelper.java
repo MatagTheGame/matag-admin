@@ -1,9 +1,10 @@
 package com.matag.admin.auth;
 
-import com.matag.admin.session.MatagSession;
-import com.matag.admin.user.MatagUser;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import com.matag.admin.session.MatagSession;
+import com.matag.admin.user.MatagUser;
 
 @Component
 public class SecurityContextHolderHelper {
