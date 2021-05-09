@@ -24,7 +24,7 @@
         <httpclient.version>4.5.12</httpclient.version>
         <hsqldb.version>2.5.0</hsqldb.version>
         <jakarta.version>2.3.2</jakarta.version>
-        <lombok.version>1.18.12</lombok.version>
+        <lombok.version>1.18.20</lombok.version>
         <matag.version>1.1.1-SNAPSHOT</matag.version>
         <postgresql.version>42.2.10</postgresql.version>
         <spring.boot.version>2.3.2.RELEASE</spring.boot.version>
