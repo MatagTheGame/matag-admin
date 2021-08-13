@@ -20,7 +20,7 @@
         <maven.surefire.plugin.version>3.0.0-M5</maven.surefire.plugin.version>
         <frontend-maven-plugin.version>1.10.0</frontend-maven-plugin.version>
         <bytebuddy.version>1.10.8</bytebuddy.version>
-        <bouncycastle.version>1.64</bouncycastle.version>
+        <bouncycastle.version>1.67</bouncycastle.version>
         <httpclient.version>4.5.13</httpclient.version>
         <hsqldb.version>2.5.0</hsqldb.version>
         <jakarta.version>2.3.2</jakarta.version>
