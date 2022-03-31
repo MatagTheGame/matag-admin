@@ -27,7 +27,7 @@
         <lombok.version>1.18.20</lombok.version>
         <matag.version>1.1.1-SNAPSHOT</matag.version>
         <postgresql.version>42.2.10</postgresql.version>
-        <spring.boot.version>2.3.2.RELEASE</spring.boot.version>
+        <spring.boot.version>2.5.12</spring.boot.version>
     </properties>
 
     <repositories>
