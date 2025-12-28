@@ -6,7 +6,7 @@ import Browser from '../../../Browser'
 describe('Login', () => {
   beforeEach(() => {
     TestUtils.defaultConfigAndStats()
-    TestUtils.userIsLoggedIn()
+    TestUtils.loginUser()
   })
 
   afterEach(() => {

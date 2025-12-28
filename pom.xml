@@ -7,27 +7,24 @@
     <groupId>com.matag</groupId>
     <artifactId>admin</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>MATAG</name>
     <url>https://github.com/MatagTheGame</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>14</maven.compiler.target>
-        <maven.compiler.source>14</maven.compiler.source>
-        <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
-        <maven.surefire.plugin.version>3.0.0-M5</maven.surefire.plugin.version>
+        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.plugin.version>3.14.1</maven.compiler.plugin.version>
+        <maven.surefire.plugin.version>3.5.4</maven.surefire.plugin.version>
         <frontend-maven-plugin.version>1.10.0</frontend-maven-plugin.version>
-        <bytebuddy.version>1.10.8</bytebuddy.version>
-        <bouncycastle.version>1.67</bouncycastle.version>
-        <httpclient.version>4.5.13</httpclient.version>
-        <hsqldb.version>2.5.0</hsqldb.version>
-        <jakarta.version>2.3.2</jakarta.version>
-        <lombok.version>1.18.20</lombok.version>
-        <matag.version>1.1.1-SNAPSHOT</matag.version>
-        <postgresql.version>42.4.3</postgresql.version>
-        <spring.boot.version>2.5.12</spring.boot.version>
+        <bouncycastle.version>1.83</bouncycastle.version>
+        <lombok.version>1.18.42</lombok.version>
+        <matag-cards.version>2.0.0-SNAPSHOT</matag-cards.version>
+        <spring.boot.version>4.0.0</spring.boot.version>
+        <postgresql.version>42.7.8</postgresql.version>
+        <hsqldb.version>2.7.4</hsqldb.version>
     </properties>
 
     <repositories>
@@ -36,11 +33,6 @@
             <name>Github Cards Maven Packages</name>
             <url>https://maven.pkg.github.com/MatagTheGame/matag-cards</url>
         </repository>
-        <repository>
-            <id>github-matag-admin-entities</id>
-            <name>Github Admin Entities Maven Packages</name>
-            <url>https://maven.pkg.github.com/MatagTheGame/matag-admin-entities</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -48,18 +40,19 @@
         <dependency>
             <groupId>com.matag</groupId>
             <artifactId>cards</artifactId>
-            <version>${matag.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.matag</groupId>
-            <artifactId>admin-entities</artifactId>
-            <version>${matag.version}</version>
+            <version>${matag-cards.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${spring.boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <version>${spring.boot.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -77,21 +70,6 @@
             <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>${jakarta.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <version>${jakarta.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>${bouncycastle.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
@@ -103,11 +81,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy</artifactId>
-            <version>${bytebuddy.version}</version>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>${bouncycastle.version}</version>
         </dependency>
-
 
         <!-- Test -->
         <dependency>
@@ -117,17 +94,17 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${httpclient.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-resttestclient</artifactId>
+            <version>${spring.boot.version}</version>
             <scope>test</scope>
         </dependency>
-            <dependency>
-                <groupId>org.hsqldb</groupId>
-                <artifactId>hsqldb</artifactId>
-                <version>${hsqldb.version}</version>
-                <scope>test</scope>
-            </dependency>
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>${hsqldb.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -140,12 +117,12 @@
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                     <annotationProcessorPaths>
-	                <path>
-	                    <groupId>org.projectlombok</groupId>
-	                    <artifactId>lombok</artifactId>
-	                    <version>${lombok.version}</version>
-	                </path>
-            </annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
@@ -165,8 +142,8 @@
                             <goal>install-node-and-yarn</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v12.12.0</nodeVersion>
-                            <yarnVersion>v1.21.1</yarnVersion>
+                            <nodeVersion>v25.2.1</nodeVersion>
+                            <yarnVersion>v1.22.2</yarnVersion>
                         </configuration>
                     </execution>
                     <execution>
@@ -174,17 +151,6 @@
                         <goals>
                             <goal>yarn</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>compile</id>
-                        <goals>
-                            <goal>yarn</goal>
-                        </goals>
-                        <phase>compile</phase>
-                        <configuration>
-                            <yarnInheritsProxyConfigFromMaven>false</yarnInheritsProxyConfigFromMaven>
-                            <arguments>run lint</arguments>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>tests</id>
@@ -214,4 +180,12 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>github-matag-admin</id>
+            <name>Github Matag Admin War</name>
+            <url>https://maven.pkg.github.com/MatagTheGame/matag-admin</url>
+        </repository>
+    </distributionManagement>
 </project>

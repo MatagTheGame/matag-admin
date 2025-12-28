@@ -1,19 +1,14 @@
 package com.matag.admin.auth.changepassword;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
-@JsonDeserialize(builder = ChangePasswordResponse.ChangePasswordResponseBuilder.class)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class ChangePasswordResponse {
   String message;
-
-  @JsonPOJOBuilder(withPrefix = "")
-  public static class ChangePasswordResponseBuilder {
-
-  }
 }

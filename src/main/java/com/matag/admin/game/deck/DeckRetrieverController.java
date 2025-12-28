@@ -42,7 +42,7 @@ public class DeckRetrieverController {
       default -> throw new RuntimeException(deckMetadata.getType() + " not recognised.");
     };
 
-    return DeckInfo.builder().cards(cards).build();
+    return new DeckInfo(cards);
   }
 
   @SneakyThrows

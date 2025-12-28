@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import com.matag.admin.stats.StatsResponse;
@@ -22,19 +22,19 @@ public class StatsControllerTest extends AbstractApplicationTest {
   @Test
   public void shouldGetStatsAsUnauthenticatedUser() {
     // When
-    var response = restTemplate.getForEntity("/stats", StatsResponse.class);
+    var response = getForEntity("/stats", StatsResponse.class);
 
     // Then
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK);
   }
 
   @Test
   public void shouldGetTotalUsers() {
     // When
-    var response = restTemplate.getForObject("/stats", StatsResponse.class);
+    var response = getForEntity("/stats", StatsResponse.class);
 
     // Then
-    assertThat(response.getTotalUsers()).isEqualTo(3);
+    assertThat(response.getResponseBody().getTotalUsers()).isEqualTo(3);
   }
 
   @Test
@@ -48,27 +48,27 @@ public class StatsControllerTest extends AbstractApplicationTest {
     loginUser(GUEST_SESSION_TOKEN_2, GUEST_USERNAME);
 
     // When
-    var response = restTemplate.getForObject("/stats", StatsResponse.class);
+    var response = getForEntity("/stats", StatsResponse.class);
 
     // Then
-    assertThat(response.getOnlineUsers()).containsExactlyInAnyOrder("User1", "Guest", "Guest");
+    assertThat(response.getResponseBody().getOnlineUsers()).containsExactlyInAnyOrder("User1", "Guest", "Guest");
   }
 
   @Test
   public void shouldGetNumOfCards() {
     // When
-    var response = restTemplate.getForObject("/stats", StatsResponse.class);
+    var response = getForEntity("/stats", StatsResponse.class);
 
     // Then
-    assertThat(response.getTotalCards()).isGreaterThan(100);
+    assertThat(response.getResponseBody().getTotalCards()).isGreaterThan(100);
   }
 
   @Test
   public void shouldGetNumOfSets() {
     // When
-    var response = restTemplate.getForObject("/stats", StatsResponse.class);
+    var response = getForEntity("/stats", StatsResponse.class);
 
     // Then
-    assertThat(response.getTotalSets()).isGreaterThan(10);
+    assertThat(response.getResponseBody().getTotalSets()).isGreaterThan(10);
   }
 }

@@ -1,24 +1,19 @@
 package com.matag.admin.stats;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
-import lombok.Builder;
-import lombok.Value;
-
-@Value
-@JsonDeserialize(builder = StatsResponse.StatsResponseBuilder.class)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class StatsResponse {
   long totalUsers;
   List<String> onlineUsers;
   int totalCards;
   int totalSets;
-
-  @JsonPOJOBuilder(withPrefix = "")
-  public static class StatsResponseBuilder {
-
-  }
 }

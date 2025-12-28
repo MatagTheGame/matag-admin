@@ -31,7 +31,7 @@ public class StatsService {
   }
 
   public int countCards() {
-    return cards.getAll().size();
+    return cards.all().size();
   }
 
   public int countSets() {

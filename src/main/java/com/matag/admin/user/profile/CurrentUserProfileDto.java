@@ -1,20 +1,15 @@
 package com.matag.admin.user.profile;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
-@JsonDeserialize(builder = CurrentUserProfileDto.CurrentUserProfileDtoBuilder.class)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class CurrentUserProfileDto {
   String username;
   String type;
-
-  @JsonPOJOBuilder(withPrefix = "")
-  public static class CurrentUserProfileDtoBuilder {
-
-  }
 }

@@ -33,7 +33,7 @@ describe('Home', () => {
   test('Should load homepage for logged in user', async () => {
     // Given
     ApiClientStub.stubActiveGame()
-    TestUtils.userIsLoggedIn()
+    TestUtils.loginUser()
 
     // When
     const browser = new Browser(TestUtils.renderAdminApp())

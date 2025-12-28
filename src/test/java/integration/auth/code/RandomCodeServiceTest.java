@@ -2,9 +2,8 @@ package integration.auth.code;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-
 import com.matag.admin.auth.codes.RandomCodeService;
+import org.junit.jupiter.api.Test;
 
 public class RandomCodeServiceTest {
   private RandomCodeService randomCodeService = new RandomCodeService();

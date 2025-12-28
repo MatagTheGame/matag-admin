@@ -19,7 +19,7 @@ export default class TestUtils {
     return app
   }
 
-  static userIsLoggedIn() {
+  static loginUser() {
     ApiClientStub.stubProfile()
     TestUtils.mockAuthHelper()
   }

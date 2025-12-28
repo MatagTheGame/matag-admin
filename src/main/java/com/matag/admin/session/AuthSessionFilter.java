@@ -1,17 +1,7 @@
 package com.matag.admin.session;
 
-import static java.util.Collections.singletonList;
-
-import java.io.IOException;
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.util.Objects;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
+import com.matag.admin.config.ConfigService;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
@@ -20,9 +10,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
-import com.matag.admin.config.ConfigService;
+import java.io.IOException;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
-import lombok.AllArgsConstructor;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.FilterChain;
+
+
+import static java.util.Collections.singletonList;
 
 @Component
 @AllArgsConstructor
@@ -35,13 +33,13 @@ public class AuthSessionFilter extends GenericFilterBean {
   private final MatagSessionRepository matagSessionRepository;
   private final Clock clock;
 
-  @Override
-  public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-    if (request instanceof FirewalledRequest) {
-      applySecurity((FirewalledRequest)request);
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, jakarta.servlet.ServletException {
+        if (request instanceof FirewalledRequest) {
+            applySecurity((FirewalledRequest)request);
+        }
+        filterChain.doFilter(request, response);
     }
-    filterChain.doFilter(request, response);
-  }
 
   private void applySecurity(FirewalledRequest request) {
     var adminPassword = request.getHeader(ADMIN_NAME);

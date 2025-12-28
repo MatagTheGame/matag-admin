@@ -5,13 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
-import org.junit.Test;
-
 import com.matag.admin.auth.login.LoginRequest;
 import com.matag.admin.auth.login.LoginResponse;
 import com.matag.admin.user.profile.CurrentUserProfileDto;
 
 import application.AbstractApplicationTest;
+import org.junit.jupiter.api.Test;
 
 public class LoginControllerTest extends AbstractApplicationTest {
   @Test
@@ -20,12 +19,12 @@ public class LoginControllerTest extends AbstractApplicationTest {
     var request = new LoginRequest("user1@matag.com", "xxx");
 
     // When
-    var response = restTemplate.postForEntity("/auth/login", request, LoginResponse.class);
+    var response = postForEntity("/auth/login", request, LoginResponse.class);
 
     // Then
-    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
-    assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getError()).isEqualTo("Password is invalid (should be at least 4 characters).");
+    assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
+    assertThat(response.getResponseBody()).isNotNull();
+    assertThat(response.getResponseBody().getError()).isEqualTo("Password is invalid (should be at least 4 characters).");
   }
 
   @Test
@@ -34,11 +33,11 @@ public class LoginControllerTest extends AbstractApplicationTest {
     var request = new LoginRequest("user1@matag.com", PASSWORD);
 
     // When
-    var response = restTemplate.postForObject("/auth/login", request, LoginResponse.class);
+    var response = postForEntity("/auth/login", request, LoginResponse.class);
 
     // Then
-    assertThat(response.getToken()).isNotBlank();
-    assertThat(response.getProfile()).isEqualTo(CurrentUserProfileDto.builder()
+    assertThat(response.getResponseBody().getToken()).isNotBlank();
+    assertThat(response.getResponseBody().getProfile()).isEqualTo(CurrentUserProfileDto.builder()
       .username("User1")
       .type("USER")
       .build());
@@ -50,11 +49,11 @@ public class LoginControllerTest extends AbstractApplicationTest {
     var request = new LoginRequest("User1", PASSWORD);
 
     // When
-    var response = restTemplate.postForObject("/auth/login", request, LoginResponse.class);
+    var response = postForEntity("/auth/login", request, LoginResponse.class);
 
     // Then
-    assertThat(response.getToken()).isNotBlank();
-    assertThat(response.getProfile()).isEqualTo(CurrentUserProfileDto.builder()
+    assertThat(response.getResponseBody().getToken()).isNotBlank();
+    assertThat(response.getResponseBody().getProfile()).isEqualTo(CurrentUserProfileDto.builder()
       .username("User1")
       .type("USER")
       .build());
@@ -66,12 +65,12 @@ public class LoginControllerTest extends AbstractApplicationTest {
     var request = new LoginRequest("non-existing-user@matag.com", PASSWORD);
 
     // When
-    var response = restTemplate.postForEntity("/auth/login", request, LoginResponse.class);
+    var response = postForEntity("/auth/login", request, LoginResponse.class);
 
     // Then
-    assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
-    assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getError()).isEqualTo("Email/Username or password are not correct.");
+    assertThat(response.getStatus()).isEqualTo(UNAUTHORIZED);
+    assertThat(response.getResponseBody()).isNotNull();
+    assertThat(response.getResponseBody().getError()).isEqualTo("Email/Username or password are not correct.");
   }
 
   @Test
@@ -80,12 +79,12 @@ public class LoginControllerTest extends AbstractApplicationTest {
     var request = new LoginRequest("user1@matag.com", "wrong-password");
 
     // When
-    var response = restTemplate.postForEntity("/auth/login", request, LoginResponse.class);
+    var response = postForEntity("/auth/login", request, LoginResponse.class);
 
     // Then
-    assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
-    assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getError()).isEqualTo("Email/Username or password are not correct.");
+    assertThat(response.getStatus()).isEqualTo(UNAUTHORIZED);
+    assertThat(response.getResponseBody()).isNotNull();
+    assertThat(response.getResponseBody().getError()).isEqualTo("Email/Username or password are not correct.");
   }
 
   @Test
@@ -94,24 +93,24 @@ public class LoginControllerTest extends AbstractApplicationTest {
     var request = new LoginRequest("inactiveUser@matag.com", PASSWORD);
 
     // When
-    var response = restTemplate.postForEntity("/auth/login", request, LoginResponse.class);
+    var response = postForEntity("/auth/login", request, LoginResponse.class);
 
     // Then
-    assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
-    assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getError()).isEqualTo("Account is not active.");
+    assertThat(response.getStatus()).isEqualTo(UNAUTHORIZED);
+    assertThat(response.getResponseBody()).isNotNull();
+    assertThat(response.getResponseBody().getError()).isEqualTo("Account is not active.");
   }
 
   @Test
   public void shouldNotCreateTwoSessionsForSameUser() {
     // Given a user already logged in once
     var request = new LoginRequest("User1", PASSWORD);
-    var response = restTemplate.postForObject("/auth/login", request, LoginResponse.class);
-    String firstToken = response.getToken();
+    var response = postForEntity("/auth/login", request, LoginResponse.class);
+    String firstToken = response.getResponseBody().getToken();
 
     // When user login twice
-    response = restTemplate.postForObject("/auth/login", request, LoginResponse.class);
-    String secondToken = response.getToken();
+    response = postForEntity("/auth/login", request, LoginResponse.class);
+    String secondToken = response.getResponseBody().getToken();
 
     // Then
     assertThat(firstToken).isEqualTo(secondToken);

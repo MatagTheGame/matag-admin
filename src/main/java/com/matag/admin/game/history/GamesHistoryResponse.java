@@ -1,23 +1,16 @@
 package com.matag.admin.game.history;
 
-import java.util.List;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+import java.util.List;
+
+@Data
 @AllArgsConstructor
-@JsonDeserialize(builder = GamesHistoryResponse.GamesHistoryResponseBuilder.class)
+@NoArgsConstructor
 @Builder
 public class GamesHistoryResponse {
   List<GameHistory> gamesHistory;
-
-  @JsonPOJOBuilder(withPrefix = "")
-  public static class GamesHistoryResponseBuilder {
-
-  }
 }

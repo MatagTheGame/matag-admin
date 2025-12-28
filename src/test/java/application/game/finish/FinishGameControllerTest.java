@@ -14,7 +14,7 @@ import static org.springframework.http.HttpStatus.OK;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.matag.admin.game.game.GameRepository;
@@ -34,41 +34,40 @@ public class FinishGameControllerTest extends AbstractApplicationTest {
   @Test
   public void requiresAdminAuthentication() {
     // Given
-    userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
+    loginUser(USER_1_SESSION_TOKEN, USER_1_USERNAME);
 
     // When
     var finishGameRequest = new FinishGameRequest(USER_1_SESSION_TOKEN);
-    var response = restTemplate.postForEntity("/game/1/finish", finishGameRequest, Object.class);
+    var response = postForEntity("/game/1/finish", finishGameRequest, Object.class, USER_1_SESSION_TOKEN);
 
     // Then
-    assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
+    assertThat(response.getStatus()).isEqualTo(FORBIDDEN);
   }
 
   @Test
   public void shouldFinishAGame() {
     // Given
-    userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
+    loginUser(USER_1_SESSION_TOKEN, USER_1_USERNAME);
     var request1 = JoinGameRequest.builder()
       .gameType(UNLIMITED)
       .playerOptions("player1 options")
       .build();
-    var joinGameResponse = restTemplate.postForObject("/game", request1, JoinGameResponse.class);
-    Long gameId = joinGameResponse.getGameId();
+    var joinGameResponse = postForEntity("/game", request1, JoinGameResponse.class, USER_1_SESSION_TOKEN);
+    Long gameId = joinGameResponse.getResponseBody().getGameId();
 
-    userIsLoggedIn(USER_2_SESSION_TOKEN, USER_2_USERNAME);
+    loginUser(USER_2_SESSION_TOKEN, USER_2_USERNAME);
     var request2 = JoinGameRequest.builder()
       .gameType(UNLIMITED)
       .playerOptions("player2 options")
       .build();
-    restTemplate.postForObject("/game", request2, JoinGameResponse.class);
+    postForEntity("/game", request2, JoinGameResponse.class, USER_2_SESSION_TOKEN);
 
     // When
-    adminAuthentication();
     var finishGameRequest = new FinishGameRequest(USER_1_SESSION_TOKEN);
-    var response = restTemplate.postForEntity("/game/" + gameId + "/finish", finishGameRequest, Object.class);
+    var response = postForAdmin("/game/" + gameId + "/finish", finishGameRequest);
 
     // Then
-    assertThat(response.getStatusCode()).isEqualTo(OK);
+    assertThat(response.getStatus()).isEqualTo(OK);
     var game = gameRepository.findById(gameId);
     assertThat(game).isPresent();
     assertThat(game.get().getStatus()).isEqualTo(FINISHED);

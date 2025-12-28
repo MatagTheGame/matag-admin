@@ -59,14 +59,14 @@ public class RandomColorsDeckFactory {
   private List<Card> getRandomSpellsForColors(Set<Color> deckColors) {
     var selectedCards = new ArrayList<Card>();
 
-    var creatureCardsOfTheseColors = new CardSearch(cards.getAll())
+    var creatureCardsOfTheseColors = new CardSearch(cards.all().stream().toList())
       .ofOnlyAnyOfTheColors(deckColors)
       .ofType(Type.CREATURE)
       .getCards();
     Collections.shuffle(creatureCardsOfTheseColors);
     selectedCards.addAll(creatureCardsOfTheseColors.subList(0, 5));
 
-    var nonCreatureCardsOfTheseColors = new CardSearch(cards.getAll())
+    var nonCreatureCardsOfTheseColors = new CardSearch(cards.all().stream().toList())
       .ofOnlyAnyOfTheColors(deckColors)
       .notOfType(Type.CREATURE)
       .getCards();
@@ -77,7 +77,7 @@ public class RandomColorsDeckFactory {
   }
 
   private Card getRandomNonBasicLandOfTheseColors(Set<Color> deckColors) {
-    var nonBasicLands = new CardSearch(cards.getAll())
+    var nonBasicLands = new CardSearch(cards.all().stream().toList())
       .ofType(Type.LAND)
       .notOfType(Type.BASIC)
       .getCards();
@@ -101,7 +101,7 @@ public class RandomColorsDeckFactory {
   }
 
   private Card getRandomColorlessCard() {
-    var allColorlessCards = new CardSearch(cards.getAll())
+    var allColorlessCards = new CardSearch(cards.all().stream().toList())
       .colorless()
       .getCards();
     Collections.shuffle(allColorlessCards);

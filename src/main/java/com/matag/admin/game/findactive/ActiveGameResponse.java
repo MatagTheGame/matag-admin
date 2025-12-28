@@ -1,17 +1,15 @@
 package com.matag.admin.game.findactive;
 
-import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+import java.time.LocalDateTime;
+
+@Data
 @AllArgsConstructor
-@JsonDeserialize(builder = ActiveGameResponse.ActiveGameResponseBuilder.class)
+@NoArgsConstructor
 @Builder
 public class ActiveGameResponse {
   Long gameId;
@@ -20,9 +18,4 @@ public class ActiveGameResponse {
   String playerOptions;
   String opponentName;
   String opponentOptions;
-
-  @JsonPOJOBuilder(withPrefix = "")
-  public static class ActiveGameResponseBuilder {
-
-  }
 }

@@ -8,7 +8,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 import java.time.LocalDateTime;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.matag.admin.game.game.Game;
@@ -35,16 +35,16 @@ public class GamesHistoryControllerTest extends AbstractApplicationTest {
   @Test
   public void returnsForbiddenForNonLoggedInUsers() {
     // When
-    var response = restTemplate.getForEntity("/game/history", GamesHistoryResponse.class);
+    var response = getForEntity("/game/history", GamesHistoryResponse.class);
 
     // Then
-    assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
+    assertThat(response.getStatus()).isEqualTo(FORBIDDEN);
   }
 
   @Test
   public void retrieveGameHistory() {
     // Given
-    userIsLoggedIn(USER_1_SESSION_TOKEN, USER_1_USERNAME);
+    loginUser(USER_1_SESSION_TOKEN, USER_1_USERNAME);
     var user1 = loadUser(USER_1_USERNAME);
     var user2 = loadUser(USER_2_USERNAME);
 
@@ -61,11 +61,11 @@ public class GamesHistoryControllerTest extends AbstractApplicationTest {
     createGameSession(game3, user1);
 
     // When
-    var gamesHistoryResponse = restTemplate.getForObject("/game/history", GamesHistoryResponse.class);
+    var gamesHistoryResponse = getForEntity("/game/history", GamesHistoryResponse.class, USER_1_SESSION_TOKEN);
 
     // Then
-    assertThat(gamesHistoryResponse.getGamesHistory()).hasSize(3);
-    assertThat(gamesHistoryResponse.getGamesHistory().get(0)).isEqualToIgnoringGivenFields(
+    assertThat(gamesHistoryResponse.getResponseBody().getGamesHistory()).hasSize(3);
+    assertThat(gamesHistoryResponse.getResponseBody().getGamesHistory().get(0)).isEqualToIgnoringGivenFields(
       GameHistory.builder()
         .startedTime(LocalDateTime.now(clock))
         .finishedTime(LocalDateTime.now(clock))
@@ -78,7 +78,7 @@ public class GamesHistoryControllerTest extends AbstractApplicationTest {
         .build(),
       "gameId"
     );
-    assertThat(gamesHistoryResponse.getGamesHistory().get(1)).isEqualToIgnoringGivenFields(
+    assertThat(gamesHistoryResponse.getResponseBody().getGamesHistory().get(1)).isEqualToIgnoringGivenFields(
       GameHistory.builder()
         .startedTime(LocalDateTime.now(clock))
         .finishedTime(LocalDateTime.now(clock))
@@ -91,7 +91,7 @@ public class GamesHistoryControllerTest extends AbstractApplicationTest {
         .build(),
       "gameId"
     );
-    assertThat(gamesHistoryResponse.getGamesHistory().get(2)).isEqualToIgnoringGivenFields(
+    assertThat(gamesHistoryResponse.getResponseBody().getGamesHistory().get(2)).isEqualToIgnoringGivenFields(
       GameHistory.builder()
         .startedTime(LocalDateTime.now(clock))
         .finishedTime(LocalDateTime.now(clock))

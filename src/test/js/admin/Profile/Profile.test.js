@@ -15,7 +15,7 @@ describe('Profile', () => {
   test('Should display profile', async () => {
     // Given
     ApiClientStub.stubActiveGame()
-    TestUtils.userIsLoggedIn()
+    TestUtils.loginUser()
 
     // When
     const browser = new Browser(TestUtils.renderAdminApp('/profile'))

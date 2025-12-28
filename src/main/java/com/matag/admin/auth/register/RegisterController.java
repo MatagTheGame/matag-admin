@@ -3,11 +3,7 @@ package com.matag.admin.auth.register;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.query.Param;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.matag.admin.auth.validators.EmailValidator;
 import com.matag.admin.auth.validators.PasswordValidator;
@@ -40,7 +36,7 @@ public class RegisterController {
 
   @PostMapping("/register")
   public RegisterResponse register(@RequestBody RegisterRequest request) {
-    LOGGER.info("User " + request.getEmail() + " registering with username[" + request.getUsername() + "].");
+      LOGGER.info("User {} registering with username[{}].", request.getEmail(), request.getUsername());
 
     validate(request);
 
@@ -53,8 +49,8 @@ public class RegisterController {
   }
 
   @GetMapping("/verify")
-  public VerifyResponse verify(@Param("username") String username, @Param("code") String code) {
-    LOGGER.info("Verifying " + username + " with code " + code);
+  public VerifyResponse verify(@RequestParam("username") String username, @RequestParam("code") String code) {
+      LOGGER.info("Verifying {} with code {}", username, code);
     try {
       registerService.activate(username, code);
       return VerifyResponse.builder()

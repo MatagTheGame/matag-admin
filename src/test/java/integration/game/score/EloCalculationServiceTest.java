@@ -4,10 +4,9 @@ import static com.matag.admin.game.game.GameResultType.R1;
 import static com.matag.admin.game.game.GameResultType.R2;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-
 import com.matag.admin.game.score.EloCalculationService;
 import com.matag.admin.game.score.Score;
+import org.junit.jupiter.api.Test;
 
 public class EloCalculationServiceTest {
   private final EloCalculationService eloCalculationService = new EloCalculationService();

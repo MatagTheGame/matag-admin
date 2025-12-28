@@ -1,19 +1,14 @@
 package com.matag.admin.auth.register;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
-@JsonDeserialize(builder = RegisterResponse.RegisterResponseBuilder.class)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class RegisterResponse {
   String message;
-
-  @JsonPOJOBuilder(withPrefix = "")
-  public static class RegisterResponseBuilder {
-
-  }
 }

@@ -1,19 +1,17 @@
 package com.matag.admin.game.history;
 
-import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.matag.admin.game.game.GameType;
 import com.matag.admin.game.game.GameUserResultType;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+import java.time.LocalDateTime;
+
+@Data
 @AllArgsConstructor
-@JsonDeserialize(builder = GameHistory.GameHistoryBuilder.class)
+@NoArgsConstructor
 @Builder
 public class GameHistory {
   Long gameId;
@@ -25,9 +23,4 @@ public class GameHistory {
   String player1Options;
   String player2Name;
   String player2Options;
-
-  @JsonPOJOBuilder(withPrefix = "")
-  public static class GameHistoryBuilder {
-
-  }
 }
