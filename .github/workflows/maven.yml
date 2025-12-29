@@ -33,4 +33,4 @@ jobs:
         check_name: Tests Report
         github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Publish
-      run: mvn -DskipTest deploy
+      run: mvn -DskipTests deploy
