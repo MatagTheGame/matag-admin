@@ -1,5 +1,5 @@
 import React from 'react'
-import Provider from 'react-redux/lib/components/Provider'
+import { Provider } from 'react-redux';
 import {createStore} from 'redux'
 import {getNodeText, render} from '@testing-library/react'
 import AdminApp from 'admin/AdminApp'

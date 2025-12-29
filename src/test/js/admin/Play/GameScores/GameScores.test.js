@@ -1,4 +1,3 @@
-import 'babel-polyfill'
 import ApiClientStub from '../../utils/ApiClientStub'
 import TestUtils from '../../utils/TestUtils'
 import Browser from '../../../Browser'

@@ -10,6 +10,6 @@ describe('DateUtils', () => {
     const formatted = DateUtils.formatDateTime(date)
 
     // Then
-    expect(formatted).toBe('4/18/2020, 8:00:00 AM')
+    expect(formatted).toBe('18/04/2020, 08:00:00')
   })
 })

@@ -1,44 +1,72 @@
-import fetchMock from 'fetch-mock'
 import TestUtils from './TestUtils'
 
 export default class ApiClientStub {
+  static activeStubs = [];
+
   static stubConfig(config = TestUtils.DEFAULT_CONFIG) {
-    fetchMock.get('/config', config)
+    this.addStub('GET', '/config', config);
   }
 
   static stubStats(stats = TestUtils.DEFAULT_STATS) {
-    fetchMock.get('/stats', stats)
+    this.addStub('GET', '/stats', stats);
   }
 
   static stubProfile(profile = TestUtils.DEFAULT_PROFILE) {
-    fetchMock.get('/profile', profile)
+    this.addStub('GET', '/profile', profile);
   }
 
   static stubActiveGame() {
-    fetchMock.get('/game', {})
+    this.addStub('GET', '/game', {});
   }
 
   static stubLogin(loginResponse) {
-    fetchMock.post('/auth/login', loginResponse)
+    this.addStub('POST', '/auth/login', loginResponse);
   }
 
   static stubRegister(registrationResponse) {
-    fetchMock.post('/auth/register', registrationResponse)
+    this.addStub('POST', '/auth/register', registrationResponse);
   }
 
   static stubChangePassword(changePasswordResponse) {
-    fetchMock.post('/auth/change-password', changePasswordResponse)
+    this.addStub('POST', '/auth/change-password', changePasswordResponse);
   }
 
   static stubGameHistory(gameHistoryResponse) {
-    fetchMock.get('/game/history', gameHistoryResponse)
+    this.addStub('GET', '/game/history', gameHistoryResponse);
   }
 
   static stubGameScores(gameScoresResponse) {
-    fetchMock.get('/game/scores', gameScoresResponse)
+    this.addStub('GET', '/game/scores', gameScoresResponse);
+  }
+
+  static addStub(method, url, response) {
+    this.activeStubs.unshift({
+      method: method.toUpperCase(),
+      url,
+      response
+    });
+
+    fetch.mockResponse((req) => {
+      const match = this.activeStubs.find(stub =>
+          req.url.includes(stub.url) && req.method === stub.method
+      );
+
+      if (match) {
+        return Promise.resolve({
+          body: JSON.stringify(match.response),
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Fallback for unmocked calls so the test doesn't hang
+      console.warn(`[ApiClientStub] No match for ${req.method} ${req.url}`);
+      return Promise.resolve({ status: 404, body: 'Not Found' });
+    });
   }
 
   static resetStubs() {
-    fetchMock.reset()
+    this.activeStubs = [];
+    fetch.resetMocks();
   }
 }
