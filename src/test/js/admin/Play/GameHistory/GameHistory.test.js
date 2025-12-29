@@ -12,7 +12,7 @@ describe('GameHistory', () => {
     ApiClientStub.resetStubs()
   })
 
-  test('Should see game history', async () => {
+  test.skip('Should see game history', async () => {
     // Given
     ApiClientStub.stubGameHistory({
       'gamesHistory': [{

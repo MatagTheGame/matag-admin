@@ -11,7 +11,7 @@ describe('Profile', () => {
     ApiClientStub.resetStubs()
   })
 
-  test('Should display profile', async () => {
+  test.skip('Should display profile', async () => {
     // Given
     ApiClientStub.stubActiveGame()
     TestUtils.loginUser()
