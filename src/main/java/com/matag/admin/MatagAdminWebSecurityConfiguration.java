@@ -55,7 +55,7 @@ public class MatagAdminWebSecurityConfiguration {
                         .logoutSuccessHandler(matagLogoutSuccessHandler)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/error", "/test/**", "/ui/**", "/stats", "/config",
+                        .requestMatchers("/", "/error", "/test/**", "/ui/**", "/admin.html", "/stats", "/config",
                                 "/auth/login", "/auth/logout", "/auth/register", "/auth/verify").permitAll()
                         .anyRequest().authenticated()
                 );
