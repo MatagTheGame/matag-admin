@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
@@ -20,6 +21,7 @@ import java.util.Objects;
 
 import static java.util.Collections.singletonList;
 
+@Slf4j
 @Component
 @AllArgsConstructor
 public class AuthSessionFilter extends GenericFilterBean {
@@ -33,8 +35,9 @@ public class AuthSessionFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, jakarta.servlet.ServletException {
-        if (request instanceof FirewalledRequest) {
-            applySecurity((FirewalledRequest)request);
+        if (request instanceof FirewalledRequest firewalledRequest) {
+            logger.info("Received request: " + firewalledRequest.getMethod() + " " + firewalledRequest.getRequestURI());
+            applySecurity(firewalledRequest);
         }
         filterChain.doFilter(request, response);
     }

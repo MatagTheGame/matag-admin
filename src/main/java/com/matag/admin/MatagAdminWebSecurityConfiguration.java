@@ -34,12 +34,6 @@ public class MatagAdminWebSecurityConfiguration {
     private AuthSessionFilter authSessionFilter;
 
     @Bean
-    WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring()
-                .requestMatchers("/js/**", "/img/**");
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) {
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -55,8 +49,12 @@ public class MatagAdminWebSecurityConfiguration {
                         .logoutSuccessHandler(matagLogoutSuccessHandler)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/error", "/test/**", "/ui/**", "/admin.html", "/stats", "/config",
-                                "/auth/login", "/auth/logout", "/auth/register", "/auth/verify").permitAll()
+                        .requestMatchers(
+                                "/", "/ui/**", "/admin.html", "/js/**", "/img/**",
+                                "/stats", "/config",
+                                "/error", "/test/**",
+                                "/auth/login", "/auth/logout", "/auth/register", "/auth/verify"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 );
 
