@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Route, Router, Switch} from 'react-router-dom'
+import {Route, BrowserRouter, Routes} from 'react-router-dom'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import get from 'lodash/get'
@@ -24,7 +24,7 @@ import './admin.scss'
 class AdminApp extends Component {
   componentDidMount() {
     ApiClient.get('/config').then(this.props.configLoaded)
-    ProfileUtils.getProfile().then(this.props.profileLoaded)
+     ProfileUtils.getProfile().then(this.props.profileLoaded)
   }
 
   render() {
@@ -33,51 +33,30 @@ class AdminApp extends Component {
 
     } else {
       return (
-        <Router history={history}>
-          <div>
-            <Header/>
-            <Switch>
-              <Route path="/ui/admin" exact>
-                <div className='page with-margin'><Home/></div>
-              </Route>
+          <BrowserRouter>
+            <div>
+              <Header/>
+              <Routes>
+                <Route path="/ui/admin" element={<div className='page with-margin'><Home/></div>} />
 
-              <Route path="/ui/admin/auth/login">
-                <div className='page with-margin'><Login/></div>
-              </Route>
-              <Route path="/ui/admin/auth/register">
-                <div className='page with-margin'><Register/></div>
-              </Route>
-              <Route path="/ui/admin/auth/verify">
-                <div className='page with-margin'><Verify/></div>
-              </Route>
-              <Route path="/ui/admin/auth/change-password">
-                <div className='page with-margin'><ChangePassword/></div>
-              </Route>
+                <Route path="/ui/admin/auth/login" element={<div className='page with-margin'><Login/></div>} />
+                <Route path="/ui/admin/auth/register" element={<div className='page with-margin'><Register/></div>} />
+                <Route path="/ui/admin/auth/verify" element={<div className='page with-margin'><Verify/></div>} />
+                <Route path="/ui/admin/auth/change-password" element={<div className='page with-margin'><ChangePassword/></div>} />
 
-              <Route path="/ui/admin/decks">
-                <div className='page'><Decks/></div>
-              </Route>
+                <Route path="/ui/admin/decks" element={<div className='page'><Decks/></div>} />
 
-              <Route path="/ui/admin/play" exact>
-                <div className='page with-margin'><Play/></div>
-              </Route>
-              <Route path="/ui/admin/play/game-history">
-                <div className='page with-margin'><GameHistory/></div>
-              </Route>
-              <Route path="/ui/admin/play/score-board">
-                <div className='page with-margin'><GameScores/></div>
-              </Route>
+                <Route path="/ui/admin/play" element={<div className='page with-margin'><Play/></div>} />
+                <Route path="/ui/admin/play/game-history" element={<div className='page with-margin'><GameHistory/></div>} />
+                <Route path="/ui/admin/play/score-board" element={<div className='page with-margin'><GameScores/></div>} />
 
-              <Route path="/ui/admin/profile">
-                <div className='page with-margin'><Profile/></div>
-              </Route>
+                <Route path="/ui/admin/profile" element={<div className='page with-margin'><Profile/></div>} />
 
-              <Route>
-                <div className='page with-margin'><Home/></div>
-              </Route>
-            </Switch>
-          </div>
-        </Router>
+                {/* 4. Fallback route uses path="*" */}
+                <Route path="*" element={<div className='page with-margin'><Home/></div>} />
+              </Routes>
+            </div>
+          </BrowserRouter>
       )
     }
   }
