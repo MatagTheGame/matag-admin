@@ -1,29 +1,26 @@
-package application;
+package application
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.Clock
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZoneOffset
 
-public class MockClock extends Clock {
-  private Instant currentTime;
+class MockClock : Clock() {
+    private var currentTime: Instant? = null
 
-  @Override
-  public ZoneId getZone() {
-    return ZoneOffset.UTC;
-  }
+    override fun getZone(): ZoneId? {
+        return ZoneOffset.UTC
+    }
 
-  @Override
-  public Clock withZone(ZoneId zone) {
-    return this;
-  }
+    override fun withZone(zone: ZoneId?): Clock {
+        return this
+    }
 
-  @Override
-  public Instant instant() {
-    return currentTime;
-  }
+    override fun instant(): Instant? {
+        return currentTime
+    }
 
-  public void setCurrentTime(Instant currentTime) {
-    this.currentTime = currentTime;
-  }
+    fun setCurrentTime(currentTime: Instant?) {
+        this.currentTime = currentTime
+    }
 }

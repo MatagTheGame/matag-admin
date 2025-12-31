@@ -1,118 +1,123 @@
-package application.auth.login;
+package application.auth.login
 
-import static application.TestUtils.PASSWORD;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import application.AbstractApplicationTest
+import application.TestUtils
+import com.matag.admin.auth.login.LoginRequest
+import com.matag.admin.auth.login.LoginResponse
+import com.matag.admin.user.profile.CurrentUserProfileDto
+import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Test
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 
-import com.matag.admin.auth.login.LoginRequest;
-import com.matag.admin.auth.login.LoginResponse;
-import com.matag.admin.user.profile.CurrentUserProfileDto;
+class LoginControllerTest : AbstractApplicationTest() {
+    @Test
+    fun shouldReturnInvalidPassword() {
+        // Given
+        val request = LoginRequest("user1@matag.com", "xxx")
 
-import application.AbstractApplicationTest;
-import org.junit.jupiter.api.Test;
+        // When
+        val response = postForEntity("/auth/login", request, LoginResponse::class.java)
 
-public class LoginControllerTest extends AbstractApplicationTest {
-  @Test
-  public void shouldReturnInvalidPassword() {
-    // Given
-    var request = new LoginRequest("user1@matag.com", "xxx");
+        // Then
+        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST)
+        Assertions.assertThat<LoginResponse?>(response.getResponseBody()).isNotNull()
+        Assertions.assertThat(response.getResponseBody()!!.getError())
+            .isEqualTo("Password is invalid (should be at least 4 characters).")
+    }
 
-    // When
-    var response = postForEntity("/auth/login", request, LoginResponse.class);
+    @Test
+    fun shouldLoginAUserViaEmail() {
+        // Given
+        val request = LoginRequest("user1@matag.com", TestUtils.PASSWORD)
 
-    // Then
-    assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
-    assertThat(response.getResponseBody()).isNotNull();
-    assertThat(response.getResponseBody().getError()).isEqualTo("Password is invalid (should be at least 4 characters).");
-  }
+        // When
+        val response = postForEntity("/auth/login", request, LoginResponse::class.java)
 
-  @Test
-  public void shouldLoginAUserViaEmail() {
-    // Given
-    var request = new LoginRequest("user1@matag.com", PASSWORD);
+        // Then
+        Assertions.assertThat(response.getResponseBody()!!.getToken()).isNotBlank()
+        Assertions.assertThat<CurrentUserProfileDto?>(response.getResponseBody()!!.getProfile()).isEqualTo(
+            CurrentUserProfileDto.builder()
+                .username("User1")
+                .type("USER")
+                .build()
+        )
+    }
 
-    // When
-    var response = postForEntity("/auth/login", request, LoginResponse.class);
+    @Test
+    fun shouldLoginAUserViaUsername() {
+        // Given
+        val request = LoginRequest("User1", TestUtils.PASSWORD)
 
-    // Then
-    assertThat(response.getResponseBody().getToken()).isNotBlank();
-    assertThat(response.getResponseBody().getProfile()).isEqualTo(CurrentUserProfileDto.builder()
-      .username("User1")
-      .type("USER")
-      .build());
-  }
+        // When
+        val response = postForEntity("/auth/login", request, LoginResponse::class.java)
 
-  @Test
-  public void shouldLoginAUserViaUsername() {
-    // Given
-    var request = new LoginRequest("User1", PASSWORD);
+        // Then
+        Assertions.assertThat(response.getResponseBody()!!.getToken()).isNotBlank()
+        Assertions.assertThat<CurrentUserProfileDto?>(response.getResponseBody()!!.getProfile()).isEqualTo(
+            CurrentUserProfileDto.builder()
+                .username("User1")
+                .type("USER")
+                .build()
+        )
+    }
 
-    // When
-    var response = postForEntity("/auth/login", request, LoginResponse.class);
+    @Test
+    fun shouldNotLoginANonExistingUser() {
+        // Given
+        val request = LoginRequest("non-existing-user@matag.com", TestUtils.PASSWORD)
 
-    // Then
-    assertThat(response.getResponseBody().getToken()).isNotBlank();
-    assertThat(response.getResponseBody().getProfile()).isEqualTo(CurrentUserProfileDto.builder()
-      .username("User1")
-      .type("USER")
-      .build());
-  }
+        // When
+        val response = postForEntity("/auth/login", request, LoginResponse::class.java)
 
-  @Test
-  public void shouldNotLoginANonExistingUser() {
-    // Given
-    var request = new LoginRequest("non-existing-user@matag.com", PASSWORD);
+        // Then
+        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED)
+        Assertions.assertThat<LoginResponse?>(response.getResponseBody()).isNotNull()
+        Assertions.assertThat(response.getResponseBody()!!.getError())
+            .isEqualTo("Email/Username or password are not correct.")
+    }
 
-    // When
-    var response = postForEntity("/auth/login", request, LoginResponse.class);
+    @Test
+    fun shouldNotLoginWithWrongPassword() {
+        // Given
+        val request = LoginRequest("user1@matag.com", "wrong-password")
 
-    // Then
-    assertThat(response.getStatus()).isEqualTo(UNAUTHORIZED);
-    assertThat(response.getResponseBody()).isNotNull();
-    assertThat(response.getResponseBody().getError()).isEqualTo("Email/Username or password are not correct.");
-  }
+        // When
+        val response = postForEntity("/auth/login", request, LoginResponse::class.java)
 
-  @Test
-  public void shouldNotLoginWithWrongPassword() {
-    // Given
-    var request = new LoginRequest("user1@matag.com", "wrong-password");
+        // Then
+        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED)
+        Assertions.assertThat<LoginResponse?>(response.getResponseBody()).isNotNull()
+        Assertions.assertThat(response.getResponseBody()!!.getError())
+            .isEqualTo("Email/Username or password are not correct.")
+    }
 
-    // When
-    var response = postForEntity("/auth/login", request, LoginResponse.class);
+    @Test
+    fun shouldNotLoginNotActiveUser() {
+        // Given
+        val request = LoginRequest("inactiveUser@matag.com", TestUtils.PASSWORD)
 
-    // Then
-    assertThat(response.getStatus()).isEqualTo(UNAUTHORIZED);
-    assertThat(response.getResponseBody()).isNotNull();
-    assertThat(response.getResponseBody().getError()).isEqualTo("Email/Username or password are not correct.");
-  }
+        // When
+        val response = postForEntity("/auth/login", request, LoginResponse::class.java)
 
-  @Test
-  public void shouldNotLoginNotActiveUser() {
-    // Given
-    var request = new LoginRequest("inactiveUser@matag.com", PASSWORD);
+        // Then
+        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED)
+        Assertions.assertThat<LoginResponse?>(response.getResponseBody()).isNotNull()
+        Assertions.assertThat(response.getResponseBody()!!.getError()).isEqualTo("Account is not active.")
+    }
 
-    // When
-    var response = postForEntity("/auth/login", request, LoginResponse.class);
+    @Test
+    fun shouldNotCreateTwoSessionsForSameUser() {
+        // Given a user already logged in once
+        val request = LoginRequest("User1", TestUtils.PASSWORD)
+        var response = postForEntity("/auth/login", request, LoginResponse::class.java)
+        val firstToken = response.getResponseBody()!!.getToken()
 
-    // Then
-    assertThat(response.getStatus()).isEqualTo(UNAUTHORIZED);
-    assertThat(response.getResponseBody()).isNotNull();
-    assertThat(response.getResponseBody().getError()).isEqualTo("Account is not active.");
-  }
+        // When user login twice
+        response = postForEntity("/auth/login", request, LoginResponse::class.java)
+        val secondToken = response.getResponseBody()!!.getToken()
 
-  @Test
-  public void shouldNotCreateTwoSessionsForSameUser() {
-    // Given a user already logged in once
-    var request = new LoginRequest("User1", PASSWORD);
-    var response = postForEntity("/auth/login", request, LoginResponse.class);
-    String firstToken = response.getResponseBody().getToken();
-
-    // When user login twice
-    response = postForEntity("/auth/login", request, LoginResponse.class);
-    String secondToken = response.getResponseBody().getToken();
-
-    // Then
-    assertThat(firstToken).isEqualTo(secondToken);
-  }
+        // Then
+        Assertions.assertThat(firstToken).isEqualTo(secondToken)
+    }
 }

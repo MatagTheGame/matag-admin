@@ -1,199 +1,174 @@
-package application;
+package application
 
-import com.matag.admin.MatagAdminApplication;
-import com.matag.admin.config.ConfigService;
-import com.matag.admin.game.game.GameRepository;
-import com.matag.admin.game.score.ScoreRepository;
-import com.matag.admin.game.score.ScoreService;
-import com.matag.admin.game.session.GameSessionRepository;
-import com.matag.admin.session.MatagSession;
-import com.matag.admin.session.MatagSessionRepository;
-import com.matag.admin.user.MatagUser;
-import com.matag.admin.user.MatagUserRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.client.EntityExchangeResult;
-import org.springframework.test.web.servlet.client.RestTestClient;
+import application.AbstractApplicationTest.ApplicationTestConfiguration
+import com.matag.admin.MatagAdminApplication
+import com.matag.admin.config.ConfigService
+import com.matag.admin.game.game.GameRepository
+import com.matag.admin.game.score.ScoreRepository
+import com.matag.admin.game.score.ScoreService
+import com.matag.admin.game.session.GameSessionRepository
+import com.matag.admin.session.AuthSessionFilter
+import com.matag.admin.session.AuthSessionFilter.ADMIN_NAME
+import com.matag.admin.session.AuthSessionFilter.SESSION_NAME
+import com.matag.admin.session.MatagSession
+import com.matag.admin.session.MatagSessionRepository
+import com.matag.admin.user.MatagUser
+import com.matag.admin.user.MatagUserRepository
+import com.matag.admin.user.MatagUserType
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.Mockito
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
+import org.springframework.context.annotation.Primary
+import org.springframework.mail.javamail.JavaMailSender
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.springframework.test.web.servlet.client.EntityExchangeResult
+import org.springframework.test.web.servlet.client.RestTestClient
+import org.springframework.test.web.servlet.client.expectBody
+import java.time.Clock
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.util.*
+import java.util.function.Supplier
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.UUID;
-
-import static application.TestUtils.*;
-import static com.matag.admin.session.AuthSessionFilter.*;
-import static com.matag.admin.user.MatagUserType.USER;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = MatagAdminApplication.class, webEnvironment = RANDOM_PORT)
+@ExtendWith(SpringExtension::class)
+@SpringBootTest(classes = [MatagAdminApplication::class], webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureRestTestClient
-@Import(AbstractApplicationTest.ApplicationTestConfiguration.class)
+@Import(ApplicationTestConfiguration::class)
 @ActiveProfiles("test")
-public abstract class AbstractApplicationTest {
-    public static final LocalDateTime TEST_START_TIME = LocalDateTime.parse("2020-01-01T00:00:00");
-
-    @Autowired
-    private MatagUserRepository matagUserRepository;
-    @Autowired
-    private MatagSessionRepository matagSessionRepository;
-    @Autowired
-    private GameRepository gameRepository;
-    @Autowired
-    private GameSessionRepository gameSessionRepository;
-    @Autowired
-    private ScoreRepository scoreRepository;
-    @Autowired
-    private ScoreService scoreService;
-
-    @Autowired
-    protected Clock clock;
-
-    @Autowired
-    protected RestTestClient restTestClient;
-
-    @Autowired
-    private ConfigService configService;
+abstract class AbstractApplicationTest {
+    @Autowired protected lateinit var matagUserRepository: MatagUserRepository
+    @Autowired protected lateinit var matagSessionRepository: MatagSessionRepository
+    @Autowired protected lateinit var gameRepository: GameRepository
+    @Autowired protected lateinit var gameSessionRepository: GameSessionRepository
+    @Autowired protected lateinit var scoreRepository: ScoreRepository
+    @Autowired protected lateinit var scoreService: ScoreService
+    @Autowired protected lateinit var clock: Clock
+    @Autowired protected lateinit var restTestClient: RestTestClient
+    @Autowired protected lateinit var configService: ConfigService
 
     @BeforeEach
-    public void setup() {
-        setCurrentTime(TEST_START_TIME);
+    fun setup() {
+        setCurrentTime(TEST_START_TIME)
 
-        saveUser(guest());
-        saveUser(user1());
-        saveUser(user2());
-        saveUser(inactive());
-    }
-
-    private void saveUser(MatagUser inactive) {
-        var user = matagUserRepository.save(inactive);
-        if (user.getType() == USER) {
-            scoreService.createStartingScore(user);
-        }
+        saveUser(TestUtils.guest())
+        saveUser(TestUtils.user1())
+        saveUser(TestUtils.user2())
+        saveUser(TestUtils.inactive())
     }
 
     @AfterEach
-    public void cleanup() {
-        gameSessionRepository.deleteAll();
-        gameRepository.deleteAll();
-        matagSessionRepository.deleteAll();
-        scoreRepository.deleteAll();
-        matagUserRepository.deleteAll();
+    fun cleanup() {
+        gameSessionRepository.deleteAll()
+        gameRepository.deleteAll()
+        matagSessionRepository.deleteAll()
+        scoreRepository.deleteAll()
+        matagUserRepository.deleteAll()
     }
 
-    public void setCurrentTime(LocalDateTime currentTime) {
-        ((MockClock) clock).setCurrentTime(currentTime.toInstant(ZoneOffset.UTC));
-    }
+    fun setCurrentTime(currentTime: LocalDateTime) =
+        (clock as MockClock).setCurrentTime(currentTime.toInstant(ZoneOffset.UTC))
 
-    public MatagUser loadUser(String username) {
-        return matagUserRepository.findByUsername(username).orElseThrow(RuntimeException::new);
-    }
+    fun loadUser(username: String) =
+        matagUserRepository.findByUsername(username).orElseThrow()
 
-    public void loginUser(String userToken, String username) {
-        var sessionId = UUID.fromString(userToken).toString();
+    fun loginUser(userToken: String, username: String) {
+        val sessionId = UUID.fromString(userToken).toString()
         if (!matagSessionRepository.existsBySessionId(sessionId)) {
-            matagSessionRepository.save(MatagSession.builder()
+            matagSessionRepository.save(
+                MatagSession.builder()
                     .sessionId(sessionId)
                     .matagUser(loadUser(username))
                     .createdAt(LocalDateTime.now(clock))
-                    .validUntil(LocalDateTime.now(clock).plusSeconds(SESSION_DURATION_TIME))
-                    .build());
+                    .validUntil(LocalDateTime.now(clock).plusSeconds(AuthSessionFilter.SESSION_DURATION_TIME.toLong()))
+                    .build()
+            )
         }
     }
 
-    protected <T> EntityExchangeResult<T> postForEntity(String uri, Object request, Class<T> responseType, String token) {
+    private fun saveUser(inactive: MatagUser) {
+        val user = matagUserRepository.save(inactive)
+        if (user.type == MatagUserType.USER) {
+            scoreService.createStartingScore(user)
+        }
+    }
+
+    protected fun <T : Any> getForEntity(uri: String, responseType: Class<T>, token: String? = null): EntityExchangeResult<T> {
         return restTestClientWithToken(token)
-                .post()
-                .uri(uri)
-                .body(request)
-                .exchange()
-                .expectBody(responseType)
-                .returnResult();
+            .get()
+            .uri(uri)
+            .exchange()
+            .expectBody<T>(responseType)
+            .returnResult()
     }
 
-    protected <T> EntityExchangeResult<T> postForEntity(String uri, Object request, Class<T> responseType) {
-        return restTestClient
-                .post()
-                .uri(uri)
-                .body(request)
-                .exchange()
-                .expectBody(responseType)
-                .returnResult();
-    }
-
-    protected <T> EntityExchangeResult<T> getForEntity(String uri, Class<T> responseType) {
-        return restTestClient
-                .get()
-                .uri(uri)
-                .exchange()
-                .expectBody(responseType)
-                .returnResult();
-    }
-
-    protected <T> EntityExchangeResult<T> getForEntity(String uri, Class<T> responseType, String token) {
+    protected fun <T : Any> postForEntity(uri: String, request: Any, responseType: Class<T>, token: String? = null): EntityExchangeResult<T> {
         return restTestClientWithToken(token)
-                .get()
-                .uri(uri)
-                .exchange()
-                .expectBody(responseType)
-                .returnResult();
+            .post()
+            .uri(uri)
+            .body(request)
+            .exchange()
+            .expectBody<T>(responseType)
+            .returnResult()
     }
 
-    protected EntityExchangeResult<String> delete(String uri, String token) {
+    protected fun delete(uri: String, token: String): EntityExchangeResult<String> {
         return restTestClientWithToken(token)
-                .delete()
-                .uri(uri)
-                .exchange()
-                .expectBody(String.class)
-                .returnResult();
+            .delete()
+            .uri(uri)
+            .exchange()
+            .expectBody<String>()
+            .returnResult()
     }
 
-    protected EntityExchangeResult<Object> postForAdmin(String uri, Object request) {
+    protected fun postForAdmin(uri: String, request: Any): EntityExchangeResult<Any> {
         return restTestClientWithAdminToken()
-                .post()
-                .uri(uri)
-                .body(request)
-                .exchange()
-                .expectBody(Object.class)
-                .returnResult();
+            .post()
+            .uri(uri)
+            .body(request)
+            .exchange()
+            .expectBody<Any>()
+            .returnResult()
     }
 
-    private RestTestClient restTestClientWithToken(String token) {
-        return restTestClient
+    private fun restTestClientWithToken(token: String?) =
+        if (token == null) {
+            restTestClient
+        } else {
+            restTestClient
                 .mutate().defaultHeader(SESSION_NAME, token)
-                .build();
-    }
+                .build()
+        }
 
-    private RestTestClient restTestClientWithAdminToken() {
+    private fun restTestClientWithAdminToken(): RestTestClient {
         return restTestClient
-                .mutate().defaultHeader(ADMIN_NAME, configService.getMatagAdminPassword())
-                .build();
+            .mutate().defaultHeader(ADMIN_NAME, configService.matagAdminPassword)
+            .build()
     }
 
     @Configuration
-    public static class ApplicationTestConfiguration {
+    open class ApplicationTestConfiguration {
         @Bean
         @Primary
-        public Clock clock() {
-            return new MockClock();
+        open fun clock(): Clock {
+            return MockClock()
         }
 
-        @Bean
-        @Primary
-        public JavaMailSender getJavaMailSender() {
-            return Mockito.mock(JavaMailSender.class);
-        }
+        @get:Primary
+        @get:Bean
+        open val javaMailSender: JavaMailSender?
+            get() = Mockito.mock<JavaMailSender?>(JavaMailSender::class.java)
+    }
+
+    companion object {
+        val TEST_START_TIME: LocalDateTime = LocalDateTime.parse("2020-01-01T00:00:00")
     }
 }

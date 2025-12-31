@@ -1,129 +1,120 @@
-package application.game.history;
+package application.game.history
 
-import static application.TestUtils.USER_1_SESSION_TOKEN;
-import static application.TestUtils.USER_1_USERNAME;
-import static application.TestUtils.USER_2_USERNAME;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
+import application.AbstractApplicationTest
+import application.TestUtils
+import com.matag.admin.game.game.*
+import com.matag.admin.game.history.GameHistory
+import com.matag.admin.game.history.GamesHistoryResponse
+import com.matag.admin.game.session.GameSession
+import com.matag.admin.game.session.GameSessionRepository
+import com.matag.admin.user.MatagUser
+import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
+import java.time.LocalDateTime
 
-import java.time.LocalDateTime;
+class GamesHistoryControllerTest : AbstractApplicationTest() {
+    @Test
+    fun returnsForbiddenForNonLoggedInUsers() {
+        // When
+        val response = getForEntity("/game/history", GamesHistoryResponse::class.java)
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+        // Then
+        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.FORBIDDEN)
+    }
 
-import com.matag.admin.game.game.Game;
-import com.matag.admin.game.game.GameRepository;
-import com.matag.admin.game.game.GameResultType;
-import com.matag.admin.game.game.GameStatusType;
-import com.matag.admin.game.game.GameType;
-import com.matag.admin.game.game.GameUserResultType;
-import com.matag.admin.game.history.GameHistory;
-import com.matag.admin.game.history.GamesHistoryResponse;
-import com.matag.admin.game.session.GameSession;
-import com.matag.admin.game.session.GameSessionRepository;
-import com.matag.admin.user.MatagUser;
+    @Test
+    fun retrieveGameHistory() {
+        // Given
+        loginUser(TestUtils.USER_1_SESSION_TOKEN, TestUtils.USER_1_USERNAME)
+        val user1 = loadUser(TestUtils.USER_1_USERNAME)
+        val user2 = loadUser(TestUtils.USER_2_USERNAME)
 
-import application.AbstractApplicationTest;
+        val game1 = createGame(GameResultType.R1)
+        createGameSession(game1, user1)
+        createGameSession(game1, user2)
 
-public class GamesHistoryControllerTest extends AbstractApplicationTest {
-  @Autowired
-  private GameRepository gameRepository;
+        val game2 = createGame(GameResultType.R2)
+        createGameSession(game2, user1)
+        createGameSession(game2, user2)
 
-  @Autowired
-  private GameSessionRepository gameSessionRepository;
+        val game3 = createGame(GameResultType.RX)
+        createGameSession(game3, user2)
+        createGameSession(game3, user1)
 
-  @Test
-  public void returnsForbiddenForNonLoggedInUsers() {
-    // When
-    var response = getForEntity("/game/history", GamesHistoryResponse.class);
+        // When
+        val gamesHistoryResponse = getForEntity(
+            "/game/history",
+            GamesHistoryResponse::class.java,
+            TestUtils.USER_1_SESSION_TOKEN
+        )
 
-    // Then
-    assertThat(response.getStatus()).isEqualTo(FORBIDDEN);
-  }
+        // Then
+        Assertions.assertThat<GameHistory?>(gamesHistoryResponse.getResponseBody()!!.getGamesHistory()).hasSize(3)
+        Assertions.assertThat<GameHistory?>(gamesHistoryResponse.getResponseBody()!!.getGamesHistory().get(0))
+            .isEqualToIgnoringGivenFields(
+                GameHistory.builder()
+                    .startedTime(LocalDateTime.now(clock))
+                    .finishedTime(LocalDateTime.now(clock))
+                    .type(GameType.UNLIMITED)
+                    .result(GameUserResultType.WIN)
+                    .player1Name(TestUtils.USER_1_USERNAME)
+                    .player1Options("User1 options")
+                    .player2Name(TestUtils.USER_2_USERNAME)
+                    .player2Options("User2 options")
+                    .build(),
+                "gameId"
+            )
+        Assertions.assertThat<GameHistory?>(gamesHistoryResponse.getResponseBody()!!.getGamesHistory().get(1))
+            .isEqualToIgnoringGivenFields(
+                GameHistory.builder()
+                    .startedTime(LocalDateTime.now(clock))
+                    .finishedTime(LocalDateTime.now(clock))
+                    .type(GameType.UNLIMITED)
+                    .result(GameUserResultType.LOST)
+                    .player1Name(TestUtils.USER_1_USERNAME)
+                    .player1Options("User1 options")
+                    .player2Name(TestUtils.USER_2_USERNAME)
+                    .player2Options("User2 options")
+                    .build(),
+                "gameId"
+            )
+        Assertions.assertThat<GameHistory?>(gamesHistoryResponse.getResponseBody()!!.getGamesHistory().get(2))
+            .isEqualToIgnoringGivenFields(
+                GameHistory.builder()
+                    .startedTime(LocalDateTime.now(clock))
+                    .finishedTime(LocalDateTime.now(clock))
+                    .type(GameType.UNLIMITED)
+                    .result(GameUserResultType.DRAW)
+                    .player1Name(TestUtils.USER_2_USERNAME)
+                    .player1Options("User2 options")
+                    .player2Name(TestUtils.USER_1_USERNAME)
+                    .player2Options("User1 options")
+                    .build(),
+                "gameId"
+            )
+    }
 
-  @Test
-  public void retrieveGameHistory() {
-    // Given
-    loginUser(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    var user1 = loadUser(USER_1_USERNAME);
-    var user2 = loadUser(USER_2_USERNAME);
+    private fun createGame(result: GameResultType?): Game {
+        val game = Game.builder()
+            .createdAt(LocalDateTime.now(clock))
+            .type(GameType.UNLIMITED)
+            .status(GameStatusType.FINISHED)
+            .result(result)
+            .finishedAt(LocalDateTime.now(clock))
+            .build()
+        gameRepository!!.save(game)
+        return game
+    }
 
-    var game1 = createGame(GameResultType.R1);
-    createGameSession(game1, user1);
-    createGameSession(game1, user2);
-
-    var game2 = createGame(GameResultType.R2);
-    createGameSession(game2, user1);
-    createGameSession(game2, user2);
-
-    var game3 = createGame(GameResultType.RX);
-    createGameSession(game3, user2);
-    createGameSession(game3, user1);
-
-    // When
-    var gamesHistoryResponse = getForEntity("/game/history", GamesHistoryResponse.class, USER_1_SESSION_TOKEN);
-
-    // Then
-    assertThat(gamesHistoryResponse.getResponseBody().getGamesHistory()).hasSize(3);
-    assertThat(gamesHistoryResponse.getResponseBody().getGamesHistory().get(0)).isEqualToIgnoringGivenFields(
-      GameHistory.builder()
-        .startedTime(LocalDateTime.now(clock))
-        .finishedTime(LocalDateTime.now(clock))
-        .type(GameType.UNLIMITED)
-        .result(GameUserResultType.WIN)
-        .player1Name(USER_1_USERNAME)
-        .player1Options("User1 options")
-        .player2Name(USER_2_USERNAME)
-        .player2Options("User2 options")
-        .build(),
-      "gameId"
-    );
-    assertThat(gamesHistoryResponse.getResponseBody().getGamesHistory().get(1)).isEqualToIgnoringGivenFields(
-      GameHistory.builder()
-        .startedTime(LocalDateTime.now(clock))
-        .finishedTime(LocalDateTime.now(clock))
-        .type(GameType.UNLIMITED)
-        .result(GameUserResultType.LOST)
-        .player1Name(USER_1_USERNAME)
-        .player1Options("User1 options")
-        .player2Name(USER_2_USERNAME)
-        .player2Options("User2 options")
-        .build(),
-      "gameId"
-    );
-    assertThat(gamesHistoryResponse.getResponseBody().getGamesHistory().get(2)).isEqualToIgnoringGivenFields(
-      GameHistory.builder()
-        .startedTime(LocalDateTime.now(clock))
-        .finishedTime(LocalDateTime.now(clock))
-        .type(GameType.UNLIMITED)
-        .result(GameUserResultType.DRAW)
-        .player1Name(USER_2_USERNAME)
-        .player1Options("User2 options")
-        .player2Name(USER_1_USERNAME)
-        .player2Options("User1 options")
-        .build(),
-      "gameId"
-    );
-  }
-
-  private Game createGame(GameResultType result) {
-    var game = Game.builder()
-      .createdAt(LocalDateTime.now(clock))
-      .type(GameType.UNLIMITED)
-      .status(GameStatusType.FINISHED)
-      .result(result)
-      .finishedAt(LocalDateTime.now(clock))
-      .build();
-    gameRepository.save(game);
-    return game;
-  }
-
-  private void createGameSession(Game game, MatagUser user) {
-    var gameSession = GameSession.builder()
-      .game(game)
-      .player(user)
-      .playerOptions(user.getUsername() + " options")
-      .build();
-    gameSessionRepository.save(gameSession);
-  }
+    private fun createGameSession(game: Game?, user: MatagUser) {
+        val gameSession = GameSession.builder()
+            .game(game)
+            .player(user)
+            .playerOptions(user.getUsername() + " options")
+            .build()
+        gameSessionRepository!!.save(gameSession)
+    }
 }

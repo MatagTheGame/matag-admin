@@ -23,7 +23,8 @@ export default class Intro extends Component {
         </ul>
         <p>
           <u>Most probably you are the only one online</u>, you can play against yourself by opening two browser sessions (windows/tabs) at this address
-          and logging in on the second tab with guest.
+          and logging in on the second tab with guest.<br />
+          Or even better let someone know about this amazing website and play in here with them!
         </p>
       </section>
     )

@@ -1,74 +1,66 @@
-package application.stats;
+package application.stats
 
-import static application.TestUtils.GUEST_SESSION_TOKEN_1;
-import static application.TestUtils.GUEST_SESSION_TOKEN_2;
-import static application.TestUtils.GUEST_USERNAME;
-import static application.TestUtils.USER_1_SESSION_TOKEN;
-import static application.TestUtils.USER_1_USERNAME;
-import static application.TestUtils.USER_2_SESSION_TOKEN;
-import static application.TestUtils.USER_2_USERNAME;
-import static org.assertj.core.api.Assertions.assertThat;
+import application.AbstractApplicationTest
+import application.TestUtils
+import com.matag.admin.stats.StatsResponse
+import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Test
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
+import java.time.LocalDateTime
 
-import java.time.LocalDateTime;
+class StatsControllerTest : AbstractApplicationTest() {
+    @Test
+    fun shouldGetStatsAsUnauthenticatedUser() {
+        // When
+        val response = getForEntity("/stats", StatsResponse::class.java)
 
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
+        // Then
+        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.OK)
+    }
 
-import com.matag.admin.stats.StatsResponse;
+    @Test
+    fun shouldGetTotalUsers() {
+        // When
+        val response = getForEntity("/stats", StatsResponse::class.java)
 
-import application.AbstractApplicationTest;
+        // Then
+        Assertions.assertThat(response.getResponseBody()!!.getTotalUsers()).isEqualTo(3)
+    }
 
-public class StatsControllerTest extends AbstractApplicationTest {
-  @Test
-  public void shouldGetStatsAsUnauthenticatedUser() {
-    // When
-    var response = getForEntity("/stats", StatsResponse.class);
+    @Test
+    fun shouldGetOnlineUsers() {
+        // Given
+        loginUser(TestUtils.USER_1_SESSION_TOKEN, TestUtils.USER_1_USERNAME)
+        setCurrentTime(LocalDateTime.parse("2000-01-01T00:00:00"))
+        loginUser(TestUtils.USER_2_SESSION_TOKEN, TestUtils.USER_2_USERNAME)
+        setCurrentTime(TEST_START_TIME)
+        loginUser(TestUtils.GUEST_SESSION_TOKEN_1, TestUtils.GUEST_USERNAME)
+        loginUser(TestUtils.GUEST_SESSION_TOKEN_2, TestUtils.GUEST_USERNAME)
 
-    // Then
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK);
-  }
+        // When
+        val response = getForEntity("/stats", StatsResponse::class.java)
 
-  @Test
-  public void shouldGetTotalUsers() {
-    // When
-    var response = getForEntity("/stats", StatsResponse.class);
+        // Then
+        Assertions.assertThat<String?>(response.getResponseBody()!!.getOnlineUsers())
+            .containsExactlyInAnyOrder("User1", "Guest", "Guest")
+    }
 
-    // Then
-    assertThat(response.getResponseBody().getTotalUsers()).isEqualTo(3);
-  }
+    @Test
+    fun shouldGetNumOfCards() {
+        // When
+        val response = getForEntity("/stats", StatsResponse::class.java)
 
-  @Test
-  public void shouldGetOnlineUsers() {
-    // Given
-    loginUser(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    setCurrentTime(LocalDateTime.parse("2000-01-01T00:00:00"));
-    loginUser(USER_2_SESSION_TOKEN, USER_2_USERNAME);
-    setCurrentTime(TEST_START_TIME);
-    loginUser(GUEST_SESSION_TOKEN_1, GUEST_USERNAME);
-    loginUser(GUEST_SESSION_TOKEN_2, GUEST_USERNAME);
+        // Then
+        Assertions.assertThat(response.getResponseBody()!!.getTotalCards()).isGreaterThan(100)
+    }
 
-    // When
-    var response = getForEntity("/stats", StatsResponse.class);
+    @Test
+    fun shouldGetNumOfSets() {
+        // When
+        val response = getForEntity("/stats", StatsResponse::class.java)
 
-    // Then
-    assertThat(response.getResponseBody().getOnlineUsers()).containsExactlyInAnyOrder("User1", "Guest", "Guest");
-  }
-
-  @Test
-  public void shouldGetNumOfCards() {
-    // When
-    var response = getForEntity("/stats", StatsResponse.class);
-
-    // Then
-    assertThat(response.getResponseBody().getTotalCards()).isGreaterThan(100);
-  }
-
-  @Test
-  public void shouldGetNumOfSets() {
-    // When
-    var response = getForEntity("/stats", StatsResponse.class);
-
-    // Then
-    assertThat(response.getResponseBody().getTotalSets()).isGreaterThan(10);
-  }
+        // Then
+        Assertions.assertThat(response.getResponseBody()!!.getTotalSets()).isGreaterThan(10)
+    }
 }

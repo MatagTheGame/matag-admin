@@ -1,40 +1,34 @@
-package application.auth.logout;
+package application.auth.logout
 
-import static application.TestUtils.USER_1_SESSION_TOKEN;
-import static application.TestUtils.USER_1_USERNAME;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.OK;
+import application.AbstractApplicationTest
+import application.TestUtils
+import com.matag.admin.session.MatagSessionRepository
+import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+class LogoutControllerTest : AbstractApplicationTest() {
+    @Test
+    fun shouldLogoutAUser() {
+        // Given
+        loginUser(TestUtils.USER_1_SESSION_TOKEN, TestUtils.USER_1_USERNAME)
 
-import com.matag.admin.session.MatagSessionRepository;
+        // When
+        val logoutResponse = getForEntity("/auth/logout", String::class.java, TestUtils.USER_1_SESSION_TOKEN)
 
-import application.AbstractApplicationTest;
+        // Then
+        Assertions.assertThat<HttpStatusCode?>(logoutResponse.getStatus()).isEqualTo(HttpStatus.OK)
+        Assertions.assertThat(matagSessionRepository!!.count()).isEqualTo(0)
+    }
 
-public class LogoutControllerTest extends AbstractApplicationTest {
-  @Autowired
-  private MatagSessionRepository matagSessionRepository;
+    @Test
+    fun shouldLogoutANonLoggedInUser() {
+        // When
+        val logoutResponse = getForEntity("/auth/logout", String::class.java)
 
-  @Test
-  public void shouldLogoutAUser() {
-    // Given
-    loginUser(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-
-    // When
-    var logoutResponse = getForEntity("/auth/logout", String.class, USER_1_SESSION_TOKEN);
-
-    // Then
-    assertThat(logoutResponse.getStatus()).isEqualTo(OK);
-    assertThat(matagSessionRepository.count()).isEqualTo(0);
-  }
-
-  @Test
-  public void shouldLogoutANonLoggedInUser() {
-    // When
-    var logoutResponse = getForEntity("/auth/logout", String.class);
-
-    // Then
-    assertThat(logoutResponse.getStatus()).isEqualTo(OK);
-  }
+        // Then
+        Assertions.assertThat<HttpStatusCode?>(logoutResponse.getStatus()).isEqualTo(HttpStatus.OK)
+    }
 }

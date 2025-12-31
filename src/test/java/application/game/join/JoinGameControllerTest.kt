@@ -1,153 +1,173 @@
-package application.game.join;
+package application.game.join
 
-import static application.TestUtils.GUEST_SESSION_TOKEN_1;
-import static application.TestUtils.GUEST_SESSION_TOKEN_2;
-import static application.TestUtils.GUEST_USERNAME;
-import static application.TestUtils.USER_1_SESSION_TOKEN;
-import static application.TestUtils.USER_1_USERNAME;
-import static application.TestUtils.USER_2_SESSION_TOKEN;
-import static application.TestUtils.USER_2_USERNAME;
-import static com.matag.admin.game.game.GameStatusType.IN_PROGRESS;
-import static com.matag.admin.game.game.GameStatusType.STARTING;
-import static com.matag.admin.game.game.GameType.UNLIMITED;
-import static org.assertj.core.api.Assertions.assertThat;
+import application.AbstractApplicationTest
+import application.TestUtils
+import com.matag.admin.game.game.Game
+import com.matag.admin.game.game.GameRepository
+import com.matag.admin.game.game.GameStatusType
+import com.matag.admin.game.game.GameType
+import com.matag.admin.game.join.JoinGameRequest
+import com.matag.admin.game.join.JoinGameResponse
+import com.matag.admin.game.session.GameSession
+import com.matag.admin.game.session.GameSessionRepository
+import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+class JoinGameControllerTest : AbstractApplicationTest() {
+    @Test
+    fun shouldCreateAGame() {
+        // Given
+        loginUser(TestUtils.USER_1_SESSION_TOKEN, TestUtils.USER_1_USERNAME)
+        val request = JoinGameRequest.builder()
+            .gameType(GameType.UNLIMITED)
+            .playerOptions("player1 options")
+            .build()
 
-import com.matag.admin.game.game.GameRepository;
-import com.matag.admin.game.join.JoinGameRequest;
-import com.matag.admin.game.join.JoinGameResponse;
-import com.matag.admin.game.session.GameSession;
-import com.matag.admin.game.session.GameSessionRepository;
+        // When
+        val response = postForEntity(
+            "/game",
+            request,
+            JoinGameResponse::class.java,
+            TestUtils.USER_1_SESSION_TOKEN
+        )
 
-import application.AbstractApplicationTest;
+        // Then
+        Assertions.assertThat(response.getResponseBody()!!.getGameId()).isGreaterThan(0)
 
-public class JoinGameControllerTest extends AbstractApplicationTest {
-  @Autowired
-  private GameRepository gameRepository;
+        val games = gameRepository!!.findAll()
+        Assertions.assertThat<Game?>(games).hasSize(1)
+        val game = games.iterator().next()
+        Assertions.assertThat(game.getId()).isEqualTo(response.getResponseBody()!!.getGameId())
+        Assertions.assertThat<GameType?>(game.getType()).isEqualTo(GameType.UNLIMITED)
+        Assertions.assertThat<GameStatusType?>(game.getStatus()).isEqualTo(GameStatusType.STARTING)
 
-  @Autowired
-  private GameSessionRepository gameSessionRepository;
+        val gameSessions = gameSessionRepository!!.findAll()
+        Assertions.assertThat<GameSession?>(gameSessions).hasSize(1)
+        val gameSession = gameSessions.iterator().next()
+        Assertions.assertThat<Game?>(gameSession.getGame()).isEqualTo(game)
+        Assertions.assertThat(gameSession.getSession().getSessionId()).isEqualTo(TestUtils.USER_1_SESSION_TOKEN)
+        Assertions.assertThat(gameSession.getPlayer().getUsername()).isEqualTo(TestUtils.USER_1_USERNAME)
+        Assertions.assertThat(gameSession.getPlayerOptions()).isEqualTo("player1 options")
+    }
 
-  @Test
-  public void shouldCreateAGame() {
-    // Given
-    loginUser(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    var request = JoinGameRequest.builder()
-      .gameType(UNLIMITED)
-      .playerOptions("player1 options")
-      .build();
+    @Test
+    fun aDifferentPlayerShouldJoinAnExistingGame() {
+        // Given
+        loginUser(TestUtils.USER_1_SESSION_TOKEN, TestUtils.USER_1_USERNAME)
+        val player1JoinRequest = JoinGameRequest.builder()
+            .gameType(GameType.UNLIMITED)
+            .playerOptions("player1 options")
+            .build()
 
-    // When
-    var response = postForEntity("/game", request, JoinGameResponse.class, USER_1_SESSION_TOKEN);
+        postForEntity(
+            "/game",
+            player1JoinRequest,
+            JoinGameResponse::class.java,
+            TestUtils.USER_1_SESSION_TOKEN
+        )
 
-    // Then
-    assertThat(response.getResponseBody().getGameId()).isGreaterThan(0);
+        loginUser(TestUtils.USER_2_SESSION_TOKEN, TestUtils.USER_2_USERNAME)
 
-    var games = gameRepository.findAll();
-    assertThat(games).hasSize(1);
-    var game = games.iterator().next();
-    assertThat(game.getId()).isEqualTo(response.getResponseBody().getGameId());
-    assertThat(game.getType()).isEqualTo(UNLIMITED);
-    assertThat(game.getStatus()).isEqualTo(STARTING);
+        val player2JoinRequest = JoinGameRequest.builder()
+            .gameType(GameType.UNLIMITED)
+            .playerOptions("player2 options")
+            .build()
 
-    var gameSessions = gameSessionRepository.findAll();
-    assertThat(gameSessions).hasSize(1);
-    GameSession gameSession = gameSessions.iterator().next();
-    assertThat(gameSession.getGame()).isEqualTo(game);
-    assertThat(gameSession.getSession().getSessionId()).isEqualTo(USER_1_SESSION_TOKEN);
-    assertThat(gameSession.getPlayer().getUsername()).isEqualTo(USER_1_USERNAME);
-    assertThat(gameSession.getPlayerOptions()).isEqualTo("player1 options");
-  }
+        // When
+        val response = postForEntity(
+            "/game",
+            player2JoinRequest,
+            JoinGameResponse::class.java,
+            TestUtils.USER_2_SESSION_TOKEN
+        )
 
-  @Test
-  public void aDifferentPlayerShouldJoinAnExistingGame() {
-    // Given
-    loginUser(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    var player1JoinRequest = JoinGameRequest.builder()
-      .gameType(UNLIMITED)
-      .playerOptions("player1 options")
-      .build();
+        // Then
+        Assertions.assertThat(response.getResponseBody()!!.getGameId()).isGreaterThan(0)
 
-    postForEntity("/game", player1JoinRequest, JoinGameResponse.class, USER_1_SESSION_TOKEN);
+        val games = gameRepository!!.findAll()
+        Assertions.assertThat<Game?>(games).hasSize(1)
+        val game = games.iterator().next()
+        Assertions.assertThat(game.getId()).isEqualTo(response.getResponseBody()!!.getGameId())
+        Assertions.assertThat<GameType?>(game.getType()).isEqualTo(GameType.UNLIMITED)
+        Assertions.assertThat<GameStatusType?>(game.getStatus()).isEqualTo(GameStatusType.IN_PROGRESS)
 
-    loginUser(USER_2_SESSION_TOKEN, USER_2_USERNAME);
+        val gameSessions = gameSessionRepository!!.findAll()
+        Assertions.assertThat<GameSession?>(gameSessions).hasSize(2)
+        val iterator: MutableIterator<GameSession> = gameSessions.iterator()
+        val firstGameSession = iterator.next()
+        Assertions.assertThat<Game?>(firstGameSession.getGame()).isEqualTo(game)
+        Assertions.assertThat(firstGameSession.getSession().getSessionId()).isEqualTo(TestUtils.USER_1_SESSION_TOKEN)
+        Assertions.assertThat(firstGameSession.getPlayer().getUsername()).isEqualTo(TestUtils.USER_1_USERNAME)
+        Assertions.assertThat(firstGameSession.getPlayerOptions()).isEqualTo("player1 options")
 
-    var player2JoinRequest = JoinGameRequest.builder()
-      .gameType(UNLIMITED)
-      .playerOptions("player2 options")
-      .build();
+        val secondGameSession = iterator.next()
+        Assertions.assertThat<Game?>(secondGameSession.getGame()).isEqualTo(game)
+        Assertions.assertThat(secondGameSession.getSession().getSessionId()).isEqualTo(TestUtils.USER_2_SESSION_TOKEN)
+        Assertions.assertThat(secondGameSession.getPlayer().getUsername()).isEqualTo(TestUtils.USER_2_USERNAME)
+        Assertions.assertThat(secondGameSession.getPlayerOptions()).isEqualTo("player2 options")
+    }
 
-    // When
-    var response = postForEntity("/game", player2JoinRequest, JoinGameResponse.class, USER_2_SESSION_TOKEN);
+    @Test
+    fun samePlayerShouldNotBeAbleToJoinItsOwnGame() {
+        // Given
+        loginUser(TestUtils.GUEST_SESSION_TOKEN_1, TestUtils.GUEST_USERNAME)
+        val player1JoinRequest = JoinGameRequest.builder()
+            .gameType(GameType.UNLIMITED)
+            .playerOptions("player1 options")
+            .build()
 
-    // Then
-    assertThat(response.getResponseBody().getGameId()).isGreaterThan(0);
+        postForEntity(
+            "/game",
+            player1JoinRequest,
+            JoinGameResponse::class.java,
+            TestUtils.GUEST_SESSION_TOKEN_1
+        )
 
-    var games = gameRepository.findAll();
-    assertThat(games).hasSize(1);
-    var game = games.iterator().next();
-    assertThat(game.getId()).isEqualTo(response.getResponseBody().getGameId());
-    assertThat(game.getType()).isEqualTo(UNLIMITED);
-    assertThat(game.getStatus()).isEqualTo(IN_PROGRESS);
+        loginUser(TestUtils.GUEST_SESSION_TOKEN_2, TestUtils.GUEST_USERNAME)
+        val player2JoinRequest = JoinGameRequest.builder()
+            .gameType(GameType.UNLIMITED)
+            .playerOptions("player2 options")
+            .build()
 
-    var gameSessions = gameSessionRepository.findAll();
-    assertThat(gameSessions).hasSize(2);
-    var iterator = gameSessions.iterator();
-    var firstGameSession = iterator.next();
-    assertThat(firstGameSession.getGame()).isEqualTo(game);
-    assertThat(firstGameSession.getSession().getSessionId()).isEqualTo(USER_1_SESSION_TOKEN);
-    assertThat(firstGameSession.getPlayer().getUsername()).isEqualTo(USER_1_USERNAME);
-    assertThat(firstGameSession.getPlayerOptions()).isEqualTo("player1 options");
+        // When
+        val response = postForEntity(
+            "/game",
+            player2JoinRequest,
+            JoinGameResponse::class.java,
+            TestUtils.GUEST_SESSION_TOKEN_2
+        )
 
-    var secondGameSession = iterator.next();
-    assertThat(secondGameSession.getGame()).isEqualTo(game);
-    assertThat(secondGameSession.getSession().getSessionId()).isEqualTo(USER_2_SESSION_TOKEN);
-    assertThat(secondGameSession.getPlayer().getUsername()).isEqualTo(USER_2_USERNAME);
-    assertThat(secondGameSession.getPlayerOptions()).isEqualTo("player2 options");
-  }
+        // Then
+        Assertions.assertThat(response.getResponseBody()!!.getGameId()).isGreaterThan(0)
+    }
 
-  @Test
-  public void samePlayerShouldNotBeAbleToJoinItsOwnGame() {
-    // Given
-    loginUser(GUEST_SESSION_TOKEN_1, GUEST_USERNAME);
-    var player1JoinRequest = JoinGameRequest.builder()
-      .gameType(UNLIMITED)
-      .playerOptions("player1 options")
-      .build();
+    @Test
+    fun userCannotStartAnotherGameIfAlreadyInOne() {
+        // Given
+        loginUser(TestUtils.USER_1_SESSION_TOKEN, TestUtils.USER_1_USERNAME)
+        val player1JoinRequest = JoinGameRequest.builder()
+            .gameType(GameType.UNLIMITED)
+            .playerOptions("player1 options")
+            .build()
 
-    postForEntity("/game", player1JoinRequest, JoinGameResponse.class, GUEST_SESSION_TOKEN_1);
+        postForEntity(
+            "/game",
+            player1JoinRequest,
+            JoinGameResponse::class.java,
+            TestUtils.USER_1_SESSION_TOKEN
+        )
 
-    loginUser(GUEST_SESSION_TOKEN_2, GUEST_USERNAME);
-    var player2JoinRequest = JoinGameRequest.builder()
-      .gameType(UNLIMITED)
-      .playerOptions("player2 options")
-      .build();
+        // When
+        val response = postForEntity(
+            "/game",
+            player1JoinRequest,
+            JoinGameResponse::class.java,
+            TestUtils.USER_1_SESSION_TOKEN
+        )
 
-    // When
-    var response = postForEntity("/game", player2JoinRequest, JoinGameResponse.class, GUEST_SESSION_TOKEN_2);
-
-    // Then
-    assertThat(response.getResponseBody().getGameId()).isGreaterThan(0);
-  }
-
-  @Test
-  public void userCannotStartAnotherGameIfAlreadyInOne() {
-    // Given
-    loginUser(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    var player1JoinRequest = JoinGameRequest.builder()
-      .gameType(UNLIMITED)
-      .playerOptions("player1 options")
-      .build();
-
-    postForEntity("/game", player1JoinRequest, JoinGameResponse.class, USER_1_SESSION_TOKEN);
-
-    // When
-    var response = postForEntity("/game", player1JoinRequest, JoinGameResponse.class, USER_1_SESSION_TOKEN);
-
-    // Then
-    assertThat(response.getResponseBody().getError()).isEqualTo("You are already in a game.");
-    assertThat(response.getResponseBody().getActiveGameId()).isGreaterThan(0);
-  }
+        // Then
+        Assertions.assertThat(response.getResponseBody()!!.getError()).isEqualTo("You are already in a game.")
+        Assertions.assertThat(response.getResponseBody()!!.getActiveGameId()).isGreaterThan(0)
+    }
 }

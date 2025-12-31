@@ -1,265 +1,294 @@
-package application.auth.register;
+package application.auth.register
 
-import application.AbstractApplicationTest;
-import com.matag.admin.auth.register.RegisterRequest;
-import com.matag.admin.auth.register.RegisterResponse;
-import com.matag.admin.auth.register.VerifyResponse;
-import com.matag.admin.exception.ErrorResponse;
-import com.matag.admin.game.score.ScoreRepository;
-import com.matag.admin.user.MatagUserRepository;
-import jakarta.mail.internet.MimeMessage;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.test.web.servlet.client.EntityExchangeResult;
+import application.AbstractApplicationTest
+import application.TestUtils
+import com.matag.admin.auth.register.RegisterRequest
+import com.matag.admin.auth.register.RegisterResponse
+import com.matag.admin.auth.register.VerifyResponse
+import com.matag.admin.exception.ErrorResponse
+import com.matag.admin.game.score.ScoreRepository
+import com.matag.admin.user.MatagUser
+import com.matag.admin.user.MatagUserRepository
+import com.matag.admin.user.MatagUserStatus
+import jakarta.mail.internet.MimeMessage
+import lombok.SneakyThrows
+import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Test
+import org.mockito.BDDMockito
+import org.mockito.Mockito
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
+import org.springframework.mail.javamail.JavaMailSender
+import org.springframework.test.web.servlet.client.EntityExchangeResult
+import java.time.LocalDateTime
 
-import java.time.LocalDateTime;
-
-import static application.TestUtils.PASSWORD;
-import static com.matag.admin.user.MatagUserStatus.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.OK;
-
-public class RegisterControllerTest extends AbstractApplicationTest {
+class RegisterControllerTest : AbstractApplicationTest() {
     @Autowired
-    private MatagUserRepository matagUserRepository;
-
-    @Autowired
-    private ScoreRepository scoreRepository;
-
-    @Autowired
-    private JavaMailSender javaMailSender;
+    private val javaMailSender: JavaMailSender? = null
 
     @Test
-    public void shouldReturnInvalidEmail() {
+    fun shouldReturnInvalidEmail() {
         // Given
-        var request = new RegisterRequest("invalidEmail", "username", PASSWORD);
+        val request = RegisterRequest("invalidEmail", "username", TestUtils.PASSWORD)
 
         // When
-        var response = postForEntity("/auth/register", request, ErrorResponse.class);
+        val response = postForEntity("/auth/register", request, ErrorResponse::class.java)
 
         // Then
-        assertErrorRegisterResponse(response, "Email is invalid.");
+        assertErrorRegisterResponse(response, "Email is invalid.")
     }
 
     @Test
-    public void shouldReturnInvalidUsername() {
+    fun shouldReturnInvalidUsername() {
         // Given
-        var request = new RegisterRequest("user1@matag.com", "$£", "xxx");
+        val request = RegisterRequest("user1@matag.com", "$£", "xxx")
 
         // When
-        var response = postForEntity("/auth/register", request, ErrorResponse.class);
+        val response = postForEntity("/auth/register", request, ErrorResponse::class.java)
 
         // Then
-        assertErrorRegisterResponse(response, "Username needs to be between 4 and 25 characters and can contains only letters  number and one of the following characters: [+ - * = _ . @ &].");
+        assertErrorRegisterResponse(
+            response,
+            "Username needs to be between 4 and 25 characters and can contains only letters  number and one of the following characters: [+ - * = _ . @ &]."
+        )
     }
 
     @Test
-    public void shouldReturnInvalidPassword() {
+    fun shouldReturnInvalidPassword() {
         // Given
-        var request = new RegisterRequest("user1@matag.com", "username", "xxx");
+        val request = RegisterRequest("user1@matag.com", "username", "xxx")
 
         // When
-        var response = postForEntity("/auth/register", request, ErrorResponse.class);
+        val response = postForEntity("/auth/register", request, ErrorResponse::class.java)
 
         // Then
-        assertErrorRegisterResponse(response, "Password is invalid (should be at least 4 characters).");
+        assertErrorRegisterResponse(response, "Password is invalid (should be at least 4 characters).")
     }
 
     @Test
-    public void shouldReturnEmailAlreadyRegistered() {
+    fun shouldReturnEmailAlreadyRegistered() {
         // Given
-        var request = new RegisterRequest("user1@matag.com", "username", PASSWORD);
+        val request = RegisterRequest("user1@matag.com", "username", TestUtils.PASSWORD)
 
         // When
-        var response = postForEntity("/auth/register", request, ErrorResponse.class);
+        val response = postForEntity("/auth/register", request, ErrorResponse::class.java)
 
         // Then
-        assertErrorRegisterResponse(response, "This email is already registered (use reset password functionality).");
+        assertErrorRegisterResponse(response, "This email is already registered (use reset password functionality).")
     }
 
     @Test
-    public void shouldReturnUsernameAlreadyRegistered() {
+    fun shouldReturnUsernameAlreadyRegistered() {
         // Given
-        var request = new RegisterRequest("new-user@matag.com", "User1", PASSWORD);
+        val request = RegisterRequest("new-user@matag.com", "User1", TestUtils.PASSWORD)
 
         // When
-        var response = postForEntity("/auth/register", request, ErrorResponse.class);
+        val response = postForEntity("/auth/register", request, ErrorResponse::class.java)
 
         // Then
-        assertErrorRegisterResponse(response, "This username is already registered (please choose a new one).");
+        assertErrorRegisterResponse(response, "This username is already registered (please choose a new one).")
     }
 
     @Test
     @SneakyThrows
-    public void registerANewUser() {
+    fun registerANewUser() {
         // Given
-        var request = new RegisterRequest("new-user@matag.com", "NewUser", PASSWORD);
-        var mimeMessage = mockMailSender();
+        val request = RegisterRequest("new-user@matag.com", "NewUser", TestUtils.PASSWORD)
+        val mimeMessage = mockMailSender()
 
         // When
-        var response = postForEntity("/auth/register", request, RegisterResponse.class);
+        val response = postForEntity("/auth/register", request, RegisterResponse::class.java)
 
         // Then
-        assertSuccessfulRegisterResponse(response);
+        assertSuccessfulRegisterResponse(response)
 
-        var user = loadUser("NewUser");
-        assertThat(user.getUsername()).isEqualTo("NewUser");
-        assertThat(user.getPassword()).isNotBlank();
-        assertThat(user.getEmailAddress()).isEqualTo("new-user@matag.com");
-        assertThat(user.getStatus()).isEqualTo(VERIFYING);
-        assertThat(user.getCreatedAt()).isNotNull();
+        val user = loadUser("NewUser")!!
+        Assertions.assertThat(user.getUsername()).isEqualTo("NewUser")
+        Assertions.assertThat(user.getPassword()).isNotBlank()
+        Assertions.assertThat(user.getEmailAddress()).isEqualTo("new-user@matag.com")
+        Assertions.assertThat<MatagUserStatus?>(user.getStatus()).isEqualTo(MatagUserStatus.VERIFYING)
+        Assertions.assertThat(user.getCreatedAt()).isNotNull()
 
-        var score = scoreRepository.findByMatagUser(user);
-        assertThat(score.getElo()).isEqualTo(1000);
+        val score = scoreRepository!!.findByMatagUser(user)
+        Assertions.assertThat(score.getElo()).isEqualTo(1000)
 
-        verify(javaMailSender).send(mimeMessage);
+        Mockito.verify<JavaMailSender?>(javaMailSender)!!.send(mimeMessage)
     }
 
     @Test
-    public void verifyAUser() {
+    fun verifyAUser() {
         // Given
-        String username = "NewUser";
-        var request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
-        mockMailSender();
+        val username = "NewUser"
+        val request = RegisterRequest("new-user@matag.com", username, TestUtils.PASSWORD)
+        mockMailSender()
 
-        postForEntity("/auth/register", request, RegisterResponse.class);
-        var user = loadUser(username);
-        var verificationCode = user.getMatagUserVerification().getVerificationCode();
+        postForEntity("/auth/register", request, RegisterResponse::class.java)
+        var user = loadUser(username)
+        val verificationCode = user.getMatagUserVerification().getVerificationCode()
 
         // When
-        var verifyResponse = getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, VerifyResponse.class);
+        val verifyResponse = getForEntity(
+            "/auth/verify?username=" + username + "&code=" + verificationCode,
+            VerifyResponse::class.java
+        )
 
         // Then
-        assertThat(verifyResponse.getStatus()).isEqualTo(OK);
-        assertThat(verifyResponse.getResponseBody()).isNotNull();
-        assertThat(verifyResponse.getResponseBody().getMessage()).isEqualTo("Your account has been correctly verified. Now you can proceed with logging in.");
+        Assertions.assertThat<HttpStatusCode?>(verifyResponse.getStatus()).isEqualTo(HttpStatus.OK)
+        Assertions.assertThat<VerifyResponse?>(verifyResponse.getResponseBody()).isNotNull()
+        Assertions.assertThat(verifyResponse.getResponseBody()!!.getMessage())
+            .isEqualTo("Your account has been correctly verified. Now you can proceed with logging in.")
 
-        user = loadUser(username);
-        assertThat(user.getStatus()).isEqualTo(ACTIVE);
-        assertThat(user.getMatagUserVerification().getVerificationCode()).isNull();
-        assertThat(user.getMatagUserVerification().getValidUntil()).isNull();
-        assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(0);
+        user = loadUser(username)
+        Assertions.assertThat<MatagUserStatus?>(user.getStatus()).isEqualTo(MatagUserStatus.ACTIVE)
+        Assertions.assertThat(user.getMatagUserVerification().getVerificationCode()).isNull()
+        Assertions.assertThat(user.getMatagUserVerification().getValidUntil()).isNull()
+        Assertions.assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(0)
     }
 
     @Test
-    public void verifyAnInactiveUser() {
+    fun verifyAnInactiveUser() {
         // Given
-        var username = "NewUser";
-        var request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
-        mockMailSender();
+        val username = "NewUser"
+        val request = RegisterRequest("new-user@matag.com", username, TestUtils.PASSWORD)
+        mockMailSender()
 
-        postForEntity("/auth/register", request, RegisterResponse.class);
-        var newUser = loadUser(username);
-        var verificationCode = newUser.getMatagUserVerification().getVerificationCode();
-        newUser.setStatus(INACTIVE);
-        matagUserRepository.save(newUser);
+        postForEntity("/auth/register", request, RegisterResponse::class.java)
+        val newUser = loadUser(username)
+        val verificationCode = newUser.getMatagUserVerification().getVerificationCode()
+        newUser.setStatus(MatagUserStatus.INACTIVE)
+        matagUserRepository!!.save(newUser)
 
         // When
-        var verifyResponse = getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, ErrorResponse.class);
+        val verifyResponse = getForEntity(
+            "/auth/verify?username=" + username + "&code=" + verificationCode,
+            ErrorResponse::class.java
+        )
 
         // Then
-        assertThat(verifyResponse.getStatus()).isEqualTo(BAD_REQUEST);
-        assertThat(verifyResponse.getResponseBody()).isNotNull();
-        assertThat(verifyResponse.getResponseBody().getError()).isEqualTo("Your account could not be verified. Please send a message to matag.the.game@gmail.com.");
+        Assertions.assertThat<HttpStatusCode?>(verifyResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST)
+        Assertions.assertThat(verifyResponse.getResponseBody()).isNotNull()
+        Assertions.assertThat(verifyResponse.getResponseBody()!!.getError())
+            .isEqualTo("Your account could not be verified. Please send a message to matag.the.game@gmail.com.")
 
-        var user = loadUser(username);
-        assertThat(user.getStatus()).isEqualTo(INACTIVE);
+        val user = loadUser(username)
+        Assertions.assertThat<MatagUserStatus?>(user.getStatus()).isEqualTo(MatagUserStatus.INACTIVE)
     }
 
     @Test
-    public void verifyFailsWithIncorrectVerificationCode() {
+    fun verifyFailsWithIncorrectVerificationCode() {
         // Given
-        var username = "NewUser";
-        var request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
-        mockMailSender();
+        val username = "NewUser"
+        val request = RegisterRequest("new-user@matag.com", username, TestUtils.PASSWORD)
+        mockMailSender()
 
-        postForEntity("/auth/register", request, RegisterResponse.class);
+        postForEntity("/auth/register", request, RegisterResponse::class.java)
 
         // When
-        var verifyResponse = getForEntity("/auth/verify?username=" + username + "&code=" + "incorrect-verification-code", ErrorResponse.class);
+        val verifyResponse = getForEntity(
+            "/auth/verify?username=" + username + "&code=" + "incorrect-verification-code",
+            ErrorResponse::class.java
+        )
 
         // Then
-        assertThat(verifyResponse.getStatus()).isEqualTo(BAD_REQUEST);
-        assertThat(verifyResponse.getResponseBody()).isNotNull();
-        assertThat(verifyResponse.getResponseBody().getError()).isEqualTo("Your account could not be verified. Please send a message to matag.the.game@gmail.com.");
+        Assertions.assertThat<HttpStatusCode?>(verifyResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST)
+        Assertions.assertThat(verifyResponse.getResponseBody()).isNotNull()
+        Assertions.assertThat(verifyResponse.getResponseBody()!!.getError())
+            .isEqualTo("Your account could not be verified. Please send a message to matag.the.game@gmail.com.")
 
-        var user = loadUser(username);
-        assertThat(user.getStatus()).isEqualTo(VERIFYING);
-        assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(1);
+        val user = loadUser(username)
+        Assertions.assertThat<MatagUserStatus?>(user.getStatus()).isEqualTo(MatagUserStatus.VERIFYING)
+        Assertions.assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(1)
     }
 
     @Test
-    public void verifyAUserFailsIfTooManyAttempts() {
+    fun verifyAUserFailsIfTooManyAttempts() {
         // Given
-        var username = "NewUser";
-        var request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
-        mockMailSender();
+        val username = "NewUser"
+        val request = RegisterRequest("new-user@matag.com", username, TestUtils.PASSWORD)
+        mockMailSender()
 
-        postForEntity("/auth/register", request, RegisterResponse.class);
-        var user = loadUser(username);
-        var verificationCode = user.getMatagUserVerification().getVerificationCode();
+        postForEntity("/auth/register", request, RegisterResponse::class.java)
+        var user = loadUser(username)
+        val verificationCode = user.getMatagUserVerification().getVerificationCode()
 
         // When
-        getForEntity("/auth/verify?username=" + username + "&code=incorrect-code", VerifyResponse.class);
-        getForEntity("/auth/verify?username=" + username + "&code=incorrect-code", VerifyResponse.class);
-        getForEntity("/auth/verify?username=" + username + "&code=incorrect-code", VerifyResponse.class);
-        getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, VerifyResponse.class);
-        getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, VerifyResponse.class);
-        EntityExchangeResult<VerifyResponse> verifyResponse = getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, VerifyResponse.class);
+        getForEntity(
+            "/auth/verify?username=" + username + "&code=incorrect-code",
+            VerifyResponse::class.java
+        )
+        getForEntity(
+            "/auth/verify?username=" + username + "&code=incorrect-code",
+            VerifyResponse::class.java
+        )
+        getForEntity(
+            "/auth/verify?username=" + username + "&code=incorrect-code",
+            VerifyResponse::class.java
+        )
+        getForEntity(
+            "/auth/verify?username=" + username + "&code=" + verificationCode,
+            VerifyResponse::class.java
+        )
+        getForEntity(
+            "/auth/verify?username=" + username + "&code=" + verificationCode,
+            VerifyResponse::class.java
+        )
+        val verifyResponse = getForEntity(
+            "/auth/verify?username=" + username + "&code=" + verificationCode,
+            VerifyResponse::class.java
+        )
 
         // Then
-        assertThat(verifyResponse.getStatus()).isEqualTo(BAD_REQUEST);
+        Assertions.assertThat<HttpStatusCode?>(verifyResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST)
 
-        user = loadUser(username);
-        assertThat(user.getStatus()).isEqualTo(VERIFYING);
-        assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(6);
+        user = loadUser(username)
+        Assertions.assertThat<MatagUserStatus?>(user.getStatus()).isEqualTo(MatagUserStatus.VERIFYING)
+        Assertions.assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(6)
     }
 
     @Test
-    public void verifyAUserFailsIfAfterValidUntilDate() {
+    fun verifyAUserFailsIfAfterValidUntilDate() {
         // Given
-        var username = "NewUser";
-        var request = new RegisterRequest("new-user@matag.com", username, PASSWORD);
-        mockMailSender();
+        val username = "NewUser"
+        val request = RegisterRequest("new-user@matag.com", username, TestUtils.PASSWORD)
+        mockMailSender()
 
-        postForEntity("/auth/register", request, RegisterResponse.class);
-        var user = loadUser(username);
-        var verificationCode = user.getMatagUserVerification().getVerificationCode();
+        postForEntity("/auth/register", request, RegisterResponse::class.java)
+        var user = loadUser(username)
+        val verificationCode = user.getMatagUserVerification().getVerificationCode()
 
-        setCurrentTime(LocalDateTime.now().plusDays(2));
+        setCurrentTime(LocalDateTime.now().plusDays(2))
 
         // When
-        var verifyResponse = getForEntity("/auth/verify?username=" + username + "&code=" + verificationCode, VerifyResponse.class);
+        val verifyResponse = getForEntity(
+            "/auth/verify?username=" + username + "&code=" + verificationCode,
+            VerifyResponse::class.java
+        )
 
         // Then
-        assertThat(verifyResponse.getStatus()).isEqualTo(BAD_REQUEST);
+        Assertions.assertThat<HttpStatusCode?>(verifyResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST)
 
-        user = loadUser(username);
-        assertThat(user.getStatus()).isEqualTo(VERIFYING);
-        assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(1);
+        user = loadUser(username)
+        Assertions.assertThat<MatagUserStatus?>(user.getStatus()).isEqualTo(MatagUserStatus.VERIFYING)
+        Assertions.assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(1)
     }
 
-    private void assertErrorRegisterResponse(EntityExchangeResult<ErrorResponse> response, String expected) {
-        assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
-        assertThat(response.getResponseBody()).isNotNull();
-        assertThat(response.getResponseBody().getError()).isEqualTo(expected);
+    private fun assertErrorRegisterResponse(response: EntityExchangeResult<ErrorResponse>, expected: String) {
+        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST)
+        Assertions.assertThat(response.getResponseBody()).isNotNull()
+        Assertions.assertThat(response.getResponseBody()!!.getError()).isEqualTo(expected)
     }
 
-    private void assertSuccessfulRegisterResponse(EntityExchangeResult<RegisterResponse> response) {
-        assertThat(response.getStatus()).isEqualTo(OK);
-        assertThat(response.getResponseBody()).isNotNull();
-        assertThat(response.getResponseBody().getMessage()).isEqualTo("Registration Successful. Please check your email for a verification code.");
+    private fun assertSuccessfulRegisterResponse(response: EntityExchangeResult<RegisterResponse>) {
+        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.OK)
+        Assertions.assertThat<RegisterResponse?>(response.getResponseBody()).isNotNull()
+        Assertions.assertThat(response.getResponseBody()!!.getMessage())
+            .isEqualTo("Registration Successful. Please check your email for a verification code.")
     }
 
-    private MimeMessage mockMailSender() {
-        var mimeMessage = Mockito.mock(MimeMessage.class);
-        given(javaMailSender.createMimeMessage()).willReturn(mimeMessage);
-        return mimeMessage;
+    private fun mockMailSender(): MimeMessage {
+        val mimeMessage = Mockito.mock<MimeMessage>(MimeMessage::class.java)
+        BDDMockito.given<MimeMessage?>(javaMailSender!!.createMimeMessage()).willReturn(mimeMessage)
+        return mimeMessage
     }
 }

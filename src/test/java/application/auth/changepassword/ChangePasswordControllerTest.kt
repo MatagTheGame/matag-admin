@@ -1,65 +1,83 @@
-package application.auth.changepassword;
+package application.auth.changepassword
 
-import static application.TestUtils.USER_1_SESSION_TOKEN;
-import static application.TestUtils.USER_1_USERNAME;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.OK;
+import application.AbstractApplicationTest
+import application.TestUtils
+import com.matag.admin.auth.changepassword.ChangePasswordRequest
+import com.matag.admin.auth.changepassword.ChangePasswordResponse
+import com.matag.admin.auth.login.LoginRequest
+import com.matag.admin.auth.login.LoginResponse
+import com.matag.admin.exception.ErrorResponse
+import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Test
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 
-import com.matag.admin.auth.changepassword.ChangePasswordRequest;
-import com.matag.admin.auth.changepassword.ChangePasswordResponse;
-import com.matag.admin.auth.login.LoginRequest;
-import com.matag.admin.auth.login.LoginResponse;
-import com.matag.admin.exception.ErrorResponse;
+class ChangePasswordControllerTest : AbstractApplicationTest() {
+    @Test
+    fun shouldReturnInvalidOldPassword() {
+        // Given
+        loginUser(TestUtils.USER_1_SESSION_TOKEN, TestUtils.USER_1_USERNAME)
+        val request = ChangePasswordRequest("wrong-password", "new-password")
 
-import application.AbstractApplicationTest;
-import org.junit.jupiter.api.Test;
+        // When
+        val response = postForEntity(
+            "/auth/change-password",
+            request,
+            ErrorResponse::class.java,
+            TestUtils.USER_1_SESSION_TOKEN
+        )
 
-public class ChangePasswordControllerTest extends AbstractApplicationTest {
-  @Test
-  public void shouldReturnInvalidOldPassword() {
-    // Given
-    loginUser(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    var request = new ChangePasswordRequest("wrong-password", "new-password");
+        // Then
+        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST)
+        Assertions.assertThat(response.getResponseBody()!!.getError()).isEqualTo("Your password wasn't matched.")
+    }
 
-    // When
-    var response = postForEntity("/auth/change-password", request, ErrorResponse.class, USER_1_SESSION_TOKEN);
+    @Test
+    fun shouldReturnInvalidNewPassword() {
+        // Given
+        loginUser(TestUtils.USER_1_SESSION_TOKEN, TestUtils.USER_1_USERNAME)
+        val request = ChangePasswordRequest("password", "xxx")
 
-    // Then
-    assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
-    assertThat(response.getResponseBody().getError()).isEqualTo("Your password wasn't matched.");
-  }
+        // When
+        val response = postForEntity(
+            "/auth/change-password",
+            request,
+            ErrorResponse::class.java,
+            TestUtils.USER_1_SESSION_TOKEN
+        )
 
-  @Test
-  public void shouldReturnInvalidNewPassword() {
-    // Given
-    loginUser(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    var request = new ChangePasswordRequest("password", "xxx");
+        // Then
+        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST)
+        Assertions.assertThat(response.getResponseBody()!!.getError())
+            .isEqualTo("The new password you chose is invalid: Password is invalid (should be at least 4 characters).")
+    }
 
-    // When
-    var response = postForEntity("/auth/change-password", request, ErrorResponse.class, USER_1_SESSION_TOKEN);
+    @Test
+    fun shouldChangeThePassword() {
+        // Given
+        loginUser(TestUtils.USER_1_SESSION_TOKEN, TestUtils.USER_1_USERNAME)
+        val request = ChangePasswordRequest("password", "new-password")
 
-    // Then
-    assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
-    assertThat(response.getResponseBody().getError()).isEqualTo("The new password you chose is invalid: Password is invalid (should be at least 4 characters).");
-  }
+        // When
+        val response = postForEntity(
+            "/auth/change-password",
+            request,
+            ChangePasswordResponse::class.java,
+            TestUtils.USER_1_SESSION_TOKEN
+        )
 
-  @Test
-  public void shouldChangeThePassword() {
-    // Given
-    loginUser(USER_1_SESSION_TOKEN, USER_1_USERNAME);
-    var request = new ChangePasswordRequest("password", "new-password");
+        // Then
+        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.OK)
+        Assertions.assertThat(response.getResponseBody()!!.getMessage()).isEqualTo("Password changed.")
 
-    // When
-    var response = postForEntity("/auth/change-password", request, ChangePasswordResponse.class, USER_1_SESSION_TOKEN);
-
-    // Then
-    assertThat(response.getStatus()).isEqualTo(OK);
-    assertThat(response.getResponseBody().getMessage()).isEqualTo("Password changed.");
-
-    // And user can login with the new password
-    LoginRequest loginRequest = new LoginRequest("user1@matag.com", "new-password");
-    var loginResponse = postForEntity("/auth/login", loginRequest, LoginResponse.class, USER_1_SESSION_TOKEN);
-    assertThat(loginResponse.getResponseBody().getToken()).isNotBlank();
-  }
+        // And user can login with the new password
+        val loginRequest = LoginRequest("user1@matag.com", "new-password")
+        val loginResponse = postForEntity(
+            "/auth/login",
+            loginRequest,
+            LoginResponse::class.java,
+            TestUtils.USER_1_SESSION_TOKEN
+        )
+        Assertions.assertThat(loginResponse.getResponseBody()!!.getToken()).isNotBlank()
+    }
 }
