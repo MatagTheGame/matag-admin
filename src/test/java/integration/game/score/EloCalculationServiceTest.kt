@@ -1,69 +1,67 @@
-package integration.game.score;
+package integration.game.score
 
-import static com.matag.admin.game.game.GameResultType.R1;
-import static com.matag.admin.game.game.GameResultType.R2;
-import static org.assertj.core.api.Assertions.assertThat;
+import com.matag.admin.game.game.GameResultType
+import com.matag.admin.game.score.EloCalculationService
+import com.matag.admin.game.score.Score
+import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Test
 
-import com.matag.admin.game.score.EloCalculationService;
-import com.matag.admin.game.score.Score;
-import org.junit.jupiter.api.Test;
+class EloCalculationServiceTest {
+    private val eloCalculationService = EloCalculationService()
 
-public class EloCalculationServiceTest {
-  private final EloCalculationService eloCalculationService = new EloCalculationService();
+    @Test
+    fun sameEloPlayer1Winner() {
+        // Given
+        val user1 = Score.builder().elo(1000).build()
+        val user2 = Score.builder().elo(1000).build()
 
-  @Test
-  public void sameEloPlayer1Winner() {
-    // Given
-    Score user1 = Score.builder().elo(1000).build();
-    Score user2 = Score.builder().elo(1000).build();
+        // When
+        eloCalculationService.applyEloRating(user1, user2, GameResultType.R1)
 
-    // When
-    eloCalculationService.applyEloRating(user1, user2, R1);
+        // Then
+        Assertions.assertThat(user1.elo).isEqualTo(1050)
+        Assertions.assertThat(user2.elo).isEqualTo(950)
+    }
 
-    // Then
-    assertThat(user1.getElo()).isEqualTo(1050);
-    assertThat(user2.getElo()).isEqualTo(950);
-  }
+    @Test
+    fun sameEloPlayer2Winner() {
+        // Given
+        val user1 = Score.builder().elo(1000).build()
+        val user2 = Score.builder().elo(1000).build()
 
-  @Test
-  public void sameEloPlayer2Winner() {
-    // Given
-    Score user1 = Score.builder().elo(1000).build();
-    Score user2 = Score.builder().elo(1000).build();
+        // When
+        eloCalculationService.applyEloRating(user1, user2, GameResultType.R2)
 
-    // When
-    eloCalculationService.applyEloRating(user1, user2, R2);
+        // Then
+        Assertions.assertThat(user1.elo).isEqualTo(950)
+        Assertions.assertThat(user2.elo).isEqualTo(1050)
+    }
 
-    // Then
-    assertThat(user1.getElo()).isEqualTo(950);
-    assertThat(user2.getElo()).isEqualTo(1050);
-  }
+    @Test
+    fun highEloWins() {
+        // Given
+        val user1 = Score.builder().elo(1800).build()
+        val user2 = Score.builder().elo(1000).build()
 
-  @Test
-  public void highEloWins() {
-    // Given
-    Score user1 = Score.builder().elo(1800).build();
-    Score user2 = Score.builder().elo(1000).build();
+        // When
+        eloCalculationService.applyEloRating(user1, user2, GameResultType.R1)
 
-    // When
-    eloCalculationService.applyEloRating(user1, user2, R1);
+        // Then
+        Assertions.assertThat(user1.elo).isEqualTo(1801)
+        Assertions.assertThat(user2.elo).isEqualTo(999)
+    }
 
-    // Then
-    assertThat(user1.getElo()).isEqualTo(1801);
-    assertThat(user2.getElo()).isEqualTo(999);
-  }
+    @Test
+    fun highEloLoses() {
+        // Given
+        val user1 = Score.builder().elo(1800).build()
+        val user2 = Score.builder().elo(1000).build()
 
-  @Test
-  public void highEloLoses() {
-    // Given
-    Score user1 = Score.builder().elo(1800).build();
-    Score user2 = Score.builder().elo(1000).build();
+        // When
+        eloCalculationService.applyEloRating(user1, user2, GameResultType.R2)
 
-    // When
-    eloCalculationService.applyEloRating(user1, user2, R2);
-
-    // Then
-    assertThat(user1.getElo()).isEqualTo(1701);
-    assertThat(user2.getElo()).isEqualTo(1099);
-  }
+        // Then
+        Assertions.assertThat(user1.elo).isEqualTo(1701)
+        Assertions.assertThat(user2.elo).isEqualTo(1099)
+    }
 }

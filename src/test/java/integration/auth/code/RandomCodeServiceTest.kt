@@ -1,17 +1,16 @@
-package integration.auth.code;
+package integration.auth.code
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.matag.admin.auth.codes.RandomCodeService
+import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Test
 
-import com.matag.admin.auth.codes.RandomCodeService;
-import org.junit.jupiter.api.Test;
+class RandomCodeServiceTest {
+    private val randomCodeService = RandomCodeService()
 
-public class RandomCodeServiceTest {
-  private RandomCodeService randomCodeService = new RandomCodeService();
+    @Test
+    fun generateRandomCode() {
+        val code = randomCodeService.generatesRandomCode()
 
-  @Test
-  public void generateRandomCode() {
-    var code = randomCodeService.generatesRandomCode();
-
-    assertThat(code).hasSize(10);
-  }
+        Assertions.assertThat(code).hasSize(10)
+    }
 }
