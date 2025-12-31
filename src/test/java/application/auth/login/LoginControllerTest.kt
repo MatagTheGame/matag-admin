@@ -2,13 +2,14 @@ package application.auth.login
 
 import application.AbstractApplicationTest
 import application.TestUtils
+import application.TestUtils.PASSWORD
 import com.matag.admin.auth.login.LoginRequest
 import com.matag.admin.auth.login.LoginResponse
 import com.matag.admin.user.profile.CurrentUserProfileDto
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
+import org.springframework.http.HttpStatus.UNAUTHORIZED
 
 class LoginControllerTest : AbstractApplicationTest() {
     @Test
@@ -20,23 +21,22 @@ class LoginControllerTest : AbstractApplicationTest() {
         val response = postForEntity("/auth/login", request, LoginResponse::class.java)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST)
-        Assertions.assertThat<LoginResponse?>(response.getResponseBody()).isNotNull()
-        Assertions.assertThat(response.getResponseBody()!!.getError())
+        assertThat(response.status).isEqualTo(HttpStatus.BAD_REQUEST)
+        assertThat(response.getResponseBody()?.getError())
             .isEqualTo("Password is invalid (should be at least 4 characters).")
     }
 
     @Test
     fun shouldLoginAUserViaEmail() {
         // Given
-        val request = LoginRequest("user1@matag.com", TestUtils.PASSWORD)
+        val request = LoginRequest("user1@matag.com", PASSWORD)
 
         // When
         val response = postForEntity("/auth/login", request, LoginResponse::class.java)
 
         // Then
-        Assertions.assertThat(response.getResponseBody()!!.getToken()).isNotBlank()
-        Assertions.assertThat<CurrentUserProfileDto?>(response.getResponseBody()!!.getProfile()).isEqualTo(
+        assertThat(response.getResponseBody()?.getToken()).isNotBlank()
+        assertThat(response.getResponseBody()?.getProfile()).isEqualTo(
             CurrentUserProfileDto.builder()
                 .username("User1")
                 .type("USER")
@@ -47,14 +47,14 @@ class LoginControllerTest : AbstractApplicationTest() {
     @Test
     fun shouldLoginAUserViaUsername() {
         // Given
-        val request = LoginRequest("User1", TestUtils.PASSWORD)
+        val request = LoginRequest("User1", PASSWORD)
 
         // When
         val response = postForEntity("/auth/login", request, LoginResponse::class.java)
 
         // Then
-        Assertions.assertThat(response.getResponseBody()!!.getToken()).isNotBlank()
-        Assertions.assertThat<CurrentUserProfileDto?>(response.getResponseBody()!!.getProfile()).isEqualTo(
+        assertThat(response.getResponseBody()?.getToken()).isNotBlank()
+        assertThat(response.getResponseBody()?.getProfile()).isEqualTo(
             CurrentUserProfileDto.builder()
                 .username("User1")
                 .type("USER")
@@ -65,15 +65,14 @@ class LoginControllerTest : AbstractApplicationTest() {
     @Test
     fun shouldNotLoginANonExistingUser() {
         // Given
-        val request = LoginRequest("non-existing-user@matag.com", TestUtils.PASSWORD)
+        val request = LoginRequest("non-existing-user@matag.com", PASSWORD)
 
         // When
         val response = postForEntity("/auth/login", request, LoginResponse::class.java)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED)
-        Assertions.assertThat<LoginResponse?>(response.getResponseBody()).isNotNull()
-        Assertions.assertThat(response.getResponseBody()!!.getError())
+        assertThat(response.status).isEqualTo(UNAUTHORIZED)
+        assertThat(response.getResponseBody()?.getError())
             .isEqualTo("Email/Username or password are not correct.")
     }
 
@@ -86,38 +85,36 @@ class LoginControllerTest : AbstractApplicationTest() {
         val response = postForEntity("/auth/login", request, LoginResponse::class.java)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED)
-        Assertions.assertThat<LoginResponse?>(response.getResponseBody()).isNotNull()
-        Assertions.assertThat(response.getResponseBody()!!.getError())
+        assertThat(response.status).isEqualTo(UNAUTHORIZED)
+        assertThat(response.getResponseBody()!!.getError())
             .isEqualTo("Email/Username or password are not correct.")
     }
 
     @Test
     fun shouldNotLoginNotActiveUser() {
         // Given
-        val request = LoginRequest("inactiveUser@matag.com", TestUtils.PASSWORD)
+        val request = LoginRequest("inactiveUser@matag.com", PASSWORD)
 
         // When
         val response = postForEntity("/auth/login", request, LoginResponse::class.java)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED)
-        Assertions.assertThat<LoginResponse?>(response.getResponseBody()).isNotNull()
-        Assertions.assertThat(response.getResponseBody()!!.getError()).isEqualTo("Account is not active.")
+        assertThat(response.status).isEqualTo(UNAUTHORIZED)
+        assertThat(response.getResponseBody()?.getError()).isEqualTo("Account is not active.")
     }
 
     @Test
     fun shouldNotCreateTwoSessionsForSameUser() {
         // Given a user already logged in once
-        val request = LoginRequest("User1", TestUtils.PASSWORD)
+        val request = LoginRequest("User1", PASSWORD)
         var response = postForEntity("/auth/login", request, LoginResponse::class.java)
-        val firstToken = response.getResponseBody()!!.getToken()
+        val firstToken = response.getResponseBody()?.getToken()
 
         // When user login twice
         response = postForEntity("/auth/login", request, LoginResponse::class.java)
-        val secondToken = response.getResponseBody()!!.getToken()
+        val secondToken = response.getResponseBody()?.getToken()
 
         // Then
-        Assertions.assertThat(firstToken).isEqualTo(secondToken)
+        assertThat(firstToken).isNotNull().isEqualTo(secondToken)
     }
 }
