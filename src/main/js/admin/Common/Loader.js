@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import './loader.scss'
+import {APP_BASE_PATH} from 'admin/utils/ApiClient'
 
 export default class Loader extends Component {
   constructor(props) {
@@ -19,7 +20,7 @@ export default class Loader extends Component {
   render() {
     return (
       <div className={this.getClassNames()}>
-        <img className='loader' alt='loader' src='/img/loader.gif' />
+        <img className='loader' alt='loader' src={APP_BASE_PATH + '/img/loader.gif'} />
       </div>
     )
   }

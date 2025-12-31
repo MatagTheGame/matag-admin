@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import get from 'lodash/get'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import {APP_BASE_PATH} from 'admin/utils/ApiClient'
 
 class RandomDeckForm extends Component {
   constructor(props) {
@@ -31,23 +32,23 @@ class RandomDeckForm extends Component {
         <ul>
           <li>
             <input type='checkbox' id='color-white' name='white' checked={this.isSelected('WHITE')} onChange={() => this.toggle('WHITE')}/>
-            <label htmlFor='color-white'><img src='/img/symbols/WHITE.png' alt='white'/>White</label>
+            <label htmlFor='color-white'><img src={APP_BASE_PATH + '/img/symbols/WHITE.png'} alt='white'/>White</label>
           </li>
           <li>
             <input type='checkbox' id='color-blue' name='blue' checked={this.isSelected('BLUE')} onChange={() => this.toggle('BLUE')}/>
-            <label htmlFor='color-blue'><img src='/img/symbols/BLUE.png' alt='blue'/>Blue</label>
+            <label htmlFor='color-blue'><img src={APP_BASE_PATH + '/img/symbols/BLUE.png'} alt='blue'/>Blue</label>
           </li>
           <li>
             <input type='checkbox' id='color-black' name='black' checked={this.isSelected('BLACK')} onChange={() => this.toggle('BLACK')}/>
-            <label htmlFor='color-black'><img src='/img/symbols/BLACK.png' alt='black'/>Black</label>
+            <label htmlFor='color-black'><img src={APP_BASE_PATH + '/img/symbols/BLACK.png'} alt='black'/>Black</label>
           </li>
           <li>
             <input type='checkbox' id='color-red' name='red' checked={this.isSelected('RED')} onChange={() => this.toggle('RED')}/>
-            <label htmlFor='color-red'><img src='/img/symbols/RED.png' alt='red'/>Red</label>
+            <label htmlFor='color-red'><img src={APP_BASE_PATH + '/img/symbols/RED.png'} alt='red'/>Red</label>
           </li>
           <li>
             <input type='checkbox' id='color-green' name='green' checked={this.isSelected('GREEN')} onChange={() => this.toggle('GREEN')}/>
-            <label htmlFor='color-green'><img src='/img/symbols/GREEN.png' alt='green'/>Green</label>
+            <label htmlFor='color-green'><img src={APP_BASE_PATH + '/img/symbols/GREEN.png'} alt='green'/>Green</label>
           </li>
         </ul>
       </>

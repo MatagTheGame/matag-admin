@@ -8,9 +8,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MatagAdminWebConfiguration implements WebMvcConfigurer {
   @Override
   public void addViewControllers(ViewControllerRegistry registry) {
-    registry.addViewController("/").setViewName("redirect:/ui/admin");
-    registry.addViewController("/ui").setViewName("redirect:/ui/admin");
-    registry.addViewController("/ui/admin").setViewName("forward:/admin.html");
-    registry.addViewController("/ui/admin/**").setViewName("forward:/admin.html");
+    registry.addViewController("/").setViewName("redirect:/ui");
+    registry.addViewController("/ui").setViewName("forward:/admin.html");
+    registry.addViewController("/ui/**").setViewName("forward:/admin.html");
   }
 }

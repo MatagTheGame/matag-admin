@@ -16,7 +16,7 @@ class Stats extends Component {
   updateStats() {
     this.props.loadStats()
     ApiClient.get('/stats').then(this.props.statsLoaded)
-    this.updateStatsRefresher = setTimeout(this.updateStats.bind(this),10000)
+    this.updateStatsRefresher = setTimeout(this.updateStats.bind(this),60000)
   }
 
   stats() {

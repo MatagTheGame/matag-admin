@@ -1,6 +1,9 @@
 import AuthHelper from 'admin/Auth/AuthHelper'
 
+export const APP_BASE_PATH = '/matag/admin';
+
 export default class ApiClient {
+
   static get(url) {
     return ApiClient.execute(url)
   }
@@ -21,14 +24,14 @@ export default class ApiClient {
     return ApiClient.execute(url, {}, 'DELETE')
   }
 
-  static execute(url, request, method = 'GET') {
+  static execute(url, request = undefined, method = 'GET') {
     return ApiClient.executeNoJsonResponse(url, request, method)
       .then(response => response.json())
       .catch(() => {return {'error': 'An error occurred while executing the request.'}})
   }
 
-  static executeNoJsonResponse(url, request, method = 'GET') {
-    return fetch(url, {
+  static executeNoJsonResponse(url, request = undefined, method = 'GET') {
+    return fetch(APP_BASE_PATH + url, {
       method: method,
       body: JSON.stringify(request),
       headers: {

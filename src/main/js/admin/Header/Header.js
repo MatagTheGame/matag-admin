@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import Logout from 'admin/Auth/Logout/Logout'
 import AuthHelper from 'admin/Auth/AuthHelper'
 import './header.scss'
+import {APP_BASE_PATH} from 'admin/utils/ApiClient'
 
 class Header extends Component {
   displayMenu() {
@@ -56,7 +57,7 @@ class Header extends Component {
     return (
       <header>
         <div id='logo'>
-          <img src='/img/matag.png' alt='matag-logo'/>
+          <img src={APP_BASE_PATH + '/img/matag.png'} alt='matag-logo'/>
           <h1>{this.props.config.matagName}</h1>
         </div>
         {this.displayMenu()}

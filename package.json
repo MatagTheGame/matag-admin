@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "matag admin ui",
   "private": true,
+  "homepage": "/matag/admin/",
   "scripts": {
     "build-dev": "webpack --mode development",
     "build-prod": "webpack --mode production",
