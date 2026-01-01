@@ -29,7 +29,7 @@ class Play extends Component {
   }
 
   goToGame(id) {
-    ApiClient.postToUrl(this.props.matagGameUrl + '/ui/game/' + id, {session: AuthHelper.getToken()})
+    ApiClient.postToUrl(this.props.matagGameUrl + '/ui/' + id, {session: AuthHelper.getToken()})
   }
 
   render() {

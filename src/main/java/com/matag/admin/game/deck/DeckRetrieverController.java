@@ -38,7 +38,7 @@ public class DeckRetrieverController {
     List<Card> cards = switch (deckMetadata.getType()) {
       case "random" -> randomColorsDeckFactory.create(deckMetadata.getOptions());
       case "pre-constructed" -> throw new RuntimeException("pre-constructed not implemented.");
-      case "custom" -> throw new RuntimeException("pre-constructed not implemented.");
+      case "custom" -> throw new RuntimeException("custom not implemented.");
       default -> throw new RuntimeException(deckMetadata.getType() + " not recognised.");
     };
 
