@@ -24,7 +24,7 @@ class Login extends AbstractForm {
 
   componentDidUpdate(prevProps, prevState, snapshot) { // eslint-disable-line
     if (this.props.isLoggedIn) {
-      history.push('/ui/admin')
+      history.push('/ui')
     }
   }
 

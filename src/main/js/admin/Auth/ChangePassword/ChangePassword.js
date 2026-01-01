@@ -45,7 +45,7 @@ class ChangePassword extends AbstractForm {
 
   render() {
     if (!this.props.isNonGuest) {
-      history.push('/ui/admin')
+      history.push('/ui')
     }
 
     return (

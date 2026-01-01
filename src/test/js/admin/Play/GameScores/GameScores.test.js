@@ -12,7 +12,7 @@ describe('GameScores', () => {
     ApiClientStub.resetStubs()
   })
 
-  test.skip('Should see score board', async () => {
+  test('Should see score board', async () => {
     // Given
     ApiClientStub.stubGameScores({
       'scores': [{

@@ -13,24 +13,24 @@ class Header extends Component {
       return (
         <div id='menu-bar'>
           <nav>
-            <Link to="/ui/admin">Home</Link>
+            <Link to="/ui">Home</Link>
           </nav>
           <nav>
-            <Link to="/ui/admin/decks">Decks</Link>
+            <Link to="/ui/decks">Decks</Link>
           </nav>
           <nav>
-            <Link to="/ui/admin/play">Play</Link>
+            <Link to="/ui/play">Play</Link>
             <ul className="dropdown">
-              <li><Link to="/ui/admin/play">Play</Link></li>
-              <li><Link to="/ui/admin/play/game-history">Game History</Link></li>
-              <li><Link to="/ui/admin/play/score-board">Score Board</Link></li>
+              <li><Link to="/ui/play">Play</Link></li>
+              <li><Link to="/ui/play/game-history">Game History</Link></li>
+              <li><Link to="/ui/play/score-board">Score Board</Link></li>
             </ul>
           </nav>
           <nav>
-            <Link to="/ui/admin/profile">{this.props.profile.username}</Link>
+            <Link to="/ui/profile">{this.props.profile.username}</Link>
             <ul className="dropdown">
-              <li><Link to="/ui/admin/profile">Profile</Link></li>
-              { this.props.isNonGuest && <li><Link to="/ui/admin/auth/change-password">Change Password</Link></li> }
+              <li><Link to="/ui/profile">Profile</Link></li>
+              { this.props.isNonGuest && <li><Link to="/ui/auth/change-password">Change Password</Link></li> }
               <li><Logout/></li>
             </ul>
           </nav>
@@ -40,13 +40,13 @@ class Header extends Component {
       return (
         <div id='menu-bar'>
           <nav>
-            <Link to="/ui/admin">Home</Link>
+            <Link to="/ui">Home</Link>
           </nav>
           <nav>
-            <Link to="/ui/admin/auth/login">Login</Link>
+            <Link to="/ui/auth/login">Login</Link>
           </nav>
           <nav>
-            <Link to="/ui/admin/auth/register">Register</Link>
+            <Link to="/ui/auth/register">Register</Link>
           </nav>
         </div>
       )

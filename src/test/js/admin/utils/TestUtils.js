@@ -1,5 +1,5 @@
 import React from 'react'
-import { Provider } from 'react-redux';
+import { Provider } from 'react-redux'
 import {createStore} from 'redux'
 import {getNodeText, render} from '@testing-library/react'
 import AdminApp from 'admin/AdminApp'
@@ -15,7 +15,7 @@ export default class TestUtils {
         <AdminApp/>
       </Provider>
     )
-    history.push('/matag/admin' + url)
+    history.push('/matag/admin/ui' + url)
     return app
   }
 

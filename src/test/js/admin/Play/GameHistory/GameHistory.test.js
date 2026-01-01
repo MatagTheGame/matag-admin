@@ -12,7 +12,7 @@ describe('GameHistory', () => {
     ApiClientStub.resetStubs()
   })
 
-  test.skip('Should see game history', async () => {
+  test('Should see game history', async () => {
     // Given
     ApiClientStub.stubGameHistory({
       'gamesHistory': [{
@@ -47,8 +47,8 @@ describe('GameHistory', () => {
 
     // Then
     expect(browser.getGameHistorySection().getGameHistoryTableRows()).toEqual([
-      ['5/16/2020, 4:00:00 PM', 'Guest', 'Antonio85', 'LOST', 'UNLIMITED'],
-      ['5/16/2020, 5:00:00 PM', 'Guest', 'Antonio85', 'WIN', 'UNLIMITED'],
+      ['16/05/2020, 16:00:00', 'Guest', 'Antonio85', 'LOST', 'UNLIMITED'],
+      ['16/05/2020, 17:00:00', 'Guest', 'Antonio85', 'WIN', 'UNLIMITED'],
     ])
   })
 })

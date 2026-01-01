@@ -1,9 +1,9 @@
 import 'babel-polyfill'
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom'
 
-const fetchMock = require('jest-fetch-mock');
-fetchMock.enableMocks();
+const fetchMock = require('jest-fetch-mock')
+fetchMock.enableMocks()
 
-const { TextEncoder, TextDecoder } = require('util');
-global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder;
+const { TextEncoder, TextDecoder } = require('util')
+global.TextEncoder = TextEncoder
+global.TextDecoder = TextDecoder

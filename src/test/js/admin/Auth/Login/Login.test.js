@@ -12,7 +12,7 @@ describe('Login', () => {
     ApiClientStub.resetStubs()
   })
 
-  test.skip('Should login a user', async () => {
+  test('Should login a user', async () => {
     // Given
     ApiClientStub.stubLogin({token: 'token', profile: TestUtils.DEFAULT_PROFILE})
     ApiClientStub.stubActiveGame()
@@ -33,7 +33,7 @@ describe('Login', () => {
     browser.getHeader().expectMenuItems(['Home', 'Decks', 'Play', 'User1'])
   })
 
-  test.skip('Should display errors when login fails', async () => {
+  test('Should display errors when login fails', async () => {
     // Given
     ApiClientStub.stubLogin({error: 'Wrong password'})
 

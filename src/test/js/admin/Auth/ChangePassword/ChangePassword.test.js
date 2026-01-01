@@ -12,7 +12,7 @@ describe('Login', () => {
     ApiClientStub.resetStubs()
   })
 
-  test.skip('Should change password', async () => {
+  test('Should change password', async () => {
     // Given
     ApiClientStub.stubChangePassword({message: 'Password changed'})
 
@@ -31,7 +31,7 @@ describe('Login', () => {
     expect(browser.getChangePasswordSection().getMessage()).toBe('Password changed')
   })
 
-  test.skip('Should fail changing password', async () => {
+  test('Should fail changing password', async () => {
     // Given
     ApiClientStub.stubChangePassword({error: 'Password not matched'})
 

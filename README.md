@@ -54,15 +54,6 @@ You can run all tests with:
 Tests mock database interaction so you should be able to code without it.
 
 
-### Run the application locally
-
-Startup the app as spring boot
-
-    # from intellij or with
-    mvn spring-boot:run -DDB_URL=<db_url> -DDB_NAME=<db_name> -DDB_USERNAME=<db_username> -DDB_PASSWORD=<db_password> -Dserver.port=8082 -Dmatag.admin.url=http://localhost:8082 -Dmatag.game.url=http://localhost:8080 -Dmatag.admin.password=password
-    
-(The values above depend on your configuration.)
-
 
 ### Useful queries
     

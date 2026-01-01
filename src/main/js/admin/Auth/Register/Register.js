@@ -52,7 +52,7 @@ class Register  extends AbstractForm {
 
   render() {
     if (this.props.isLoggedIn) {
-      history.push('/ui/admin')
+      history.push('/ui')
     }
 
     return (
