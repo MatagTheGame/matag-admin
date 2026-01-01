@@ -1,5 +1,6 @@
 package com.matag.admin.game.join;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import lombok.AllArgsConstructor;
 public class JoinGameController {
   private final JoinGameService joinGameService;
 
+  @PreAuthorize("hasAnyRole('USER', 'GUEST')")
   @PostMapping
   public JoinGameResponse joinGame(@RequestBody JoinGameRequest joinGameRequest) {
     return joinGameService.joinGame(joinGameRequest);

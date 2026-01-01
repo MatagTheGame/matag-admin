@@ -1,6 +1,7 @@
 package application
 
 import application.AbstractApplicationTest.ApplicationTestConfiguration
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.matag.admin.MatagAdminApplication
 import com.matag.admin.config.ConfigService
 import com.matag.admin.game.game.GameRepository
@@ -27,12 +28,16 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Primary
+import org.springframework.http.HttpMethod
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.client.EntityExchangeResult
 import org.springframework.test.web.servlet.client.RestTestClient
 import org.springframework.test.web.servlet.client.expectBody
+import tools.jackson.databind.ObjectMapper
 import java.time.Clock
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -94,40 +99,14 @@ abstract class AbstractApplicationTest {
         }
     }
 
-    private fun saveUser(inactive: MatagUser) {
-        val user = matagUserRepository.save(inactive)
-        if (user.type == MatagUserType.USER) {
-            scoreService.createStartingScore(user)
-        }
-    }
+    protected fun <T : Any> getForEntity(uri: String, responseType: Class<T>, token: String? = null) : EntityExchangeResult<T> =
+        exchangeForEntity(HttpMethod.GET, uri, "", responseType, token)
 
-    protected fun <T : Any> getForEntity(uri: String, responseType: Class<T>, token: String? = null): EntityExchangeResult<T> {
-        return restTestClientWithToken(token)
-            .get()
-            .uri(uri)
-            .exchange()
-            .expectBody<T>(responseType)
-            .returnResult()
-    }
+    protected fun <T : Any> postForEntity(uri: String, request: Any, responseType: Class<T>, token: String? = null): EntityExchangeResult<T> =
+        exchangeForEntity(HttpMethod.POST, uri, request, responseType, token)
 
-    protected fun <T : Any> postForEntity(uri: String, request: Any, responseType: Class<T>, token: String? = null): EntityExchangeResult<T> {
-        return restTestClientWithToken(token)
-            .post()
-            .uri(uri)
-            .body(request)
-            .exchange()
-            .expectBody<T>(responseType)
-            .returnResult()
-    }
-
-    protected fun delete(uri: String, token: String): EntityExchangeResult<String> {
-        return restTestClientWithToken(token)
-            .delete()
-            .uri(uri)
-            .exchange()
-            .expectBody<String>()
-            .returnResult()
-    }
+    protected fun delete(uri: String, token: String): EntityExchangeResult<String> =
+        exchangeForEntity(HttpMethod.DELETE, uri, "", String::class.java, token)
 
     protected fun postForAdmin(uri: String, request: Any): EntityExchangeResult<Any> {
         return restTestClientWithAdminToken()
@@ -139,20 +118,33 @@ abstract class AbstractApplicationTest {
             .returnResult()
     }
 
+    private fun saveUser(inactive: MatagUser) {
+        val user = matagUserRepository.save(inactive)
+        if (user.type == MatagUserType.USER) {
+            scoreService.createStartingScore(user)
+        }
+    }
+
+    private fun <T : Any> exchangeForEntity(method: HttpMethod, uri: String, request: Any, responseType: Class<T>, token: String? = null): EntityExchangeResult<T> {
+        return restTestClientWithToken(token).mutate()
+            .build()
+            .method(method)
+            .uri(uri)
+            .body(request)
+            .exchange()
+            .expectBody(responseType)
+            .returnResult()
+    }
+
     private fun restTestClientWithToken(token: String?) =
         if (token == null) {
             restTestClient
         } else {
-            restTestClient
-                .mutate().defaultHeader(SESSION_NAME, token)
-                .build()
+            restTestClient.mutate().defaultHeader(SESSION_NAME, token).build()
         }
 
-    private fun restTestClientWithAdminToken(): RestTestClient {
-        return restTestClient
-            .mutate().defaultHeader(ADMIN_NAME, configService.matagAdminPassword)
-            .build()
-    }
+    private fun restTestClientWithAdminToken() =
+        restTestClient.mutate().defaultHeader(ADMIN_NAME, configService.matagAdminPassword).build()
 
     @Configuration
     open class ApplicationTestConfiguration {
@@ -170,5 +162,6 @@ abstract class AbstractApplicationTest {
 
     companion object {
         val TEST_START_TIME: LocalDateTime = LocalDateTime.parse("2020-01-01T00:00:00")
+        val OBJECT_MAPPER = jacksonObjectMapper()
     }
 }

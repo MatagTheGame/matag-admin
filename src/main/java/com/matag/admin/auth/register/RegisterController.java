@@ -3,6 +3,7 @@ package com.matag.admin.auth.register;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.matag.admin.auth.validators.EmailValidator;
@@ -34,6 +35,7 @@ public class RegisterController {
   private final RegisterService registerService;
   private final PasswordValidator passwordValidator;
 
+  @PreAuthorize("permitAll()")
   @PostMapping("/register")
   public RegisterResponse register(@RequestBody RegisterRequest request) {
       LOGGER.info("User {} registering with username[{}].", request.getEmail(), request.getUsername());

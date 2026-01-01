@@ -1,7 +1,7 @@
 export default class DecksReducer {
   static getActions() {
     return ['DECK_TYPE', 'DECK_SELECT_LOADING', 'DECK_SELECT_LOADED', 'DECK_START_LOADING', 'DECK_SET_ERROR',
-      'DECK_SET_ACTIVE_GAME_ID', 'DECK_RANDOM_COLORS']
+      'DECK_SET_ACTIVE_GAME_ID', 'DECK_RANDOM']
   }
 
   static reduceAction(newState, action) {
@@ -30,8 +30,8 @@ export default class DecksReducer {
       newState.decks.start.activeGameId = action.value
       break
 
-    case 'DECK_RANDOM_COLORS':
-      newState.decks.random = {colors: action.value}
+    case 'DECK_RANDOM':
+      newState.decks.random = action.value
       break
     }
   }

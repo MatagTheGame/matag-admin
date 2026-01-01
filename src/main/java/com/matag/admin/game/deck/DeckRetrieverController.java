@@ -2,6 +2,7 @@ package com.matag.admin.game.deck;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,7 @@ public class DeckRetrieverController {
   private final ObjectMapper objectMapper;
   private final RandomColorsDeckFactory randomColorsDeckFactory;
 
+  @PreAuthorize("hasAnyRole('USER', 'GUEST')")
   @GetMapping
   public DeckInfo deckInfo() {
     var sessionId = securityContextHolderHelper.getSession().getSessionId();

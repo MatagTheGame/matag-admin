@@ -4,6 +4,7 @@ import static com.matag.admin.game.game.GameStatusType.FINISHED;
 
 import java.util.stream.Collectors;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,7 @@ public class GamesHistoryController {
   private final GameSessionService gameSessionService;
   private final ResultService resultService;
 
+  @PreAuthorize("hasAnyRole('USER', 'GUEST')")
   @GetMapping("/history")
   public GamesHistoryResponse gameHistory() {
     var user = securityContextHolderHelper.getUser();

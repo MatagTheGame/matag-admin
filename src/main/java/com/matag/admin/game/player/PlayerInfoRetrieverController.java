@@ -1,5 +1,6 @@
 package com.matag.admin.game.player;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ import lombok.AllArgsConstructor;
 public class PlayerInfoRetrieverController {
   private final SecurityContextHolderHelper securityContextHolderHelper;
 
+  @PreAuthorize("hasAnyRole('USER', 'GUEST')")
   @GetMapping
   public PlayerInfo deckInfo() {
     var session = securityContextHolderHelper.getSession();

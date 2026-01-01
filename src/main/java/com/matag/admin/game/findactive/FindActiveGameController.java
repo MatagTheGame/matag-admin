@@ -1,5 +1,6 @@
 package com.matag.admin.game.findactive;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 public class FindActiveGameController {
   private final FindGameService findGameService;
 
+  @PreAuthorize("hasAnyRole('USER', 'GUEST')")
   @GetMapping
   public ActiveGameResponse findActiveGame() {
     return findGameService.findActiveGame();

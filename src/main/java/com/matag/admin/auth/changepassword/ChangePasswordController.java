@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +34,7 @@ public class ChangePasswordController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
+  @PreAuthorize("hasRole('USER')")
   @PostMapping("/change-password")
   public ChangePasswordResponse changePassword(@RequestBody ChangePasswordRequest request) {
     var user = securityContextHolderHelper.getUser();

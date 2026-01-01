@@ -16,7 +16,7 @@ class StatsControllerTest : AbstractApplicationTest() {
         val response = getForEntity("/stats", StatsResponse::class.java)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.OK)
+        Assertions.assertThat<HttpStatusCode?>(response.status).isEqualTo(HttpStatus.OK)
     }
 
     @Test

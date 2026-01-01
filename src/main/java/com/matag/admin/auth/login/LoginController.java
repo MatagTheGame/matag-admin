@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,6 +47,7 @@ public class LoginController {
   private final CurrentUserProfileService currentUserProfileService;
   private final Clock clock;
 
+  @PreAuthorize("permitAll()")
   @PostMapping("/login")
   public LoginResponse login(@RequestBody LoginRequest loginRequest) {
     LOGGER.info("User " + loginRequest.getEmailOrUsername() + " logging in.");

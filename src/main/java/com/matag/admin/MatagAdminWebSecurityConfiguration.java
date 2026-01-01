@@ -49,14 +49,17 @@ public class MatagAdminWebSecurityConfiguration {
                         .logoutSuccessHandler(matagLogoutSuccessHandler)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/", "/ui/**", "/admin.html", "/js/**", "/img/**",
-                                "/stats", "/config",
-                                "/error", "/test/**",
-                                "/auth/login", "/auth/logout", "/auth/register", "/auth/verify"
-                        ).permitAll()
-                        .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                 );
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers(
+//                                "/", "/ui/**", "/admin.html", "/js/**", "/img/**",
+//                                "/stats", "/config",
+//                                "/error", "/test/**",
+//                                "/auth/login", "/auth/logout", "/auth/register", "/auth/verify"
+//                        ).permitAll()
+//                        .anyRequest().authenticated()
+//                );
 
         return http.build();
     }
