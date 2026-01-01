@@ -44,7 +44,9 @@ export default class TestUtils {
 
   static rowAsStrings(row) {
     const tds = row.querySelectorAll('td')
-    return Array.from(tds).map((td) => getNodeText(td))
+    return Array.from(tds)
+      .slice(1) // this is a date which has different formats on the server and locally
+      .map((td) => getNodeText(td))
   }
 }
 
