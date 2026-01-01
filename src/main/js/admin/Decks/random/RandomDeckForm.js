@@ -23,27 +23,18 @@ export default function RandomDeckForm() {
     <>
       <p>Choose which colors you want to play:</p>
       <ul>
-        <li>
-          <input type="checkbox" id="color-white" name="white" checked={isSelected('WHITE')} onChange={() => toggle('WHITE')}/>
-          <label htmlFor="color-white"><img src={APP_BASE_PATH + '/img/symbols/WHITE.png'} alt="white"/>White</label>
-        </li>
-        <li>
-          <input type="checkbox" id="color-blue" name="blue" checked={isSelected('BLUE')} onChange={() => toggle('BLUE')}/>
-          <label htmlFor="color-blue"><img src={APP_BASE_PATH + '/img/symbols/BLUE.png'} alt="blue"/>Blue</label>
-        </li>
-        <li>
-          <input type="checkbox" id="color-black" name="black" checked={isSelected('BLACK')} onChange={() => toggle('BLACK')}/>
-          <label htmlFor="color-black"><img src={APP_BASE_PATH + '/img/symbols/BLACK.png'} alt="black"/>Black</label>
-        </li>
-        <li>
-          <input type="checkbox" id="color-red" name="red" checked={isSelected('RED')} onChange={() => toggle('RED')}/>
-          <label htmlFor="color-red"><img src={APP_BASE_PATH + '/img/symbols/RED.png'} alt="red"/>Red</label>
-        </li>
-        <li>
-          <input type="checkbox" id="color-green" name="green" checked={isSelected('GREEN')} onChange={() => toggle('GREEN')}/>
-          <label htmlFor="color-green"><img src={APP_BASE_PATH + '/img/symbols/GREEN.png'} alt="green"/>Green</label>
-        </li>
+        <ColorCheckbox color={'white'} isSelected={isSelected} toggle={toggle} />
+        <ColorCheckbox color={'blue'} isSelected={isSelected} toggle={toggle} />
+        <ColorCheckbox color={'black'} isSelected={isSelected} toggle={toggle} />
+        <ColorCheckbox color={'red'} isSelected={isSelected} toggle={toggle} />
+        <ColorCheckbox color={'green'} isSelected={isSelected} toggle={toggle} />
       </ul>
     </>
   )
 }
+
+const ColorCheckbox = ({ color, isSelected, toggle}) =>
+  <li>
+    <input type="checkbox" id={`color-${color}`} name={color} checked={isSelected(color.toUpperCase())} onChange={() => toggle(color.toUpperCase())}/>
+    <label htmlFor={`color-${color}`}><img src={`${APP_BASE_PATH}/img/symbols/${color.toUpperCase()}.png`} alt={color}/>{color.charAt(0).toUpperCase() + color.slice(1)}</label>
+  </li>

@@ -9,6 +9,7 @@ import RegisterSection from './admin/Auth/Register/RegisterSection'
 import GameHistorySection from './admin/Play/GameHistory/GameHistorySection'
 import ChangePasswordSection from './admin/Auth/ChangePassword/ChangePasswordSection'
 import GameScoresSection from './admin/Play/GameScores/GameScoresSection'
+import PlayFormSection from './admin/Decks/PlayForm/PlayFormSection'
 
 export default class Browser {
   constructor(app) {
@@ -33,6 +34,10 @@ export default class Browser {
 
   getStatsSection() {
     return new StatsSection(this.app.container.querySelector('#stats'))
+  }
+
+  getPlayFormSection() {
+    return new PlayFormSection(this.app.container.querySelector('#play-form'))
   }
 
   getLoginSection() {

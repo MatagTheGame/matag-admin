@@ -44,7 +44,7 @@ describe('Home', () => {
     await browser.waitForTitleToBe('Home')
     browser.getIntroSection().validateAllLinks()
     browser.getStatsSection().validateStats(TestUtils.DEFAULT_STATS)
-    expect(browser.getPlaySection().element).toBeDefined()
     expect(browser.getLoginSection().element).toBeNull()
+    expect(browser.getPlaySection().element).toBeDefined()
   })
 })
