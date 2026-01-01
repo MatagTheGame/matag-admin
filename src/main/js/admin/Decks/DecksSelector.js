@@ -2,10 +2,10 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import AbstractDeckForm from 'admin/Decks/AbstractDeckForm'
-import RandomDeckForm from 'admin/Decks/random/RandomDeckForm'
 import DecksSelectorUtils from 'admin/Decks/DecksSelectorUtils'
 import PreConstructedDeckForm from 'admin/Decks/pre-constructed/PreConstructedDeckForm'
 import CustomDeckForm from 'admin/Decks/custom/CustomForm'
+import RandomDeckForm from 'admin/Decks/random/RandomDeckForm'
 
 class DecksSelector extends Component {
   constructor(props) {

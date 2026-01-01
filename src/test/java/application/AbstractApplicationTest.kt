@@ -40,7 +40,7 @@ import java.util.*
 import java.util.function.Supplier
 
 @ExtendWith(SpringExtension::class)
-@SpringBootTest(classes = [MatagAdminApplication::class], webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = [MatagAdminApplication::class], webEnvironment = WebEnvironment.DEFINED_PORT)
 @AutoConfigureRestTestClient
 @Import(ApplicationTestConfiguration::class)
 @ActiveProfiles("test")

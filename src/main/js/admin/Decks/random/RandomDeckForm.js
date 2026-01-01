@@ -1,78 +1,49 @@
-import React, {Component} from 'react'
-import get from 'lodash/get'
-import {bindActionCreators} from 'redux'
-import {connect} from 'react-redux'
+import React from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 import {APP_BASE_PATH} from 'admin/AdminApp'
 
-class RandomDeckForm extends Component {
-  constructor(props) {
-    super(props)
-    this.toggle = this.toggle.bind(this)
+export default function RandomDeckForm() {
+  const dispatch = useDispatch()
+  const randomColors = useSelector(state => state.decks.random?.colors ?? [])
+
+  const isSelected = (color) => randomColors.includes(color)
+
+  const toggle = (color) => {
+    const colors = isSelected(color)
+      ? randomColors.filter(it => it !== color)
+      : [...randomColors, color]
+
+    dispatch({
+      type: 'DECK_RANDOM_COLORS',
+      value: colors
+    })
   }
 
-  isSelected(color) {
-    return this.props.randomColors.indexOf(color) > -1
-  }
-
-  toggle(color) {
-    const colors = this.props.randomColors
-    if (this.isSelected(color)) {
-      colors.splice(colors.indexOf(color), 1)
-      this.props.setRandomColors([...colors])
-
-    } else {
-      this.props.setRandomColors([...colors, color])
-    }
-  }
-
-  render() {
-    return (
-      <>
-        <p>Choose which colors you want to play:</p>
-        <ul>
-          <li>
-            <input type='checkbox' id='color-white' name='white' checked={this.isSelected('WHITE')} onChange={() => this.toggle('WHITE')}/>
-            <label htmlFor='color-white'><img src={APP_BASE_PATH + '/img/symbols/WHITE.png'} alt='white'/>White</label>
-          </li>
-          <li>
-            <input type='checkbox' id='color-blue' name='blue' checked={this.isSelected('BLUE')} onChange={() => this.toggle('BLUE')}/>
-            <label htmlFor='color-blue'><img src={APP_BASE_PATH + '/img/symbols/BLUE.png'} alt='blue'/>Blue</label>
-          </li>
-          <li>
-            <input type='checkbox' id='color-black' name='black' checked={this.isSelected('BLACK')} onChange={() => this.toggle('BLACK')}/>
-            <label htmlFor='color-black'><img src={APP_BASE_PATH + '/img/symbols/BLACK.png'} alt='black'/>Black</label>
-          </li>
-          <li>
-            <input type='checkbox' id='color-red' name='red' checked={this.isSelected('RED')} onChange={() => this.toggle('RED')}/>
-            <label htmlFor='color-red'><img src={APP_BASE_PATH + '/img/symbols/RED.png'} alt='red'/>Red</label>
-          </li>
-          <li>
-            <input type='checkbox' id='color-green' name='green' checked={this.isSelected('GREEN')} onChange={() => this.toggle('GREEN')}/>
-            <label htmlFor='color-green'><img src={APP_BASE_PATH + '/img/symbols/GREEN.png'} alt='green'/>Green</label>
-          </li>
-        </ul>
-      </>
-    )
-  }
+  return (
+    <>
+      <p>Choose which colors you want to play:</p>
+      <ul>
+        <li>
+          <input type="checkbox" id="color-white" name="white" checked={isSelected('WHITE')} onChange={() => toggle('WHITE')}/>
+          <label htmlFor="color-white"><img src={APP_BASE_PATH + '/img/symbols/WHITE.png'} alt="white"/>White</label>
+        </li>
+        <li>
+          <input type="checkbox" id="color-blue" name="blue" checked={isSelected('BLUE')} onChange={() => toggle('BLUE')}/>
+          <label htmlFor="color-blue"><img src={APP_BASE_PATH + '/img/symbols/BLUE.png'} alt="blue"/>Blue</label>
+        </li>
+        <li>
+          <input type="checkbox" id="color-black" name="black" checked={isSelected('BLACK')} onChange={() => toggle('BLACK')}/>
+          <label htmlFor="color-black"><img src={APP_BASE_PATH + '/img/symbols/BLACK.png'} alt="black"/>Black</label>
+        </li>
+        <li>
+          <input type="checkbox" id="color-red" name="red" checked={isSelected('RED')} onChange={() => toggle('RED')}/>
+          <label htmlFor="color-red"><img src={APP_BASE_PATH + '/img/symbols/RED.png'} alt="red"/>Red</label>
+        </li>
+        <li>
+          <input type="checkbox" id="color-green" name="green" checked={isSelected('GREEN')} onChange={() => toggle('GREEN')}/>
+          <label htmlFor="color-green"><img src={APP_BASE_PATH + '/img/symbols/GREEN.png'} alt="green"/>Green</label>
+        </li>
+      </ul>
+    </>
+  )
 }
-
-const setRandomColors = (colors) => {
-  return {
-    type: 'DECK_RANDOM_COLORS',
-    value: colors
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    randomColors: get(state, 'decks.random.colors', [])
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setRandomColors: bindActionCreators(setRandomColors, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(RandomDeckForm)
