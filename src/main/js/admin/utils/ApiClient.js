@@ -1,6 +1,5 @@
 import AuthHelper from 'admin/Auth/AuthHelper'
-
-export const APP_BASE_PATH = '/matag/admin';
+import {APP_BASE_PATH} from 'admin/AdminApp'
 
 export default class ApiClient {
 

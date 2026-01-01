@@ -15,7 +15,7 @@ export default class TestUtils {
         <AdminApp/>
       </Provider>
     )
-    history.push('/ui/admin' + url)
+    history.push('/matag/admin' + url)
     return app
   }
 

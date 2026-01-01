@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import './loader.scss'
-import {APP_BASE_PATH} from 'admin/utils/ApiClient'
+import {APP_BASE_PATH} from 'admin/AdminApp'
 
 export default class Loader extends Component {
   constructor(props) {

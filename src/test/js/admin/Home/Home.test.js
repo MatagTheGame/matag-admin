@@ -11,7 +11,7 @@ describe('Home', () => {
     ApiClientStub.resetStubs()
   })
 
-  test.skip('Should load homepage for non logged in user', async () => {
+  test('Should load homepage for non logged in user', async () => {
     // Given
     TestUtils.userIsNotLoggedIn()
 
@@ -29,7 +29,7 @@ describe('Home', () => {
     expect(browser.getPlaySection().element).toBeNull()
   })
 
-  test.skip('Should load homepage for logged in user', async () => {
+  test('Should load homepage for logged in user', async () => {
     // Given
     ApiClientStub.stubActiveGame()
     TestUtils.loginUser()

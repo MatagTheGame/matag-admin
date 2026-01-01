@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import Logout from 'admin/Auth/Logout/Logout'
 import AuthHelper from 'admin/Auth/AuthHelper'
 import './header.scss'
-import {APP_BASE_PATH} from 'admin/utils/ApiClient'
+import {APP_BASE_PATH} from 'admin/AdminApp'
 
 class Header extends Component {
   displayMenu() {

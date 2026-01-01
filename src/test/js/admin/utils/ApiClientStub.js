@@ -1,4 +1,5 @@
 import TestUtils from './TestUtils'
+import {match} from '../../../../../node/yarn/dist/lib/cli'
 
 export default class ApiClientStub {
   static activeStubs = [];
@@ -42,7 +43,7 @@ export default class ApiClientStub {
   static addStub(method, url, response) {
     this.activeStubs.unshift({
       method: method.toUpperCase(),
-      url,
+      url: '/matag/admin' + url,
       response
     });
 

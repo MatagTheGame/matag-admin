@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import get from 'lodash/get'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {APP_BASE_PATH} from 'admin/utils/ApiClient'
+import {APP_BASE_PATH} from 'admin/AdminApp'
 
 class RandomDeckForm extends Component {
   constructor(props) {

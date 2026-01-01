@@ -19,6 +19,7 @@ import Profile from 'admin/Profile/Profile'
 import ProfileUtils from 'admin/Profile/ProfileUtils'
 import './admin.scss'
 
+export const APP_BASE_PATH = '/matag/admin'
 
 class AdminApp extends Component {
   componentDidMount() {
@@ -32,30 +33,30 @@ class AdminApp extends Component {
 
     } else {
       return (
-          <BrowserRouter>
-            <div>
-              <Header/>
-              <Routes>
-                <Route path="/ui" element={<div className='page with-margin'><Home/></div>} />
+        <BrowserRouter basename={APP_BASE_PATH}>
+          <div>
+            <Header/>
+            <Routes>
+              <Route path="/ui" element={<div className='page with-margin'><Home/></div>} />
 
-                <Route path="/ui/auth/login" element={<div className='page with-margin'><Login/></div>} />
-                <Route path="/ui/auth/register" element={<div className='page with-margin'><Register/></div>} />
-                <Route path="/ui/auth/verify" element={<div className='page with-margin'><Verify/></div>} />
-                <Route path="/ui/auth/change-password" element={<div className='page with-margin'><ChangePassword/></div>} />
+              <Route path="/ui/auth/login" element={<div className='page with-margin'><Login/></div>} />
+              <Route path="/ui/auth/register" element={<div className='page with-margin'><Register/></div>} />
+              <Route path="/ui/auth/verify" element={<div className='page with-margin'><Verify/></div>} />
+              <Route path="/ui/auth/change-password" element={<div className='page with-margin'><ChangePassword/></div>} />
 
-                <Route path="/ui/decks" element={<div className='page'><Decks/></div>} />
+              <Route path="/ui/decks" element={<div className='page'><Decks/></div>} />
 
-                <Route path="/ui/play" element={<div className='page with-margin'><Play/></div>} />
-                <Route path="/ui/play/game-history" element={<div className='page with-margin'><GameHistory/></div>} />
-                <Route path="/ui/play/score-board" element={<div className='page with-margin'><GameScores/></div>} />
+              <Route path="/ui/play" element={<div className='page with-margin'><Play/></div>} />
+              <Route path="/ui/play/game-history" element={<div className='page with-margin'><GameHistory/></div>} />
+              <Route path="/ui/play/score-board" element={<div className='page with-margin'><GameScores/></div>} />
 
-                <Route path="/ui/profile" element={<div className='page with-margin'><Profile/></div>} />
+              <Route path="/ui/profile" element={<div className='page with-margin'><Profile/></div>} />
 
-                {/* 4. Fallback route uses path="*" */}
-                <Route path="*" element={<div className='page with-margin'><Home/></div>} />
-              </Routes>
-            </div>
-          </BrowserRouter>
+              {/* 4. Fallback route uses path="*" */}
+              <Route path="*" element={<div className='page with-margin'><Home/></div>} />
+            </Routes>
+          </div>
+        </BrowserRouter>
       )
     }
   }
