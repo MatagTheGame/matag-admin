@@ -41,6 +41,9 @@ export default (state, action) => {
     newState.stats.loading = false
     newState.stats.value = action.value
 
+  } else if (action.type === 'SETS_LOADED') {
+    newState.sets = action.value
+
   } else if (AuthReducer.getActions().indexOf(action.type) >= 0) {
     AuthReducer.reduceAction(newState, action)
 

@@ -29,20 +29,16 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Primary
 import org.springframework.http.HttpMethod
-import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.client.EntityExchangeResult
 import org.springframework.test.web.servlet.client.RestTestClient
 import org.springframework.test.web.servlet.client.expectBody
-import tools.jackson.databind.ObjectMapper
 import java.time.Clock
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
-import java.util.function.Supplier
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [MatagAdminApplication::class], webEnvironment = WebEnvironment.DEFINED_PORT)
@@ -161,7 +157,6 @@ abstract class AbstractApplicationTest {
     }
 
     companion object {
-        val TEST_START_TIME: LocalDateTime = LocalDateTime.parse("2020-01-01T00:00:00")
-        val OBJECT_MAPPER = jacksonObjectMapper()
+        val TEST_START_TIME = LocalDateTime.parse("2020-01-01T00:00:00")
     }
 }

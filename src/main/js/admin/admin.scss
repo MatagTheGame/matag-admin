@@ -45,6 +45,41 @@ select:-moz-focusring {
   text-shadow: 0 0 0 $body-text-color;
 }
 
+.multi-select {
+  width: 400px;
+}
+
+.rmsc {
+  --rmsc-p: #{$body-text-color} !important;
+  --rmsc-gray: #{$body-text-color} !important;
+  --rmsc-border: #{$input-border-color} !important;
+  --rmsc-main: #{$input-enhanced-border-color} !important;
+  --rmsc-bg: #{$input-background-color} !important;
+  --rmsc-hover: #{$input-hover-color} !important;
+  --rmsc-selected: #{$input-selected-color} !important;
+
+  li {
+    display: list-item !important;
+    margin-left: 0 !important;
+  }
+
+  .dropdown-heading {
+    padding-left: 10px !important;
+  }
+
+  input {
+    padding-left: 10px !important;
+  }
+
+  button {
+    width: auto !important;
+  }
+
+  .select-item {
+    padding: 4px 4px 4px 10px
+  }
+}
+
 textarea {
   resize: none;
 }

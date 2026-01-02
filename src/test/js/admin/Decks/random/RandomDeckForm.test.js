@@ -36,4 +36,6 @@ describe('RandomDeckForm', () => {
     browser.getPlayFormSection().clickInputOfColor('White')
     expect(browser.getPlayFormSection().inputOfColor('White')).not.toBeChecked()
   })
+
+  // TODO write more tests!
 })

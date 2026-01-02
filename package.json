@@ -23,6 +23,7 @@
     "prop-types": "^15.8.1",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
+    "react-multi-select-component": "^4.3.4",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.11.0",
     "redux": "^5.0.1",

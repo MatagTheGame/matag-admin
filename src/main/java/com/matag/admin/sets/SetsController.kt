@@ -14,17 +14,12 @@ open class SetsController(
 ) {
     @PreAuthorize("permitAll()")
     @GetMapping
-    open fun sets(): MtgSetsResponse =
+    open fun sets(): List<MtgSet> =
         mtgSets.sets
             .map { MtgSet(it.value.code, it.value.name) }
-            .let { MtgSetsResponse(it) }
 }
 
 data class MtgSet(
     var code: String = "",
     var name: String = ""
-)
-
-data class MtgSetsResponse(
-    var sets: List<MtgSet> = listOf()
 )
