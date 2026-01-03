@@ -33,4 +33,24 @@ public class MatagSession {
   private MatagUser matagUser;
   private LocalDateTime createdAt;
   private LocalDateTime validUntil;
+
+  public Long getId() {
+    return id;
+  }
+
+  public String getSessionId() {
+    return sessionId;
+  }
+
+  public MatagUser getMatagUser() {
+    return matagUser;
+  }
+
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public LocalDateTime getValidUntil() {
+    return validUntil;
+  }
 }

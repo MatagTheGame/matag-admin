@@ -1,54 +1,44 @@
-package com.matag.admin.game.deck;
+package com.matag.admin.game.deck
 
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.matag.admin.auth.SecurityContextHolderHelper
+import com.matag.admin.game.session.GameSession
+import com.matag.admin.game.session.GameSessionRepository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.matag.admin.auth.SecurityContextHolderHelper;
-import com.matag.admin.game.session.GameSession;
-import com.matag.admin.game.session.GameSessionRepository;
-import com.matag.adminentities.DeckInfo;
-import com.matag.cards.Card;
-
-import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
-
-@AllArgsConstructor
 @RestController
 @RequestMapping("/game/active-deck")
-public class DeckRetrieverController {
-  private final GameSessionRepository gameSessionRepository;
-  private final SecurityContextHolderHelper securityContextHolderHelper;
-  private final ObjectMapper objectMapper;
-  private final RandomColorsDeckFactory randomColorsDeckFactory;
+open class DeckRetrieverController(
+    @param:Autowired val gameSessionRepository: GameSessionRepository,
+    @param:Autowired val securityContextHolderHelper: SecurityContextHolderHelper,
+    @param:Autowired val objectMapper: ObjectMapper,
+    @param:Autowired val randomColorsDeckFactory: RandomColorsDeckFactory
+) {
+    @PreAuthorize("hasAnyRole('USER', 'GUEST')")
+    @GetMapping
+    open fun deckInfo(): DeckInfo {
+        val activeSession = gameSessionRepository.findPlayerActiveGameSession(securityContextHolderHelper.getSession().getSessionId())
+            .orElseThrow { IllegalStateException("Active deck not found.") }
+        val deckMetadata = readDeckInfo(activeSession)
+        return buildDeck(deckMetadata)
+    }
 
-  @PreAuthorize("hasAnyRole('USER', 'GUEST')")
-  @GetMapping
-  public DeckInfo deckInfo() {
-    var sessionId = securityContextHolderHelper.getSession().getSessionId();
-    var activeSession = gameSessionRepository.findPlayerActiveGameSession(sessionId)
-      .orElseThrow(() -> new RuntimeException("Active deck not found."));
-    DeckMetadata deckMetadata = readDeckInfo(activeSession);
-    return buildDeck(deckMetadata);
-  }
+    private fun buildDeck(deckMetadata: DeckMetadata): DeckInfo {
+        val cards = when (deckMetadata.type) {
+            "random" -> randomColorsDeckFactory.create(requireNotNull(deckMetadata.options) { "deckMetadata.options required for random deck" })
+            "pre-constructed" -> throw NotImplementedError("pre-constructed not implemented.")
+            "custom" -> throw NotImplementedError("custom not implemented.")
+            else -> throw IllegalStateException(deckMetadata.type + " not recognised.")
+        }
 
-  private DeckInfo buildDeck(DeckMetadata deckMetadata) {
-    List<Card> cards = switch (deckMetadata.getType()) {
-      case "random" -> randomColorsDeckFactory.create(deckMetadata.getOptions());
-      case "pre-constructed" -> throw new RuntimeException("pre-constructed not implemented.");
-      case "custom" -> throw new RuntimeException("custom not implemented.");
-      default -> throw new RuntimeException(deckMetadata.getType() + " not recognised.");
-    };
+        return DeckInfo(cards)
+    }
 
-    return new DeckInfo(cards);
-  }
-
-  @SneakyThrows
-  private DeckMetadata readDeckInfo(GameSession gs) {
-    return objectMapper.readValue(gs.getPlayerOptions(), DeckMetadata.class);
-  }
+    private fun readDeckInfo(gameSession: GameSession): DeckMetadata {
+        return objectMapper.readValue(gameSession.playerOptions, DeckMetadata::class.java)
+    }
 }

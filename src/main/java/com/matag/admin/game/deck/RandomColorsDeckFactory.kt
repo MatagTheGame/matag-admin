@@ -40,7 +40,7 @@ class RandomColorsDeckFactory(
             Color.GREEN -> cards.get("Forest")
         }
 
-    private fun getRandomNonBasicLandOfTheseColors(deckColors: MutableSet<Color>) =
+    private fun getRandomNonBasicLandOfTheseColors(deckColors: Set<Color>) =
         CardSearch(cards.all())
             .ofType(Type.LAND)
             .notOfType(Type.BASIC)
@@ -55,7 +55,6 @@ class RandomColorsDeckFactory(
             .cards
             .shuffled()
             .take(5)
-
 
     private fun get3RandomNonCreatureSpellsForColors(deckColors: Set<Color>) =
         CardSearch(cards.all().stream().toList())

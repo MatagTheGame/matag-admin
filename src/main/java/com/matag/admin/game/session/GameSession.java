@@ -37,4 +37,24 @@ public class GameSession {
   @JoinColumn(referencedColumnName = "id")
   private MatagUser player;
   private String playerOptions;
+
+  public Long getId() {
+    return id;
+  }
+
+  public Game getGame() {
+    return game;
+  }
+
+  public MatagSession getSession() {
+    return session;
+  }
+
+  public MatagUser getPlayer() {
+    return player;
+  }
+
+  public String getPlayerOptions() {
+    return playerOptions;
+  }
 }
