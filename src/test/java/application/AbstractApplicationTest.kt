@@ -1,7 +1,7 @@
 package application
 
 import application.AbstractApplicationTest.ApplicationTestConfiguration
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.matag.admin.MatagAdminApplication
 import com.matag.admin.config.ConfigService
 import com.matag.admin.game.game.GameRepository
@@ -46,14 +46,15 @@ import java.util.*
 @Import(ApplicationTestConfiguration::class)
 @ActiveProfiles("test")
 abstract class AbstractApplicationTest {
+    @Autowired protected lateinit var clock: Clock
+    @Autowired protected lateinit var restTestClient: RestTestClient
+    @Autowired protected lateinit var objectMapper: ObjectMapper
     @Autowired protected lateinit var matagUserRepository: MatagUserRepository
     @Autowired protected lateinit var matagSessionRepository: MatagSessionRepository
     @Autowired protected lateinit var gameRepository: GameRepository
     @Autowired protected lateinit var gameSessionRepository: GameSessionRepository
     @Autowired protected lateinit var scoreRepository: ScoreRepository
     @Autowired protected lateinit var scoreService: ScoreService
-    @Autowired protected lateinit var clock: Clock
-    @Autowired protected lateinit var restTestClient: RestTestClient
     @Autowired protected lateinit var configService: ConfigService
 
     @BeforeEach
@@ -98,6 +99,11 @@ abstract class AbstractApplicationTest {
     protected fun <T : Any> getForEntity(uri: String, responseType: Class<T>, token: String? = null) : EntityExchangeResult<T> =
         exchangeForEntity(HttpMethod.GET, uri, "", responseType, token)
 
+    protected fun <T : Any> getForObject(uri: String, responseType: Class<T>, token: String? = null) : T =
+        exchangeForEntity(HttpMethod.GET, uri, "", String::class.java, token).let {
+            objectMapper.readValue(it.responseBody, responseType)
+        }
+
     protected fun <T : Any> postForEntity(uri: String, request: Any, responseType: Class<T>, token: String? = null): EntityExchangeResult<T> =
         exchangeForEntity(HttpMethod.POST, uri, request, responseType, token)
 
@@ -121,8 +127,8 @@ abstract class AbstractApplicationTest {
         }
     }
 
-    private fun <T : Any> exchangeForEntity(method: HttpMethod, uri: String, request: Any, responseType: Class<T>, token: String? = null): EntityExchangeResult<T> {
-        return restTestClientWithToken(token).mutate()
+    private fun <T : Any> exchangeForEntity(method: HttpMethod, uri: String, request: Any, responseType: Class<T>, token: String? = null) =
+        restTestClientWithToken(token).mutate()
             .build()
             .method(method)
             .uri(uri)
@@ -130,7 +136,6 @@ abstract class AbstractApplicationTest {
             .exchange()
             .expectBody(responseType)
             .returnResult()
-    }
 
     private fun restTestClientWithToken(token: String?) =
         if (token == null) {
