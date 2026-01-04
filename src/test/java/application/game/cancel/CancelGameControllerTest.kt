@@ -9,6 +9,7 @@ import com.matag.admin.game.session.GameSession
 import com.matag.admin.game.session.GameSessionRepository
 import com.matag.admin.session.MatagSession
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -31,15 +32,15 @@ class CancelGameControllerTest : AbstractApplicationTest() {
             JoinGameResponse::class.java,
             TestUtils.USER_1_SESSION_TOKEN
         )
-        val gameId = joinGameResponse.getResponseBody()!!.getGameId()
+        val gameId = joinGameResponse.getResponseBody()?.getGameId()
 
         // When
-        val response = delete("/game/" + gameId, TestUtils.USER_1_SESSION_TOKEN)
+        val response = delete("/game/$gameId", TestUtils.USER_1_SESSION_TOKEN)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.OK)
-        Assertions.assertThat<GameSession?>(gameSessionRepository!!.findAll()).hasSize(0)
-        Assertions.assertThat<Game?>(gameRepository!!.findAll()).hasSize(0)
+        assertThat(response.status).isEqualTo(HttpStatus.OK)
+        assertThat(gameSessionRepository.findAll()).hasSize(0)
+        assertThat(gameRepository.findAll()).hasSize(0)
     }
 
     @Test
@@ -56,7 +57,7 @@ class CancelGameControllerTest : AbstractApplicationTest() {
             JoinGameResponse::class.java,
             TestUtils.USER_1_SESSION_TOKEN
         )
-        val gameId = joinGameResponse.getResponseBody()!!.getGameId()
+        val gameId = requireNotNull(joinGameResponse.getResponseBody()?.getGameId())
 
         loginUser(TestUtils.USER_2_SESSION_TOKEN, TestUtils.USER_2_USERNAME)
         val request2 = JoinGameRequest.builder()
@@ -72,20 +73,20 @@ class CancelGameControllerTest : AbstractApplicationTest() {
 
         // When
         loginUser(TestUtils.USER_1_SESSION_TOKEN, TestUtils.USER_1_USERNAME)
-        val response = delete("/game/" + gameId, TestUtils.USER_1_SESSION_TOKEN)
+        val response = delete("/game/$gameId", TestUtils.USER_1_SESSION_TOKEN)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.OK)
-        val game = gameRepository!!.findById(gameId)
-        Assertions.assertThat<Game?>(game).isPresent()
-        Assertions.assertThat<GameStatusType?>(game.get().getStatus()).isEqualTo(GameStatusType.FINISHED)
-        Assertions.assertThat<GameResultType?>(game.get().getResult()).isEqualTo(GameResultType.R2)
-        Assertions.assertThat(game.get().getFinishedAt()).isNotNull()
+        assertThat(response.status).isEqualTo(HttpStatus.OK)
+        val game = gameRepository.findById(gameId)
+        assertThat(game).isPresent()
+        assertThat(game.get().status).isEqualTo(GameStatusType.FINISHED)
+        assertThat(game.get().result).isEqualTo(GameResultType.R2)
+        assertThat(game.get().finishedAt).isNotNull()
 
-        val gameSessions = StreamSupport.stream<GameSession?>(gameSessionRepository!!.findAll().spliterator(), false)
+        val gameSessions = StreamSupport.stream<GameSession?>(gameSessionRepository.findAll().spliterator(), false)
             .collect(Collectors.toList())
-        Assertions.assertThat<GameSession?>(gameSessions).hasSize(2)
-        Assertions.assertThat<MatagSession?>(gameSessions.get(0)!!.getSession()).isNull()
-        Assertions.assertThat<MatagSession?>(gameSessions.get(1)!!.getSession()).isNull()
+        assertThat<GameSession?>(gameSessions).hasSize(2)
+        assertThat<MatagSession?>(gameSessions[0].session).isNull()
+        assertThat<MatagSession?>(gameSessions[1].session).isNull()
     }
 }

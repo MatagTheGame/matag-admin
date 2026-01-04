@@ -9,6 +9,7 @@ import com.matag.admin.game.session.GameSession
 import com.matag.admin.game.session.GameSessionRepository
 import com.matag.admin.user.MatagUser
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -22,7 +23,7 @@ class GamesHistoryControllerTest : AbstractApplicationTest() {
         val response = getForEntity("/game/history", GamesHistoryResponse::class.java)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.FORBIDDEN)
+        assertThat(response.status).isEqualTo(HttpStatus.FORBIDDEN)
     }
 
     @Test
@@ -52,9 +53,9 @@ class GamesHistoryControllerTest : AbstractApplicationTest() {
         )
 
         // Then
-        Assertions.assertThat<GameHistory?>(gamesHistoryResponse.getResponseBody()!!.getGamesHistory()).hasSize(3)
-        Assertions.assertThat<GameHistory?>(gamesHistoryResponse.getResponseBody()!!.getGamesHistory().get(0))
-            .isEqualToIgnoringGivenFields(
+        assertThat(gamesHistoryResponse.getResponseBody()?.getGamesHistory()).hasSize(3)
+        assertThat(gamesHistoryResponse.getResponseBody()?.getGamesHistory()?.get(0))
+            .usingRecursiveComparison().ignoringFields("gameId").isEqualTo(
                 GameHistory.builder()
                     .startedTime(LocalDateTime.now(clock))
                     .finishedTime(LocalDateTime.now(clock))
@@ -64,11 +65,10 @@ class GamesHistoryControllerTest : AbstractApplicationTest() {
                     .player1Options("User1 options")
                     .player2Name(TestUtils.USER_2_USERNAME)
                     .player2Options("User2 options")
-                    .build(),
-                "gameId"
+                    .build()
             )
-        Assertions.assertThat<GameHistory?>(gamesHistoryResponse.getResponseBody()!!.getGamesHistory().get(1))
-            .isEqualToIgnoringGivenFields(
+        assertThat(gamesHistoryResponse.getResponseBody()?.getGamesHistory()?.get(1))
+            .usingRecursiveComparison().ignoringFields("gameId").isEqualTo(
                 GameHistory.builder()
                     .startedTime(LocalDateTime.now(clock))
                     .finishedTime(LocalDateTime.now(clock))
@@ -78,11 +78,10 @@ class GamesHistoryControllerTest : AbstractApplicationTest() {
                     .player1Options("User1 options")
                     .player2Name(TestUtils.USER_2_USERNAME)
                     .player2Options("User2 options")
-                    .build(),
-                "gameId"
+                    .build()
             )
-        Assertions.assertThat<GameHistory?>(gamesHistoryResponse.getResponseBody()!!.getGamesHistory().get(2))
-            .isEqualToIgnoringGivenFields(
+        assertThat(gamesHistoryResponse.getResponseBody()?.getGamesHistory()?.get(2))
+            .usingRecursiveComparison().ignoringFields("gameId").isEqualTo(
                 GameHistory.builder()
                     .startedTime(LocalDateTime.now(clock))
                     .finishedTime(LocalDateTime.now(clock))
@@ -92,8 +91,7 @@ class GamesHistoryControllerTest : AbstractApplicationTest() {
                     .player1Options("User2 options")
                     .player2Name(TestUtils.USER_1_USERNAME)
                     .player2Options("User1 options")
-                    .build(),
-                "gameId"
+                    .build()
             )
     }
 
@@ -105,7 +103,7 @@ class GamesHistoryControllerTest : AbstractApplicationTest() {
             .result(result)
             .finishedAt(LocalDateTime.now(clock))
             .build()
-        gameRepository!!.save(game)
+        gameRepository.save(game)
         return game
     }
 
@@ -113,8 +111,8 @@ class GamesHistoryControllerTest : AbstractApplicationTest() {
         val gameSession = GameSession.builder()
             .game(game)
             .player(user)
-            .playerOptions(user.getUsername() + " options")
+            .playerOptions(user.username + " options")
             .build()
-        gameSessionRepository!!.save(gameSession)
+        gameSessionRepository.save(gameSession)
     }
 }

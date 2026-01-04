@@ -4,6 +4,7 @@ import application.AbstractApplicationTest
 import application.TestUtils
 import com.matag.admin.session.MatagSessionRepository
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -19,8 +20,8 @@ class LogoutControllerTest : AbstractApplicationTest() {
         val logoutResponse = getForEntity("/auth/logout", String::class.java, TestUtils.USER_1_SESSION_TOKEN)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(logoutResponse.getStatus()).isEqualTo(HttpStatus.OK)
-        Assertions.assertThat(matagSessionRepository!!.count()).isEqualTo(0)
+        assertThat(logoutResponse.status).isEqualTo(HttpStatus.OK)
+        assertThat(matagSessionRepository.count()).isEqualTo(0)
     }
 
     @Test
@@ -29,6 +30,6 @@ class LogoutControllerTest : AbstractApplicationTest() {
         val logoutResponse = getForEntity("/auth/logout", String::class.java)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(logoutResponse.getStatus()).isEqualTo(HttpStatus.OK)
+        assertThat(logoutResponse.status).isEqualTo(HttpStatus.OK)
     }
 }

@@ -11,7 +11,7 @@ export default function Logout() {
     ApiClient.getNoJson('/auth/logout')
       .then(() => {
         AuthHelper.removeToken()
-        navigate(APP_BASE_PATH + '/ui')
+        navigate('/ui')
       })
   }
 

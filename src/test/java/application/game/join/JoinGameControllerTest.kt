@@ -11,6 +11,7 @@ import com.matag.admin.game.join.JoinGameResponse
 import com.matag.admin.game.session.GameSession
 import com.matag.admin.game.session.GameSessionRepository
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -33,22 +34,22 @@ class JoinGameControllerTest : AbstractApplicationTest() {
         )
 
         // Then
-        Assertions.assertThat(response.getResponseBody()!!.getGameId()).isGreaterThan(0)
+        assertThat(response.getResponseBody()?.getGameId()).isGreaterThan(0)
 
-        val games = gameRepository!!.findAll()
-        Assertions.assertThat<Game?>(games).hasSize(1)
+        val games = gameRepository.findAll()
+        assertThat(games).hasSize(1)
         val game = games.iterator().next()
-        Assertions.assertThat(game.getId()).isEqualTo(response.getResponseBody()!!.getGameId())
-        Assertions.assertThat<GameType?>(game.getType()).isEqualTo(GameType.UNLIMITED)
-        Assertions.assertThat<GameStatusType?>(game.getStatus()).isEqualTo(GameStatusType.STARTING)
+        assertThat(game.id).isEqualTo(response.getResponseBody()?.getGameId())
+        assertThat(game.type).isEqualTo(GameType.UNLIMITED)
+        assertThat(game.status).isEqualTo(GameStatusType.STARTING)
 
-        val gameSessions = gameSessionRepository!!.findAll()
-        Assertions.assertThat<GameSession?>(gameSessions).hasSize(1)
+        val gameSessions = gameSessionRepository.findAll()
+        assertThat(gameSessions).hasSize(1)
         val gameSession = gameSessions.iterator().next()
-        Assertions.assertThat<Game?>(gameSession.getGame()).isEqualTo(game)
-        Assertions.assertThat(gameSession.getSession().getSessionId()).isEqualTo(TestUtils.USER_1_SESSION_TOKEN)
-        Assertions.assertThat(gameSession.getPlayer().getUsername()).isEqualTo(TestUtils.USER_1_USERNAME)
-        Assertions.assertThat(gameSession.getPlayerOptions()).isEqualTo("player1 options")
+        assertThat(gameSession.game).isEqualTo(game)
+        assertThat(gameSession.session.sessionId).isEqualTo(TestUtils.USER_1_SESSION_TOKEN)
+        assertThat(gameSession.player.username).isEqualTo(TestUtils.USER_1_USERNAME)
+        assertThat(gameSession.playerOptions).isEqualTo("player1 options")
     }
 
     @Test
@@ -83,29 +84,29 @@ class JoinGameControllerTest : AbstractApplicationTest() {
         )
 
         // Then
-        Assertions.assertThat(response.getResponseBody()!!.getGameId()).isGreaterThan(0)
+        assertThat(response.getResponseBody()?.getGameId()).isGreaterThan(0)
 
-        val games = gameRepository!!.findAll()
-        Assertions.assertThat<Game?>(games).hasSize(1)
+        val games = gameRepository.findAll()
+        assertThat(games).hasSize(1)
         val game = games.iterator().next()
-        Assertions.assertThat(game.getId()).isEqualTo(response.getResponseBody()!!.getGameId())
-        Assertions.assertThat<GameType?>(game.getType()).isEqualTo(GameType.UNLIMITED)
-        Assertions.assertThat<GameStatusType?>(game.getStatus()).isEqualTo(GameStatusType.IN_PROGRESS)
+        assertThat(game.id).isEqualTo(response.getResponseBody()?.getGameId())
+        assertThat(game.type).isEqualTo(GameType.UNLIMITED)
+        assertThat(game.status).isEqualTo(GameStatusType.IN_PROGRESS)
 
-        val gameSessions = gameSessionRepository!!.findAll()
-        Assertions.assertThat<GameSession?>(gameSessions).hasSize(2)
+        val gameSessions = gameSessionRepository.findAll()
+        assertThat(gameSessions).hasSize(2)
         val iterator: MutableIterator<GameSession> = gameSessions.iterator()
         val firstGameSession = iterator.next()
-        Assertions.assertThat<Game?>(firstGameSession.getGame()).isEqualTo(game)
-        Assertions.assertThat(firstGameSession.getSession().getSessionId()).isEqualTo(TestUtils.USER_1_SESSION_TOKEN)
-        Assertions.assertThat(firstGameSession.getPlayer().getUsername()).isEqualTo(TestUtils.USER_1_USERNAME)
-        Assertions.assertThat(firstGameSession.getPlayerOptions()).isEqualTo("player1 options")
+        assertThat(firstGameSession.game).isEqualTo(game)
+        assertThat(firstGameSession.session.sessionId).isEqualTo(TestUtils.USER_1_SESSION_TOKEN)
+        assertThat(firstGameSession.player.username).isEqualTo(TestUtils.USER_1_USERNAME)
+        assertThat(firstGameSession.playerOptions).isEqualTo("player1 options")
 
         val secondGameSession = iterator.next()
-        Assertions.assertThat<Game?>(secondGameSession.getGame()).isEqualTo(game)
-        Assertions.assertThat(secondGameSession.getSession().getSessionId()).isEqualTo(TestUtils.USER_2_SESSION_TOKEN)
-        Assertions.assertThat(secondGameSession.getPlayer().getUsername()).isEqualTo(TestUtils.USER_2_USERNAME)
-        Assertions.assertThat(secondGameSession.getPlayerOptions()).isEqualTo("player2 options")
+        assertThat(secondGameSession.game).isEqualTo(game)
+        assertThat(secondGameSession.session.sessionId).isEqualTo(TestUtils.USER_2_SESSION_TOKEN)
+        assertThat(secondGameSession.player.username).isEqualTo(TestUtils.USER_2_USERNAME)
+        assertThat(secondGameSession.playerOptions).isEqualTo("player2 options")
     }
 
     @Test
@@ -139,7 +140,7 @@ class JoinGameControllerTest : AbstractApplicationTest() {
         )
 
         // Then
-        Assertions.assertThat(response.getResponseBody()!!.getGameId()).isGreaterThan(0)
+        assertThat(response.getResponseBody()?.getGameId()).isGreaterThan(0)
     }
 
     @Test
@@ -167,7 +168,7 @@ class JoinGameControllerTest : AbstractApplicationTest() {
         )
 
         // Then
-        Assertions.assertThat(response.getResponseBody()!!.getError()).isEqualTo("You are already in a game.")
-        Assertions.assertThat(response.getResponseBody()!!.getActiveGameId()).isGreaterThan(0)
+        assertThat(response.getResponseBody()?.getError()).isEqualTo("You are already in a game.")
+        assertThat(response.getResponseBody()?.getActiveGameId()).isGreaterThan(0)
     }
 }

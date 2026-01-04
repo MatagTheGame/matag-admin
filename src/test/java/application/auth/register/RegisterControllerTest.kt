@@ -13,6 +13,7 @@ import com.matag.admin.user.MatagUserStatus
 import jakarta.mail.internet.MimeMessage
 import lombok.SneakyThrows
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito
 import org.mockito.Mockito
@@ -23,9 +24,9 @@ import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.test.web.servlet.client.EntityExchangeResult
 import java.time.LocalDateTime
 
-class RegisterControllerTest : AbstractApplicationTest() {
-    @Autowired
-    private val javaMailSender: JavaMailSender? = null
+class RegisterControllerTest(
+    @param:Autowired private val javaMailSender: JavaMailSender
+) : AbstractApplicationTest() {
 
     @Test
     fun shouldReturnInvalidEmail() {
@@ -103,17 +104,17 @@ class RegisterControllerTest : AbstractApplicationTest() {
         // Then
         assertSuccessfulRegisterResponse(response)
 
-        val user = loadUser("NewUser")!!
-        Assertions.assertThat(user.getUsername()).isEqualTo("NewUser")
-        Assertions.assertThat(user.getPassword()).isNotBlank()
-        Assertions.assertThat(user.getEmailAddress()).isEqualTo("new-user@matag.com")
-        Assertions.assertThat<MatagUserStatus?>(user.getStatus()).isEqualTo(MatagUserStatus.VERIFYING)
-        Assertions.assertThat(user.getCreatedAt()).isNotNull()
+        val user = loadUser("NewUser")
+        assertThat(user.username).isEqualTo("NewUser")
+        assertThat(user.password).isNotBlank()
+        assertThat(user.emailAddress).isEqualTo("new-user@matag.com")
+        assertThat(user.status).isEqualTo(MatagUserStatus.VERIFYING)
+        assertThat(user.createdAt).isNotNull()
 
-        val score = scoreRepository!!.findByMatagUser(user)
-        Assertions.assertThat(score.getElo()).isEqualTo(1000)
+        val score = scoreRepository.findByMatagUser(user)
+        assertThat(score.elo).isEqualTo(1000)
 
-        Mockito.verify<JavaMailSender?>(javaMailSender)!!.send(mimeMessage)
+        Mockito.verify(javaMailSender).send(mimeMessage)
     }
 
     @Test
@@ -125,25 +126,22 @@ class RegisterControllerTest : AbstractApplicationTest() {
 
         postForEntity("/auth/register", request, RegisterResponse::class.java)
         var user = loadUser(username)
-        val verificationCode = user.getMatagUserVerification().getVerificationCode()
+        val verificationCode = user.matagUserVerification.verificationCode
 
         // When
-        val verifyResponse = getForEntity(
-            "/auth/verify?username=" + username + "&code=" + verificationCode,
-            VerifyResponse::class.java
+        val verifyResponse = getForEntity("/auth/verify?username=$username&code=$verificationCode", VerifyResponse::class.java
         )
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(verifyResponse.getStatus()).isEqualTo(HttpStatus.OK)
-        Assertions.assertThat<VerifyResponse?>(verifyResponse.getResponseBody()).isNotNull()
-        Assertions.assertThat(verifyResponse.getResponseBody()!!.getMessage())
+        assertThat(verifyResponse.status).isEqualTo(HttpStatus.OK)
+        assertThat(verifyResponse.getResponseBody()?.getMessage())
             .isEqualTo("Your account has been correctly verified. Now you can proceed with logging in.")
 
         user = loadUser(username)
-        Assertions.assertThat<MatagUserStatus?>(user.getStatus()).isEqualTo(MatagUserStatus.ACTIVE)
-        Assertions.assertThat(user.getMatagUserVerification().getVerificationCode()).isNull()
-        Assertions.assertThat(user.getMatagUserVerification().getValidUntil()).isNull()
-        Assertions.assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(0)
+        assertThat(user.status).isEqualTo(MatagUserStatus.ACTIVE)
+        assertThat(user.matagUserVerification.verificationCode).isNull()
+        assertThat(user.matagUserVerification.validUntil).isNull()
+        assertThat(user.matagUserVerification.attempts).isEqualTo(0)
     }
 
     @Test
@@ -155,24 +153,21 @@ class RegisterControllerTest : AbstractApplicationTest() {
 
         postForEntity("/auth/register", request, RegisterResponse::class.java)
         val newUser = loadUser(username)
-        val verificationCode = newUser.getMatagUserVerification().getVerificationCode()
-        newUser.setStatus(MatagUserStatus.INACTIVE)
-        matagUserRepository!!.save(newUser)
+        val verificationCode = newUser.matagUserVerification.verificationCode
+        newUser.status = MatagUserStatus.INACTIVE
+        matagUserRepository.save(newUser)
 
         // When
-        val verifyResponse = getForEntity(
-            "/auth/verify?username=" + username + "&code=" + verificationCode,
-            ErrorResponse::class.java
-        )
+        val verifyResponse = getForEntity("/auth/verify?username=$username&code=$verificationCode", ErrorResponse::class.java)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(verifyResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST)
-        Assertions.assertThat(verifyResponse.getResponseBody()).isNotNull()
-        Assertions.assertThat(verifyResponse.getResponseBody()!!.getError())
+        assertThat(verifyResponse.status).isEqualTo(HttpStatus.BAD_REQUEST)
+        assertThat(verifyResponse.getResponseBody()).isNotNull()
+        assertThat(verifyResponse.getResponseBody()!!.getError())
             .isEqualTo("Your account could not be verified. Please send a message to matag.the.game@gmail.com.")
 
         val user = loadUser(username)
-        Assertions.assertThat<MatagUserStatus?>(user.getStatus()).isEqualTo(MatagUserStatus.INACTIVE)
+        assertThat(user.status).isEqualTo(MatagUserStatus.INACTIVE)
     }
 
     @Test
@@ -185,20 +180,16 @@ class RegisterControllerTest : AbstractApplicationTest() {
         postForEntity("/auth/register", request, RegisterResponse::class.java)
 
         // When
-        val verifyResponse = getForEntity(
-            "/auth/verify?username=" + username + "&code=" + "incorrect-verification-code",
-            ErrorResponse::class.java
-        )
+        val verifyResponse = getForEntity("/auth/verify?username=$username&code=incorrect-verification-code", ErrorResponse::class.java)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(verifyResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST)
-        Assertions.assertThat(verifyResponse.getResponseBody()).isNotNull()
-        Assertions.assertThat(verifyResponse.getResponseBody()!!.getError())
+        assertThat(verifyResponse.status).isEqualTo(HttpStatus.BAD_REQUEST)
+        assertThat(verifyResponse.getResponseBody()?.getError())
             .isEqualTo("Your account could not be verified. Please send a message to matag.the.game@gmail.com.")
 
         val user = loadUser(username)
-        Assertions.assertThat<MatagUserStatus?>(user.getStatus()).isEqualTo(MatagUserStatus.VERIFYING)
-        Assertions.assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(1)
+        assertThat(user.status).isEqualTo(MatagUserStatus.VERIFYING)
+        assertThat(user.matagUserVerification.attempts).isEqualTo(1)
     }
 
     @Test
@@ -210,40 +201,22 @@ class RegisterControllerTest : AbstractApplicationTest() {
 
         postForEntity("/auth/register", request, RegisterResponse::class.java)
         var user = loadUser(username)
-        val verificationCode = user.getMatagUserVerification().getVerificationCode()
+        val verificationCode = user.matagUserVerification.verificationCode
 
         // When
-        getForEntity(
-            "/auth/verify?username=" + username + "&code=incorrect-code",
-            VerifyResponse::class.java
-        )
-        getForEntity(
-            "/auth/verify?username=" + username + "&code=incorrect-code",
-            VerifyResponse::class.java
-        )
-        getForEntity(
-            "/auth/verify?username=" + username + "&code=incorrect-code",
-            VerifyResponse::class.java
-        )
-        getForEntity(
-            "/auth/verify?username=" + username + "&code=" + verificationCode,
-            VerifyResponse::class.java
-        )
-        getForEntity(
-            "/auth/verify?username=" + username + "&code=" + verificationCode,
-            VerifyResponse::class.java
-        )
-        val verifyResponse = getForEntity(
-            "/auth/verify?username=" + username + "&code=" + verificationCode,
-            VerifyResponse::class.java
-        )
+        getForEntity("/auth/verify?username=$username&code=incorrect-code", VerifyResponse::class.java)
+        getForEntity("/auth/verify?username=$username&code=incorrect-code", VerifyResponse::class.java)
+        getForEntity("/auth/verify?username=$username&code=incorrect-code", VerifyResponse::class.java)
+        getForEntity("/auth/verify?username=$username&code=$verificationCode", VerifyResponse::class.java)
+        getForEntity("/auth/verify?username=$username&code=$verificationCode", VerifyResponse::class.java)
+        val verifyResponse = getForEntity("/auth/verify?username=$username&code=$verificationCode", VerifyResponse::class.java)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(verifyResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST)
+        assertThat(verifyResponse.status).isEqualTo(HttpStatus.BAD_REQUEST)
 
         user = loadUser(username)
-        Assertions.assertThat<MatagUserStatus?>(user.getStatus()).isEqualTo(MatagUserStatus.VERIFYING)
-        Assertions.assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(6)
+        assertThat(user.status).isEqualTo(MatagUserStatus.VERIFYING)
+        assertThat(user.matagUserVerification.attempts).isEqualTo(6)
     }
 
     @Test
@@ -255,40 +228,35 @@ class RegisterControllerTest : AbstractApplicationTest() {
 
         postForEntity("/auth/register", request, RegisterResponse::class.java)
         var user = loadUser(username)
-        val verificationCode = user.getMatagUserVerification().getVerificationCode()
+        val verificationCode = user.matagUserVerification.verificationCode
 
         setCurrentTime(LocalDateTime.now().plusDays(2))
 
         // When
-        val verifyResponse = getForEntity(
-            "/auth/verify?username=" + username + "&code=" + verificationCode,
-            VerifyResponse::class.java
-        )
+        val verifyResponse = getForEntity("/auth/verify?username=$username&code=$verificationCode", VerifyResponse::class.java)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(verifyResponse.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST)
+        assertThat(verifyResponse.status).isEqualTo(HttpStatus.BAD_REQUEST)
 
         user = loadUser(username)
-        Assertions.assertThat<MatagUserStatus?>(user.getStatus()).isEqualTo(MatagUserStatus.VERIFYING)
-        Assertions.assertThat(user.getMatagUserVerification().getAttempts()).isEqualTo(1)
+        assertThat(user.status).isEqualTo(MatagUserStatus.VERIFYING)
+        assertThat(user.matagUserVerification.attempts).isEqualTo(1)
     }
 
     private fun assertErrorRegisterResponse(response: EntityExchangeResult<ErrorResponse>, expected: String) {
-        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST)
-        Assertions.assertThat(response.getResponseBody()).isNotNull()
-        Assertions.assertThat(response.getResponseBody()!!.getError()).isEqualTo(expected)
+        assertThat(response.status).isEqualTo(HttpStatus.BAD_REQUEST)
+        assertThat(response.getResponseBody()?.getError()).isEqualTo(expected)
     }
 
     private fun assertSuccessfulRegisterResponse(response: EntityExchangeResult<RegisterResponse>) {
-        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.OK)
-        Assertions.assertThat<RegisterResponse?>(response.getResponseBody()).isNotNull()
-        Assertions.assertThat(response.getResponseBody()!!.getMessage())
+        assertThat(response.status).isEqualTo(HttpStatus.OK)
+        assertThat(response.getResponseBody()?.getMessage())
             .isEqualTo("Registration Successful. Please check your email for a verification code.")
     }
 
     private fun mockMailSender(): MimeMessage {
         val mimeMessage = Mockito.mock<MimeMessage>(MimeMessage::class.java)
-        BDDMockito.given<MimeMessage?>(javaMailSender!!.createMimeMessage()).willReturn(mimeMessage)
+        BDDMockito.given(javaMailSender.createMimeMessage()).willReturn(mimeMessage)
         return mimeMessage
     }
 }

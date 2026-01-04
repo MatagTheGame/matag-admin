@@ -11,6 +11,7 @@ import com.matag.admin.game.session.GameSessionRepository
 import com.matag.admin.session.MatagSession
 import com.matag.adminentities.FinishGameRequest
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -30,7 +31,7 @@ class FinishGameControllerTest : AbstractApplicationTest() {
             postForEntity("/game/1/finish", finishGameRequest, Any::class.java, TestUtils.USER_1_SESSION_TOKEN)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.FORBIDDEN)
+        assertThat(response.status).isEqualTo(HttpStatus.FORBIDDEN)
     }
 
     @Test
@@ -47,7 +48,7 @@ class FinishGameControllerTest : AbstractApplicationTest() {
             JoinGameResponse::class.java,
             TestUtils.USER_1_SESSION_TOKEN
         )
-        val gameId = joinGameResponse.getResponseBody()!!.getGameId()
+        val gameId = requireNotNull(joinGameResponse.getResponseBody()?.getGameId())
 
         loginUser(TestUtils.USER_2_SESSION_TOKEN, TestUtils.USER_2_USERNAME)
         val request2 = JoinGameRequest.builder()
@@ -63,24 +64,24 @@ class FinishGameControllerTest : AbstractApplicationTest() {
 
         // When
         val finishGameRequest = FinishGameRequest(TestUtils.USER_1_SESSION_TOKEN)
-        val response = postForAdmin("/game/" + gameId + "/finish", finishGameRequest)
+        val response = postForAdmin("/game/$gameId/finish", finishGameRequest)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(response.getStatus()).isEqualTo(HttpStatus.OK)
-        val game = gameRepository!!.findById(gameId)
-        Assertions.assertThat<Game?>(game).isPresent()
-        Assertions.assertThat<GameStatusType?>(game.get().getStatus()).isEqualTo(GameStatusType.FINISHED)
-        Assertions.assertThat<GameResultType?>(game.get().getResult()).isEqualTo(GameResultType.R1)
-        Assertions.assertThat(game.get().getFinishedAt()).isNotNull()
+        assertThat(response.status).isEqualTo(HttpStatus.OK)
+        val game = gameRepository.findById(gameId)
+        assertThat(game).isPresent()
+        assertThat(game.get().status).isEqualTo(GameStatusType.FINISHED)
+        assertThat(game.get().result).isEqualTo(GameResultType.R1)
+        assertThat(game.get().finishedAt).isNotNull()
 
-        val gameSessions = StreamSupport.stream<GameSession?>(gameSessionRepository!!.findAll().spliterator(), false)
+        val gameSessions = StreamSupport.stream(gameSessionRepository.findAll().spliterator(), false)
             .collect(Collectors.toList())
-        Assertions.assertThat<GameSession?>(gameSessions).hasSize(2)
-        Assertions.assertThat<MatagSession?>(gameSessions.get(0)!!.getSession()).isNull()
-        Assertions.assertThat<MatagSession?>(gameSessions.get(1)!!.getSession()).isNull()
+        assertThat(gameSessions).hasSize(2)
+        assertThat(gameSessions[0].session).isNull()
+        assertThat(gameSessions[1].session).isNull()
 
         // Check elo score
-        Assertions.assertThat(scoreRepository!!.findByUsername(TestUtils.USER_1_USERNAME).getElo()).isEqualTo(1050)
-        Assertions.assertThat(scoreRepository.findByUsername(TestUtils.USER_2_USERNAME).getElo()).isEqualTo(950)
+        assertThat(scoreRepository.findByUsername(TestUtils.USER_1_USERNAME).getElo()).isEqualTo(1050)
+        assertThat(scoreRepository.findByUsername(TestUtils.USER_2_USERNAME).getElo()).isEqualTo(950)
     }
 }
