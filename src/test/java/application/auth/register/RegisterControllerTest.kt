@@ -76,7 +76,7 @@ class RegisterControllerTest(
         val response = postForEntity("/auth/register", request, ErrorResponse::class.java)
 
         // Then
-        assertErrorRegisterResponse(response, "This email is already registered (use reset password functionality).")
+        assertErrorRegisterResponse(response, "This email is already registered.")
     }
 
     @Test

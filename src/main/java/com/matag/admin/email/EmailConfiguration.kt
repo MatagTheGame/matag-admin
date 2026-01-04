@@ -1,35 +1,28 @@
-package com.matag.admin.email;
+package com.matag.admin.email
 
-import java.util.Properties;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
+import org.springframework.mail.javamail.JavaMailSenderImpl
 
 @Profile("!test")
 @Configuration
-public class EmailConfiguration {
-  @Bean
-  public JavaMailSender getJavaMailSender(
-      @Value("${matag.email.username}") String matagEmailUsername,
-      @Value("${matag.email.password}") String matagEmailPassword
-  ) {
-    var mailSender = new JavaMailSenderImpl();
-    mailSender.setHost("smtp.gmail.com");
-    mailSender.setPort(587);
+open class EmailConfiguration {
+    @Bean
+    open fun javaMailSender(
+        @Value("\${matag.email.username}") matagEmailUsername: String,
+        @Value("\${matag.email.password}") matagEmailPassword: String
+    ) = JavaMailSenderImpl().apply {
+            host = "smtp.gmail.com"
+            port = 587
 
-    mailSender.setUsername(matagEmailUsername);
-    mailSender.setPassword(matagEmailPassword);
+            username = matagEmailUsername
+            password = matagEmailPassword
 
-    Properties props = mailSender.getJavaMailProperties();
-    props.put("mail.transport.protocol", "smtp");
-    props.put("mail.smtp.auth", "true");
-    props.put("mail.smtp.starttls.enable", "true");
-    props.put("mail.debug", "false");
-
-    return mailSender;
-  }
+            javaMailProperties["mail.transport.protocol"] = "smtp"
+            javaMailProperties["mail.smtp.auth"] = "true"
+            javaMailProperties["mail.smtp.starttls.enable"] = "true"
+            javaMailProperties["mail.debug"] = "false"
+        }
 }

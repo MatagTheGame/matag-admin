@@ -81,6 +81,8 @@ class Register  extends AbstractForm {
               </div>
               {this.displayLoader()}
             </div>
+
+            <p>Note: if you are having trouble drop an email at matag.the.game@gmail.com and someone will help.</p>
           </form>
         </div>
       </section>

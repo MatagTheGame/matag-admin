@@ -7,16 +7,18 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-@Getter
 public class ConfigService {
   @Value("${matag.name}")
   private String matagName;
 
-  @Value("${matag.game.url}")
-  private String matagGameUrl;
+  @Value("${matag.game.path}")
+  private String matagGamePath;
 
-  @Value("${matag.admin.url}")
-  private String matagAdminUrl;
+  @Value("${matag.admin.path}")
+  private String matagAdminPath;
+
+  @Value("${matag.admin.externalUrl}")
+  private String matagExternalUrl;
 
   @Value("${matag.admin.password}")
   private String matagAdminPassword;
@@ -27,8 +29,8 @@ public class ConfigService {
   public Map<String, String> getConfig() {
     return Map.of(
       "matagName", matagName,
-      "matagAdminUrl", matagAdminUrl,
-      "matagGameUrl", matagGameUrl,
+      "matagAdminUrl", matagAdminPath,
+      "matagGameUrl", matagGamePath,
       "matagSupportEmail", matagSupportEmail
     );
   }
@@ -37,12 +39,16 @@ public class ConfigService {
     return matagName;
   }
 
-  public String getMatagGameUrl() {
-    return matagGameUrl;
+  public String getMatagExternalUrl() {
+    return matagExternalUrl;
   }
 
-  public String getMatagAdminUrl() {
-    return matagAdminUrl;
+  public String getMatagGamePath() {
+    return matagGamePath;
+  }
+
+  public String getMatagAdminPath() {
+    return matagAdminPath;
   }
 
   public String getMatagAdminPassword() {

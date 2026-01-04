@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UsernameValidator implements Validator<String> {
-  private static final String REGEX = "^[A-Za-z0-9 +\\-*=_.@&]{4,25}$";
+  private static final String REGEX = "^[A-Za-z0-9 +\\-*=_.@&]{3,25}$";
   private static final Pattern pattern = Pattern.compile(REGEX);
   private static final String USERNAME_IS_INVALID = "Username needs to be between 4 and 25 characters and can contains only letters  number and one of the following characters: [+ - * = _ . @ &].";
 
