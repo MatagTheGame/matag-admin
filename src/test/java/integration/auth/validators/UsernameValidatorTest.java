@@ -1,10 +1,10 @@
 package integration.auth.validators;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.matag.admin.auth.validators.UsernameValidator;
 import com.matag.admin.auth.validators.ValidationException;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UsernameValidatorTest {
   private final UsernameValidator usernameValidator = new UsernameValidator();
@@ -18,14 +18,14 @@ public class UsernameValidatorTest {
 
   @Test
   public void tooShortUsername() {
-    Assertions.assertThrows(ValidationException.class, () ->
-      usernameValidator.validate("012")
+    assertThrows(ValidationException.class, () ->
+      usernameValidator.validate("AB")
     );
   }
 
   @Test
   public void notSureWhy() {
-    Assertions.assertThrows(ValidationException.class, () ->
+    assertThrows(ValidationException.class, () ->
       usernameValidator.validate("012345678901234567890123456")
     );
   }

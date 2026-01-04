@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class RegisterController {
   private static final Logger LOGGER = LoggerFactory.getLogger(RegisterController.class);
 
-  private static final String EMAIL_ALREADY_REGISTERED = "This email is already registered (use reset password functionality).";
+  private static final String EMAIL_ALREADY_REGISTERED = "This email is already registered.";
   private static final String USERNAME_ALREADY_REGISTERED = "This username is already registered (please choose a new one).";
   private static final String REGISTERED_VERIFY_EMAIL = "Registration Successful. Please check your email for a verification code.";
   private static final String ACCOUNT_VERIFICATION_CORRECT = "Your account has been correctly verified. Now you can proceed with logging in.";

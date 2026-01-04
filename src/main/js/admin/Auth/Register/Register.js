@@ -82,7 +82,7 @@ class Register  extends AbstractForm {
               {this.displayLoader()}
             </div>
 
-            <p>Note: if you are having trouble drop an email at matag.the.game@gmail.com and someone will help.</p>
+            <p><u>Note:</u> if you are having trouble, drop an email at <strong>matag.the.game@gmail.com</strong> and someone will help.</p>
           </form>
         </div>
       </section>
