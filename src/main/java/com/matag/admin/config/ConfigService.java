@@ -32,4 +32,24 @@ public class ConfigService {
       "matagSupportEmail", matagSupportEmail
     );
   }
+
+  public String getMatagName() {
+    return matagName;
+  }
+
+  public String getMatagGameUrl() {
+    return matagGameUrl;
+  }
+
+  public String getMatagAdminUrl() {
+    return matagAdminUrl;
+  }
+
+  public String getMatagAdminPassword() {
+    return matagAdminPassword;
+  }
+
+  public String getMatagSupportEmail() {
+    return matagSupportEmail;
+  }
 }

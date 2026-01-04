@@ -43,4 +43,40 @@ public class MatagUser {
 
   @OneToOne(mappedBy = "matagUser", cascade = CascadeType.REMOVE)
   private MatagUserVerification matagUserVerification;
+
+  public Long getId() {
+    return id;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public String getEmailAddress() {
+    return emailAddress;
+  }
+
+  public MatagUserStatus getStatus() {
+    return status;
+  }
+
+  public MatagUserType getType() {
+    return type;
+  }
+
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public LocalDateTime getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public MatagUserVerification getMatagUserVerification() {
+    return matagUserVerification;
+  }
 }

@@ -53,4 +53,24 @@ public class MatagSession {
   public LocalDateTime getValidUntil() {
     return validUntil;
   }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public void setSessionId(String sessionId) {
+    this.sessionId = sessionId;
+  }
+
+  public void setMatagUser(MatagUser matagUser) {
+    this.matagUser = matagUser;
+  }
+
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public void setValidUntil(LocalDateTime validUntil) {
+    this.validUntil = validUntil;
+  }
 }

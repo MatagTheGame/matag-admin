@@ -1,81 +1,88 @@
-package com.matag.admin.session;
+package com.matag.admin.session
 
-import com.matag.admin.config.ConfigService;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-import org.springframework.security.web.firewall.FirewalledRequest;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import org.springframework.web.filter.GenericFilterBean;
-
-import java.io.IOException;
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.util.Objects;
-
-import static java.util.Collections.singletonList;
+import com.matag.admin.config.ConfigService
+import jakarta.servlet.FilterChain
+import jakarta.servlet.ServletException
+import jakarta.servlet.ServletRequest
+import jakarta.servlet.ServletResponse
+import lombok.AllArgsConstructor
+import lombok.extern.slf4j.Slf4j
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
+import org.springframework.security.web.firewall.FirewalledRequest
+import org.springframework.stereotype.Component
+import org.springframework.util.StringUtils
+import org.springframework.web.filter.GenericFilterBean
+import java.io.IOException
+import java.time.Clock
+import java.time.LocalDateTime
+import java.util.Optional
+import java.util.function.Consumer
+import kotlin.jvm.optionals.getOrNull
 
 @Slf4j
 @Component
 @AllArgsConstructor
-public class AuthSessionFilter extends GenericFilterBean {
-  public final static String SESSION_NAME = "session";
-  public final static String ADMIN_NAME = "admin";
-  public final static int SESSION_DURATION_TIME = 60 * 60;
+class AuthSessionFilter(
+    @param:Autowired private val configService: ConfigService,
+    @param:Autowired private val matagSessionRepository: MatagSessionRepository,
+    @param:Autowired private val clock: Clock
+) : GenericFilterBean() {
 
-  private final ConfigService configService;
-  private final MatagSessionRepository matagSessionRepository;
-  private final Clock clock;
-
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, jakarta.servlet.ServletException {
-        if (request instanceof FirewalledRequest firewalledRequest) {
-            logger.info("Received request: " + firewalledRequest.getMethod() + " " + firewalledRequest.getRequestURI());
-            applySecurity(firewalledRequest);
+    @Throws(IOException::class, ServletException::class)
+    override fun doFilter(request: ServletRequest?, response: ServletResponse?, filterChain: FilterChain) {
+        if (request is FirewalledRequest) {
+            applySecurity(request)
         }
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response)
     }
 
-  private void applySecurity(FirewalledRequest request) {
-    var adminPassword = request.getHeader(ADMIN_NAME);
-    var userSessionId = request.getHeader(SESSION_NAME);
+    private fun applySecurity(request: FirewalledRequest) {
+        val adminPassword = request.getHeader(ADMIN_NAME)
+        val userSessionId = request.getHeader(SESSION_NAME)
 
-    if (StringUtils.hasText(adminPassword)) {
-      adminAuthentication(adminPassword);
-
-    } else if (StringUtils.hasText(userSessionId)) {
-      userAuthentication(userSessionId);
-    }
-  }
-
-  private void adminAuthentication(String adminPassword) {
-    if (Objects.equals(configService.getMatagAdminPassword(), adminPassword)) {
-      var authorities = singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
-      var authentication = new PreAuthenticatedAuthenticationToken("admin", configService.getMatagAdminPassword(), authorities);
-      SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-  }
-
-  private void userAuthentication(String sessionId) {
-    var matagSession = matagSessionRepository.findBySessionId(sessionId);
-
-    matagSession.ifPresent(session -> {
-      if (LocalDateTime.now(clock).isBefore(session.getValidUntil())) {
-        var authorities = singletonList(new SimpleGrantedAuthority("ROLE_" + session.getMatagUser().getType().toString()));
-        var authentication = new PreAuthenticatedAuthenticationToken(session.getMatagUser(), session, authorities);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        if (LocalDateTime.now(clock).plusSeconds(SESSION_DURATION_TIME / 2).isAfter(session.getValidUntil())) {
-          session.setValidUntil(LocalDateTime.now(clock).plusSeconds(SESSION_DURATION_TIME));
-          matagSessionRepository.save(session);
+        if (StringUtils.hasText(adminPassword)) {
+            adminAuthentication(adminPassword)
+            logger.info("Received request for admin: ${request.method} ${request.requestURI}")
+        } else if (StringUtils.hasText(userSessionId)) {
+            val user = userAuthentication(userSessionId)
+            logger.info("Received request for user[session=$userSessionId, user=$user]: ${request.method} ${request.requestURI}")
         }
-      }
-    });
-  }
+    }
+
+    private fun adminAuthentication(adminPassword: String) {
+        if (configService.matagAdminPassword == adminPassword) {
+            val authorities = listOf(SimpleGrantedAuthority("ROLE_ADMIN"))
+            val authentication = PreAuthenticatedAuthenticationToken("admin", configService.matagAdminPassword, authorities)
+            SecurityContextHolder.getContext().authentication = authentication
+        }
+    }
+
+    private fun userAuthentication(sessionId: String): String? {
+        val matagSession = matagSessionRepository.findBySessionId(sessionId)
+
+        matagSession.ifPresent(Consumer { session: MatagSession ->
+            if (LocalDateTime.now(clock).isBefore(session.validUntil)) {
+                val authorities = listOf(SimpleGrantedAuthority("ROLE_" + session.matagUser.type.toString()))
+                val authentication = PreAuthenticatedAuthenticationToken(session.matagUser, session, authorities)
+                SecurityContextHolder.getContext().authentication = authentication
+
+                if (LocalDateTime.now(clock).plusSeconds((SESSION_DURATION_TIME / 2).toLong()).isAfter(session.validUntil)) {
+                    session.validUntil = LocalDateTime.now(clock).plusSeconds(SESSION_DURATION_TIME.toLong())
+                    matagSessionRepository.save(session)
+                }
+            }
+        })
+
+        return matagSession.map { it.matagUser.username }.getOrNull()
+    }
+
+    companion object {
+        const val SESSION_NAME: String = "session"
+        const val ADMIN_NAME: String = "admin"
+        @JvmField
+        val SESSION_DURATION_TIME: Int = 60 * 60
+    }
 }

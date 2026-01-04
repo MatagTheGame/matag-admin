@@ -9,8 +9,8 @@ import com.matag.admin.game.score.ScoreRepository
 import com.matag.admin.game.score.ScoreService
 import com.matag.admin.game.session.GameSessionRepository
 import com.matag.admin.session.AuthSessionFilter
-import com.matag.admin.session.AuthSessionFilter.ADMIN_NAME
-import com.matag.admin.session.AuthSessionFilter.SESSION_NAME
+import com.matag.admin.session.AuthSessionFilter.Companion.ADMIN_NAME
+import com.matag.admin.session.AuthSessionFilter.Companion.SESSION_NAME
 import com.matag.admin.session.MatagSession
 import com.matag.admin.session.MatagSessionRepository
 import com.matag.admin.user.MatagUser
