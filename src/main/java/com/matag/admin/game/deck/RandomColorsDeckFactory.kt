@@ -31,7 +31,7 @@ class RandomColorsDeckFactory(
         val nonCreaturesSpell = nCopies(4, get3RandomNonCreatureSpellsForColors(cardsPool, deckMetadata.colors)).flatten()
         val colorlessCards = nCopies(4, randomColorlessCard(cardsPool))
 
-        return basicLands + nonBasicLands + creatures + nonCreaturesSpell + colorlessCards
+        return (basicLands + nonBasicLands + creatures + nonCreaturesSpell + colorlessCards).shuffled()
     }
 
     private fun getCardsPool(deckMetadata: DeckMetadataOptions): Collection<Card> =

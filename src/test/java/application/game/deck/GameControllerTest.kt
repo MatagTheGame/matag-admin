@@ -49,6 +49,9 @@ class GameControllerTest(
         assertThat(deckInfo.cards.filter { it.colors.contains(Color.BLACK) }).isEmpty()
         assertThat(deckInfo.cards.filter { it.colors.contains(Color.GREEN) }).isEmpty()
         assertThat(deckInfo.cards.filter { it.types.contains(Type.CREATURE) }).hasSizeGreaterThanOrEqualTo(20)
+
+        // And it's shuffled
+        assertThat(deckInfo.cards.take(24).map { it.types }.flatten().distinct().sorted()).isNotEqualTo(listOf(Type.BASIC, Type.LAND))
     }
 
     @Test
