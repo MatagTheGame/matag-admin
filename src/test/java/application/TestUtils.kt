@@ -22,42 +22,42 @@ object TestUtils {
         "{argon2}\$argon2id\$v=19\$m=65536,t=4,p=8\$kfWxCBLq0XIjaaG8LxfrQg\$FkuvunHdrO2m+Dw85b33OUSY7uONpyVCgppJg+BYjsM"
 
     fun guest(): MatagUser {
-        return MatagUser.builder()
-            .username(GUEST_USERNAME)
-            .password(PASSWORD_ENCODED)
-            .emailAddress("guest@matag.com")
-            .status(MatagUserStatus.ACTIVE)
-            .type(MatagUserType.GUEST)
-            .build()
+        return MatagUser(
+            username = GUEST_USERNAME,
+            password = PASSWORD_ENCODED,
+            emailAddress = "guest@matag.com",
+            status = MatagUserStatus.ACTIVE,
+            type = MatagUserType.GUEST
+        )
     }
 
     fun user1(): MatagUser {
-        return MatagUser.builder()
-            .username(USER_1_USERNAME)
-            .password(PASSWORD_ENCODED)
-            .emailAddress("user1@matag.com")
-            .status(MatagUserStatus.ACTIVE)
-            .type(MatagUserType.USER)
-            .build()
+        return MatagUser(
+            username = USER_1_USERNAME,
+            password = PASSWORD_ENCODED,
+            emailAddress = "user1@matag.com",
+            status = MatagUserStatus.ACTIVE,
+            type = MatagUserType.USER
+        )
     }
 
     fun user2(): MatagUser {
-        return MatagUser.builder()
-            .username(USER_2_USERNAME)
-            .password(PASSWORD_ENCODED)
-            .emailAddress("user2@matag.com")
-            .status(MatagUserStatus.ACTIVE)
-            .type(MatagUserType.USER)
-            .build()
+        return MatagUser(
+            username = USER_2_USERNAME,
+            password = PASSWORD_ENCODED,
+            emailAddress = "user2@matag.com",
+            status = MatagUserStatus.ACTIVE,
+            type = MatagUserType.USER
+        )
     }
 
     fun inactive(): MatagUser {
-        return MatagUser.builder()
-            .username(INACTIVE_USER_USERNAME)
-            .password(PASSWORD_ENCODED)
-            .emailAddress("inactiveUser@matag.com")
-            .status(MatagUserStatus.INACTIVE)
-            .type(MatagUserType.USER)
-            .build()
+        return MatagUser(
+            username = INACTIVE_USER_USERNAME,
+            password = PASSWORD_ENCODED,
+            emailAddress = "inactiveUser@matag.com",
+            status = MatagUserStatus.INACTIVE,
+            type = MatagUserType.USER
+        )
     }
 }

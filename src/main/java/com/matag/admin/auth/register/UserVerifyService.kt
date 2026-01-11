@@ -1,68 +1,68 @@
-package com.matag.admin.auth.register;
+package com.matag.admin.auth.register
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.matag.admin.auth.codes.RandomCodeService;
-import com.matag.admin.user.MatagUser;
-import com.matag.admin.user.verification.MatagUserVerification;
-import com.matag.admin.user.verification.MatagUserVerificationRepository;
-
-import lombok.AllArgsConstructor;
+import com.matag.admin.auth.codes.RandomCodeService
+import com.matag.admin.user.MatagUser
+import com.matag.admin.user.verification.MatagUserVerification
+import com.matag.admin.user.verification.MatagUserVerificationRepository
+import lombok.AllArgsConstructor
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
+import java.time.Clock
+import java.time.LocalDateTime
 
 @Component
-@AllArgsConstructor
-public class UserVerifyService {
-  private static final int MAX_ATTEMPTS = 3;
+open class UserVerifyService(
+    private val randomCodeService: RandomCodeService,
+    private val userVerificationRepository: MatagUserVerificationRepository,
+    private val clock: Clock
+) {
 
-  private final RandomCodeService randomCodeService;
-  private final MatagUserVerificationRepository userVerificationRepository;
-  private final Clock clock;
+    open fun createVerification(user: MatagUser?): MatagUserVerification {
+        val verificationCode = randomCodeService.generatesRandomCode()
+        val matagUserVerification = MatagUserVerification(
+            verificationCode = verificationCode,
+            matagUser = user,
+            validUntil = LocalDateTime.now(clock).plusDays(1),
+            attempts = 0
+        )
 
-  public MatagUserVerification createVerification(MatagUser user) {
-    var verificationCode = randomCodeService.generatesRandomCode();
-    var matagUserVerification = MatagUserVerification.builder()
-      .verificationCode(verificationCode)
-      .matagUser(user)
-      .validUntil(LocalDateTime.now(clock).plusDays(1))
-      .attempts(0)
-      .build();
+        userVerificationRepository.save(matagUserVerification)
 
-    userVerificationRepository.save(matagUserVerification);
-
-    return matagUserVerification;
-  }
-
-  public void verify(MatagUser user, String code) {
-    var matagUserVerification = user.getMatagUserVerification();
-    if (matagUserVerification.getAttempts() >= MAX_ATTEMPTS) {
-      increaseAttempts(matagUserVerification);
-      throw new RuntimeException("User " + user.getUsername() + " too many attempts. times: " + matagUserVerification.getAttempts());
+        return matagUserVerification
     }
 
-    if (LocalDateTime.now(clock).isAfter(matagUserVerification.getValidUntil())) {
-      increaseAttempts(matagUserVerification);
-      throw new RuntimeException("User " + user.getUsername() + " validation code expired on: " + matagUserVerification.getValidUntil() + " . times: " + matagUserVerification.getAttempts());
+    open fun verify(user: MatagUser, code: String?) {
+        val matagUserVerification = user.matagUserVerification
+        if (matagUserVerification!!.attempts!! >= MAX_ATTEMPTS) {
+            increaseAttempts(matagUserVerification)
+            throw RuntimeException("User " + user.username + " too many attempts. times: " + matagUserVerification.attempts)
+        }
+
+        if (LocalDateTime.now(clock).isAfter(matagUserVerification.validUntil)) {
+            increaseAttempts(matagUserVerification)
+            throw RuntimeException("User " + user.username + " validation code expired on: " + matagUserVerification.validUntil + " . times: " + matagUserVerification.attempts)
+        }
+
+        if (matagUserVerification.verificationCode != code) {
+            increaseAttempts(matagUserVerification)
+            throw RuntimeException("User " + user.username + " attempting a wrong code: " + code + " times: " + matagUserVerification.attempts)
+        }
+
+        matagUserVerification.verificationCode = null
+        matagUserVerification.validUntil = null
+        matagUserVerification.attempts = 0
+        userVerificationRepository.save(matagUserVerification)
     }
 
-    if (!matagUserVerification.getVerificationCode().equals(code)) {
-      increaseAttempts(matagUserVerification);
-      throw new RuntimeException("User " + user.getUsername() + " attempting a wrong code: " + code + " times: " + matagUserVerification.getAttempts());
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    open fun increaseAttempts(matagUserVerification: MatagUserVerification) {
+        matagUserVerification.attempts = matagUserVerification.attempts!! + 1
+        userVerificationRepository.save(matagUserVerification)
     }
 
-    matagUserVerification.setVerificationCode(null);
-    matagUserVerification.setValidUntil(null);
-    matagUserVerification.setAttempts(0);
-    userVerificationRepository.save(matagUserVerification);
-  }
-
-  @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public void increaseAttempts(MatagUserVerification matagUserVerification) {
-    matagUserVerification.setAttempts(matagUserVerification.getAttempts() + 1);
-    userVerificationRepository.save(matagUserVerification);
-  }
+    companion object {
+        private const val MAX_ATTEMPTS = 3
+    }
 }

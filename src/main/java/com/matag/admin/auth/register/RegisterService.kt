@@ -1,69 +1,66 @@
-package com.matag.admin.auth.register;
+package com.matag.admin.auth.register
 
-import static com.matag.admin.user.MatagUserStatus.ACTIVE;
-import static com.matag.admin.user.MatagUserStatus.VERIFYING;
-import static com.matag.admin.user.MatagUserType.USER;
-
-import java.time.Clock;
-import java.time.LocalDateTime;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.matag.admin.game.score.ScoreService;
-import com.matag.admin.user.MatagUser;
-import com.matag.admin.user.MatagUserRepository;
-import com.matag.admin.user.verification.MatagUserVerification;
-
-import lombok.AllArgsConstructor;
+import com.matag.admin.game.score.ScoreService
+import com.matag.admin.user.MatagUser
+import com.matag.admin.user.MatagUserRepository
+import com.matag.admin.user.MatagUserStatus
+import com.matag.admin.user.MatagUserType
+import lombok.AllArgsConstructor
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
+import java.time.Clock
+import java.time.LocalDateTime
 
 @Component
-@AllArgsConstructor
-public class RegisterService {
-  private final PasswordEncoder passwordEncoder;
-  private final Clock clock;
-  private final MatagUserRepository userRepository;
-  private final ScoreService scoreService;
-  private final RegisterEmailService registerEmailService;
-  private final UserVerifyService userVerifyService;
+open class RegisterService(
+  @param:Autowired private val passwordEncoder: PasswordEncoder,
+  @param:Autowired private val clock: Clock,
+  @param:Autowired private val userRepository: MatagUserRepository,
+  @param:Autowired private val scoreService: ScoreService,
+  @param:Autowired private val registerEmailService: RegisterEmailService,
+  @param:Autowired private val userVerifyService: UserVerifyService
+) {
+    @Transactional
+    open fun register(email: String, username: String, password: String?) {
+        val user = MatagUser(
+            username = username,
+            password = passwordEncoder.encode(password),
+            emailAddress = email,
+            createdAt = LocalDateTime.now(clock),
+            updatedAt = LocalDateTime.now(clock),
+            status = MatagUserStatus.VERIFYING,
+            type = MatagUserType.USER
+        )
+        userRepository.save(user)
+        scoreService.createStartingScore(user)
 
-  @Transactional
-  public void register(String email, String username, String password) {
-    var user = MatagUser.builder()
-      .username(username)
-      .password(passwordEncoder.encode(password))
-      .emailAddress(email)
-      .createdAt(LocalDateTime.now(clock))
-      .updatedAt(LocalDateTime.now(clock))
-      .status(VERIFYING)
-      .type(USER)
-      .build();
-    userRepository.save(user);
-    scoreService.createStartingScore(user);
+        val verification = userVerifyService.createVerification(user)
 
-    MatagUserVerification verification = userVerifyService.createVerification(user);
-
-    registerEmailService.sendRegistrationEmail(email, username, verification.getVerificationCode());
-  }
-
-  public void activate(String username, String code) {
-    var userOptional = userRepository.findByUsername(username);
-    if (userOptional.isEmpty()) {
-      throw new RuntimeException("User " + username + " not found.");
+        registerEmailService.sendRegistrationEmail(email, username, verification.verificationCode!!)
     }
 
-    var user = userOptional.get();
-    switch (user.getStatus()) {
-      case INACTIVE:
-        throw new RuntimeException("User " + username + " is inactive and cannot be activated.");
+    open fun activate(username: String?, code: String?) {
+        val userOptional = userRepository.findByUsername(username)
+        if (userOptional.isEmpty) {
+            throw RuntimeException("User $username not found.")
+        }
 
-      case VERIFYING:
-        userVerifyService.verify(user, code);
+        val user = userOptional.get()
+        when (user.status) {
+            MatagUserStatus.INACTIVE -> throw RuntimeException("User $username is inactive and cannot be activated.")
+            MatagUserStatus.ACTIVE -> throw RuntimeException("User $username is already active.")
 
-        user.setStatus(ACTIVE);
-        user.setUpdatedAt(LocalDateTime.now(clock));
-        userRepository.save(user);
+            MatagUserStatus.VERIFYING -> {
+                userVerifyService.verify(user, code)
+
+              user.status = MatagUserStatus.ACTIVE
+              user.updatedAt = LocalDateTime.now(clock)
+              userRepository.save(user)
+            }
+
+            null -> throw RuntimeException("User $username has null status.")
+        }
     }
-  }
 }

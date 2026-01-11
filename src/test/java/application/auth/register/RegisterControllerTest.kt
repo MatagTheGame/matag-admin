@@ -126,7 +126,7 @@ class RegisterControllerTest(
 
         postForEntity("/auth/register", request, RegisterResponse::class.java)
         var user = loadUser(username)
-        val verificationCode = user.matagUserVerification.verificationCode
+        val verificationCode = user.matagUserVerification?.verificationCode
 
         // When
         val verifyResponse = getForEntity("/auth/verify?username=$username&code=$verificationCode", VerifyResponse::class.java
@@ -134,14 +134,14 @@ class RegisterControllerTest(
 
         // Then
         assertThat(verifyResponse.status).isEqualTo(HttpStatus.OK)
-        assertThat(verifyResponse.getResponseBody()?.getMessage())
+        assertThat(verifyResponse.getResponseBody()?.message)
             .isEqualTo("Your account has been correctly verified. Now you can proceed with logging in.")
 
         user = loadUser(username)
         assertThat(user.status).isEqualTo(MatagUserStatus.ACTIVE)
-        assertThat(user.matagUserVerification.verificationCode).isNull()
-        assertThat(user.matagUserVerification.validUntil).isNull()
-        assertThat(user.matagUserVerification.attempts).isEqualTo(0)
+        assertThat(user.matagUserVerification?.verificationCode).isNull()
+        assertThat(user.matagUserVerification?.validUntil).isNull()
+        assertThat(user.matagUserVerification?.attempts).isEqualTo(0)
     }
 
     @Test
@@ -153,7 +153,7 @@ class RegisterControllerTest(
 
         postForEntity("/auth/register", request, RegisterResponse::class.java)
         val newUser = loadUser(username)
-        val verificationCode = newUser.matagUserVerification.verificationCode
+        val verificationCode = newUser.matagUserVerification?.verificationCode
         newUser.status = MatagUserStatus.INACTIVE
         matagUserRepository.save(newUser)
 
@@ -189,7 +189,7 @@ class RegisterControllerTest(
 
         val user = loadUser(username)
         assertThat(user.status).isEqualTo(MatagUserStatus.VERIFYING)
-        assertThat(user.matagUserVerification.attempts).isEqualTo(1)
+        assertThat(user.matagUserVerification?.attempts).isEqualTo(1)
     }
 
     @Test
@@ -201,7 +201,7 @@ class RegisterControllerTest(
 
         postForEntity("/auth/register", request, RegisterResponse::class.java)
         var user = loadUser(username)
-        val verificationCode = user.matagUserVerification.verificationCode
+        val verificationCode = user.matagUserVerification?.verificationCode
 
         // When
         getForEntity("/auth/verify?username=$username&code=incorrect-code", VerifyResponse::class.java)
@@ -216,7 +216,7 @@ class RegisterControllerTest(
 
         user = loadUser(username)
         assertThat(user.status).isEqualTo(MatagUserStatus.VERIFYING)
-        assertThat(user.matagUserVerification.attempts).isEqualTo(6)
+        assertThat(user.matagUserVerification?.attempts).isEqualTo(6)
     }
 
     @Test
@@ -228,7 +228,7 @@ class RegisterControllerTest(
 
         postForEntity("/auth/register", request, RegisterResponse::class.java)
         var user = loadUser(username)
-        val verificationCode = user.matagUserVerification.verificationCode
+        val verificationCode = user.matagUserVerification?.verificationCode
 
         setCurrentTime(LocalDateTime.now().plusDays(2))
 
@@ -240,7 +240,7 @@ class RegisterControllerTest(
 
         user = loadUser(username)
         assertThat(user.status).isEqualTo(MatagUserStatus.VERIFYING)
-        assertThat(user.matagUserVerification.attempts).isEqualTo(1)
+        assertThat(user.matagUserVerification?.attempts).isEqualTo(1)
     }
 
     private fun assertErrorRegisterResponse(response: EntityExchangeResult<ErrorResponse>, expected: String) {
@@ -250,7 +250,7 @@ class RegisterControllerTest(
 
     private fun assertSuccessfulRegisterResponse(response: EntityExchangeResult<RegisterResponse>) {
         assertThat(response.status).isEqualTo(HttpStatus.OK)
-        assertThat(response.getResponseBody()?.getMessage())
+        assertThat(response.getResponseBody()?.message)
             .isEqualTo("Registration Successful. Please check your email for a verification code.")
     }
 

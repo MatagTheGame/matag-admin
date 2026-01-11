@@ -30,8 +30,6 @@ open class ChangePasswordController(
     @param:Autowired private val clock: Clock,
     @param:Autowired private val userRepository: MatagUserRepository
 ) {
-
-
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/change-password")
     open fun changePassword(@RequestBody request: ChangePasswordRequest): ChangePasswordResponse {
@@ -55,7 +53,7 @@ open class ChangePasswordController(
             throw MatagException("The new password you chose is invalid: " + e.message)
         }
 
-        if (!passwordEncoder.matches(request.oldPassword, user.getPassword())) {
+        if (!passwordEncoder.matches(request.oldPassword, user.password)) {
             throw MatagException("Your password wasn't matched.")
         }
     }

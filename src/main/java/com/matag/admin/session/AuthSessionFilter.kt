@@ -76,7 +76,7 @@ class AuthSessionFilter(
             }
         })
 
-        return matagSession.map { it.matagUser.username }.getOrNull()
+        return matagSession.map { it.matagUser.username }.get()
     }
 
     companion object {

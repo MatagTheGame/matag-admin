@@ -1,16 +1,7 @@
-package com.matag.admin.auth.register;
+package com.matag.admin.auth.register
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class RegisterRequest {
-  String email;
-  String username;
-  String password;
-}
+data class RegisterRequest(
+    var email: String = "",
+    var username: String = "",
+    var password: String = ""
+)
