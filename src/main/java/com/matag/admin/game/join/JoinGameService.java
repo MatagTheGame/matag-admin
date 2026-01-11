@@ -33,7 +33,7 @@ public class JoinGameService {
     var user = securityContextHolderHelper.getUser();
     var session = securityContextHolderHelper.getSession();
 
-    var activeGameOfPlayer = gameSessionRepository.findPlayerActiveGameSession(session.getSessionId());
+    var activeGameOfPlayer = gameSessionRepository.findPlayerActiveGameSession(session.sessionId);
     if (activeGameOfPlayer.isPresent()) {
       var activeGameId = activeGameOfPlayer.get().getGame().getId();
       return JoinGameResponse.builder()

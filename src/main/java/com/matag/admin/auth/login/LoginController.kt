@@ -1,123 +1,122 @@
-package com.matag.admin.auth.login;
+package com.matag.admin.auth.login
 
-import static com.matag.admin.user.MatagUserType.GUEST;
-
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.matag.admin.auth.validators.EmailValidator;
-import com.matag.admin.auth.validators.PasswordValidator;
-import com.matag.admin.auth.validators.ValidationException;
-import com.matag.admin.session.AuthSessionFilter;
-import com.matag.admin.session.MatagSession;
-import com.matag.admin.session.MatagSessionRepository;
-import com.matag.admin.user.MatagUser;
-import com.matag.admin.user.MatagUserRepository;
-import com.matag.admin.user.MatagUserStatus;
-import com.matag.admin.user.profile.CurrentUserProfileService;
-
-import lombok.AllArgsConstructor;
+import com.matag.admin.auth.validators.EmailValidator
+import com.matag.admin.auth.validators.PasswordValidator
+import com.matag.admin.auth.validators.ValidationException
+import com.matag.admin.session.AuthSessionFilter
+import com.matag.admin.session.MatagSession
+import com.matag.admin.session.MatagSessionRepository
+import com.matag.admin.user.MatagUser
+import com.matag.admin.user.MatagUserRepository
+import com.matag.admin.user.MatagUserStatus
+import com.matag.admin.user.MatagUserType
+import com.matag.admin.user.profile.CurrentUserProfileService
+import lombok.AllArgsConstructor
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.authentication.InsufficientAuthenticationException
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import java.time.Clock
+import java.time.LocalDateTime
+import java.util.*
 
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
-public class LoginController {
-  private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
+open class LoginController(
+    private val userRepository: MatagUserRepository,
+    private val passwordEncoder: PasswordEncoder,
+    private val matagSessionRepository: MatagSessionRepository,
+    private val emailValidator: EmailValidator,
+    private val passwordValidator: PasswordValidator,
+    private val currentUserProfileService: CurrentUserProfileService,
+    private val clock: Clock
+) {
 
-  public static final String EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT = "Email/Username or password are not correct.";
-  public static final String ACCOUNT_IS_NOT_ACTIVE = "Account is not active.";
 
-  private final MatagUserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
-  private final MatagSessionRepository matagSessionRepository;
-  private final EmailValidator emailValidator;
-  private final PasswordValidator passwordValidator;
-  private final CurrentUserProfileService currentUserProfileService;
-  private final Clock clock;
+    @PreAuthorize("permitAll()")
+    @PostMapping("/login")
+    open fun login(@RequestBody loginRequest: LoginRequest): LoginResponse? {
+        LOGGER.info("User " + loginRequest.emailOrUsername + " logging in.")
 
-  @PreAuthorize("permitAll()")
-  @PostMapping("/login")
-  public LoginResponse login(@RequestBody LoginRequest loginRequest) {
-    LOGGER.info("User " + loginRequest.getEmailOrUsername() + " logging in.");
+        val user = validateLogin(loginRequest)
 
-    var user = validateLogin(loginRequest);
+        if (user.type != MatagUserType.GUEST) {
+            val existingSession = matagSessionRepository!!.findByMatagUserId(user.id)
+            if (existingSession.isPresent()) {
+                LOGGER.info("User was already logged in... restored its session.")
+                existingSession.get().validUntil = LocalDateTime.now(clock).plusSeconds(AuthSessionFilter.SESSION_DURATION_TIME.toLong())
+                matagSessionRepository.save(existingSession.get())
+                return buildResponse(user, existingSession.get())
+            }
+        }
 
-    if (user.getType() != GUEST) {
-      var existingSession = matagSessionRepository.findByMatagUserId(user.getId());
-      if (existingSession.isPresent()) {
-        LOGGER.info("User was already logged in... restored its session.");
-        existingSession.get().setValidUntil(LocalDateTime.now(clock).plusSeconds(AuthSessionFilter.SESSION_DURATION_TIME));
-        matagSessionRepository.save(existingSession.get());
-        return buildResponse(user, existingSession.get());
-      }
+        val session = MatagSession(
+            sessionId = UUID.randomUUID().toString(),
+            matagUser = user,
+            createdAt = LocalDateTime.now(clock),
+            validUntil = LocalDateTime.now(clock).plusSeconds(AuthSessionFilter.SESSION_DURATION_TIME.toLong())
+        )
+        matagSessionRepository.save(session)
+
+        LOGGER.info("Login successful.")
+        return buildResponse(user, session!!)
     }
 
-    MatagSession session = MatagSession.builder()
-      .sessionId(UUID.randomUUID().toString())
-      .matagUser(user)
-      .createdAt(LocalDateTime.now(clock))
-      .validUntil(LocalDateTime.now(clock).plusSeconds(AuthSessionFilter.SESSION_DURATION_TIME))
-      .build();
-    matagSessionRepository.save(session);
+    private fun validateLogin(@RequestBody loginRequest: LoginRequest): MatagUser {
+        passwordValidator.validate(loginRequest.password)
 
-    LOGGER.info("Login successful.");
-    return buildResponse(user, session);
-  }
+        val email = isEmailLogin(loginRequest)
+        val userOptional = getUsername(loginRequest.emailOrUsername, email)
 
-  private MatagUser validateLogin(@RequestBody LoginRequest loginRequest) {
-    passwordValidator.validate(loginRequest.getPassword());
+        if (userOptional.isEmpty()) {
+            throw InsufficientAuthenticationException(EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT)
+        }
 
-    var email = isEmailLogin(loginRequest);
-    Optional<MatagUser> userOptional = getUsername(loginRequest.getEmailOrUsername(), email);
+        val user = userOptional.get()
+        if (!passwordEncoder.matches(loginRequest.password, user.password)) {
+            throw InsufficientAuthenticationException(EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT)
+        }
 
-    if (userOptional.isEmpty()) {
-      throw new InsufficientAuthenticationException(EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT);
+        if (user.status != MatagUserStatus.ACTIVE) {
+            throw InsufficientAuthenticationException(ACCOUNT_IS_NOT_ACTIVE)
+        }
+        return user
     }
 
-    var user = userOptional.get();
-    if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-      throw new InsufficientAuthenticationException(EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT);
+    private fun isEmailLogin(@RequestBody loginRequest: LoginRequest): Boolean {
+        try {
+            emailValidator!!.validate(loginRequest.emailOrUsername)
+            return true
+        } catch (e: ValidationException) {
+            return false
+        }
     }
 
-    if (user.getStatus() != MatagUserStatus.ACTIVE) {
-      throw new InsufficientAuthenticationException(ACCOUNT_IS_NOT_ACTIVE);
+    private fun getUsername(emailOrUsername: String?, email: Boolean): Optional<MatagUser> {
+        if (email) {
+            return userRepository!!.findByEmailAddress(emailOrUsername)
+        } else {
+            return userRepository!!.findByUsername(emailOrUsername)
+        }
     }
-    return user;
-  }
 
-  private boolean isEmailLogin(@RequestBody LoginRequest loginRequest) {
-    try {
-      emailValidator.validate(loginRequest.getEmailOrUsername());
-      return true;
-    } catch (ValidationException e) {
-      return false;
+    private fun buildResponse(user: MatagUser?, session: MatagSession): LoginResponse {
+        return LoginResponse(
+            token = session.sessionId!!,
+            profile = currentUserProfileService.getProfile(user!!, session)
+        )
     }
-  }
 
-  private Optional<MatagUser> getUsername(String emailOrUsername, boolean email) {
-    if (email) {
-      return userRepository.findByEmailAddress(emailOrUsername);
-    } else {
-      return userRepository.findByUsername(emailOrUsername);
+    companion object {
+        private val LOGGER: Logger = LoggerFactory.getLogger(LoginController::class.java)
+
+        const val EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT: String = "Email/Username or password are not correct."
+        const val ACCOUNT_IS_NOT_ACTIVE: String = "Account is not active."
     }
-  }
-
-  private LoginResponse buildResponse(MatagUser user, MatagSession session) {
-    return LoginResponse.builder()
-      .token(session.getSessionId())
-      .profile(currentUserProfileService.getProfile(user, session))
-      .build();
-  }
 }

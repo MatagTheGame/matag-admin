@@ -60,8 +60,9 @@ class AuthSessionFilter(
 
         matagSession.ifPresent(Consumer { session: MatagSession ->
             if (LocalDateTime.now(clock).isBefore(session.validUntil)) {
-                val authorities = listOf(SimpleGrantedAuthority("ROLE_" + session.matagUser.type.toString()))
-                val authentication = PreAuthenticatedAuthenticationToken(session.matagUser, session, authorities)
+                val aPrincipal = session.matagUser!!
+                val authorities = listOf(SimpleGrantedAuthority("ROLE_" + aPrincipal.type.toString()))
+                val authentication = PreAuthenticatedAuthenticationToken(aPrincipal, session, authorities)
                 SecurityContextHolder.getContext().authentication = authentication
 
                 if (LocalDateTime.now(clock).plusSeconds((SESSION_DURATION_TIME / 2).toLong()).isAfter(session.validUntil)) {
@@ -71,7 +72,7 @@ class AuthSessionFilter(
             }
         })
 
-        return matagSession.map { it.matagUser.username }.get()
+        return matagSession.map { it.matagUser?.username }.get()
     }
 
     companion object {

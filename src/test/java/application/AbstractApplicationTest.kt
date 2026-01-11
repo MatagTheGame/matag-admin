@@ -86,12 +86,12 @@ abstract class AbstractApplicationTest {
         val sessionId = UUID.fromString(userToken).toString()
         if (!matagSessionRepository.existsBySessionId(sessionId)) {
             matagSessionRepository.save(
-                MatagSession.builder()
-                    .sessionId(sessionId)
-                    .matagUser(loadUser(username))
-                    .createdAt(LocalDateTime.now(clock))
-                    .validUntil(LocalDateTime.now(clock).plusSeconds(AuthSessionFilter.SESSION_DURATION_TIME.toLong()))
-                    .build()
+                MatagSession(
+                    sessionId = sessionId,
+                    matagUser = loadUser(username),
+                    createdAt = LocalDateTime.now(clock),
+                    validUntil = LocalDateTime.now(clock).plusSeconds(AuthSessionFilter.SESSION_DURATION_TIME.toLong())
+                )
             )
         }
     }

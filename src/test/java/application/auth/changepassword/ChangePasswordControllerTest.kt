@@ -79,6 +79,6 @@ class ChangePasswordControllerTest : AbstractApplicationTest() {
             LoginResponse::class.java,
             USER_1_SESSION_TOKEN
         )
-        assertThat(loginResponse.getResponseBody()?.getToken()).isNotBlank()
+        assertThat(loginResponse.getResponseBody()?.token).isNotBlank()
     }
 }

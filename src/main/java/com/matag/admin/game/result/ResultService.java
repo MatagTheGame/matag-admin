@@ -17,7 +17,7 @@ public class ResultService {
   private final GameSessionService gameSessionService;
 
   public GameResultType getResult(GamePlayers gamePlayers, String winnerSessionId) {
-    if (gamePlayers.getPlayerSession().getSession().getSessionId().equals(winnerSessionId)) {
+    if (gamePlayers.getPlayerSession().getSession().sessionId.equals(winnerSessionId)) {
       return GameResultType.R1;
     } else {
       return GameResultType.R2;

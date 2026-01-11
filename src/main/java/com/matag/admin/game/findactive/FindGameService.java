@@ -17,7 +17,7 @@ public class FindGameService {
 
   public ActiveGameResponse findActiveGame() {
     var session = securityContextHolderHelper.getSession();
-    var activeGameSession = gameSessionRepository.findPlayerActiveGameSession(session.getSessionId());
+    var activeGameSession = gameSessionRepository.findPlayerActiveGameSession(session.sessionId);
 
     if (activeGameSession.isEmpty()) {
       return ActiveGameResponse.builder().build();

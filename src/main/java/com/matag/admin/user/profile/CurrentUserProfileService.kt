@@ -1,26 +1,25 @@
-package com.matag.admin.user.profile;
+package com.matag.admin.user.profile
 
-import static com.matag.admin.user.MatagUserType.GUEST;
-
-import org.springframework.stereotype.Component;
-
-import com.matag.admin.session.MatagSession;
-import com.matag.admin.user.MatagUser;
+import com.matag.admin.auth.login.CurrentUserProfileDto
+import com.matag.admin.session.MatagSession
+import com.matag.admin.user.MatagUser
+import com.matag.admin.user.MatagUserType
+import org.springframework.stereotype.Component
 
 @Component
-public class CurrentUserProfileService {
-  public CurrentUserProfileDto getProfile(MatagUser matagUser, MatagSession session) {
-    return CurrentUserProfileDto.builder()
-      .username(getUsername(matagUser, session))
-      .type(matagUser.getType().toString())
-      .build();
-  }
-
-  private String getUsername(MatagUser matagUser, MatagSession session) {
-    if (matagUser.getType() == GUEST) {
-      return matagUser.getUsername() + "-" + session.getId();
-    } else {
-      return matagUser.getUsername();
+class CurrentUserProfileService {
+    fun getProfile(matagUser: MatagUser, session: MatagSession): CurrentUserProfileDto {
+        return CurrentUserProfileDto(
+            username = getUsername(matagUser, session),
+            type = matagUser.type.toString()
+        )
     }
-  }
+
+    private fun getUsername(matagUser: MatagUser, session: MatagSession): String {
+        if (matagUser.type == MatagUserType.GUEST) {
+            return matagUser.username + "-" + session.id
+        } else {
+            return matagUser.username!!
+        }
+    }
 }

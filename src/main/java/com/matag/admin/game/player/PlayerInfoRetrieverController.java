@@ -26,9 +26,9 @@ public class PlayerInfoRetrieverController {
   }
 
   private String getUsername(MatagSession session) {
-    var matagUser = session.getMatagUser();
+    var matagUser = session.matagUser;
     if (matagUser.getType() == MatagUserType.GUEST) {
-      return matagUser.getUsername() +  "-" + session.getId();
+      return matagUser.getUsername() +  "-" + session.id;
     } else {
       return matagUser.getUsername();
     }
