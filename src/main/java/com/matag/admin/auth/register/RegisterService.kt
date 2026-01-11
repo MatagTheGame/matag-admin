@@ -5,8 +5,6 @@ import com.matag.admin.user.MatagUser
 import com.matag.admin.user.MatagUserRepository
 import com.matag.admin.user.MatagUserStatus
 import com.matag.admin.user.MatagUserType
-import lombok.AllArgsConstructor
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -15,12 +13,12 @@ import java.time.LocalDateTime
 
 @Component
 open class RegisterService(
-  @param:Autowired private val passwordEncoder: PasswordEncoder,
-  @param:Autowired private val clock: Clock,
-  @param:Autowired private val userRepository: MatagUserRepository,
-  @param:Autowired private val scoreService: ScoreService,
-  @param:Autowired private val registerEmailService: RegisterEmailService,
-  @param:Autowired private val userVerifyService: UserVerifyService
+  private val passwordEncoder: PasswordEncoder,
+  private val clock: Clock,
+  private val userRepository: MatagUserRepository,
+  private val scoreService: ScoreService,
+  private val registerEmailService: RegisterEmailService,
+  private val userVerifyService: UserVerifyService
 ) {
     @Transactional
     open fun register(email: String, username: String, password: String?) {

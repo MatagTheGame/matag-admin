@@ -3,13 +3,12 @@ package com.matag.admin.auth.register
 import com.matag.admin.config.ConfigService
 import com.matag.admin.email.MatagEmailSender
 import lombok.SneakyThrows
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
 class RegisterEmailService(
-    @param:Autowired private val emailSender: MatagEmailSender,
-    @param:Autowired private val configService: ConfigService
+    private val emailSender: MatagEmailSender,
+    private val configService: ConfigService
 ) {
     @SneakyThrows
     fun sendRegistrationEmail(receiver: String, username: String, verificationCode: String) {

@@ -7,10 +7,8 @@ import com.matag.admin.auth.validators.ValidationException
 import com.matag.admin.exception.MatagException
 import com.matag.admin.user.MatagUser
 import com.matag.admin.user.MatagUserRepository
-import lombok.AllArgsConstructor
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
@@ -22,13 +20,12 @@ import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/auth")
-@AllArgsConstructor
 open class ChangePasswordController(
-    @param:Autowired private val securityContextHolderHelper: SecurityContextHolderHelper,
-    @param:Autowired private val passwordEncoder: PasswordEncoder,
-    @param:Autowired private val passwordValidator: PasswordValidator,
-    @param:Autowired private val clock: Clock,
-    @param:Autowired private val userRepository: MatagUserRepository
+    private val securityContextHolderHelper: SecurityContextHolderHelper,
+    private val passwordEncoder: PasswordEncoder,
+    private val passwordValidator: PasswordValidator,
+    private val clock: Clock,
+    private val userRepository: MatagUserRepository
 ) {
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/change-password")

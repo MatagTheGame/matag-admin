@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.matag.admin.auth.SecurityContextHolderHelper
 import com.matag.admin.game.session.GameSession
 import com.matag.admin.game.session.GameSessionRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -13,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/game/active-deck")
 open class DeckRetrieverController(
-    @param:Autowired val gameSessionRepository: GameSessionRepository,
-    @param:Autowired val securityContextHolderHelper: SecurityContextHolderHelper,
-    @param:Autowired val objectMapper: ObjectMapper,
-    @param:Autowired val randomColorsDeckFactory: RandomColorsDeckFactory
+    val gameSessionRepository: GameSessionRepository,
+    val securityContextHolderHelper: SecurityContextHolderHelper,
+    val objectMapper: ObjectMapper,
+    val randomColorsDeckFactory: RandomColorsDeckFactory
 ) {
     @PreAuthorize("hasAnyRole('USER', 'GUEST')")
     @GetMapping
