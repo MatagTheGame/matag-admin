@@ -69,7 +69,7 @@ class ChangePasswordControllerTest : AbstractApplicationTest() {
 
         // Then
         assertThat(response.status).isEqualTo(OK)
-        assertThat(response.getResponseBody()?.getMessage()).isEqualTo("Password changed.")
+        assertThat(response.getResponseBody()?.message).isEqualTo("Password changed.")
 
         // And user can login with the new password
         val loginRequest = LoginRequest("user1@matag.com", "new-password")

@@ -1,64 +1,66 @@
-package com.matag.admin.auth.changepassword;
+package com.matag.admin.auth.changepassword
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.matag.admin.auth.SecurityContextHolderHelper;
-import com.matag.admin.auth.login.LoginController;
-import com.matag.admin.auth.validators.PasswordValidator;
-import com.matag.admin.auth.validators.ValidationException;
-import com.matag.admin.exception.MatagException;
-import com.matag.admin.user.MatagUser;
-import com.matag.admin.user.MatagUserRepository;
-
-import lombok.AllArgsConstructor;
+import com.matag.admin.auth.SecurityContextHolderHelper
+import com.matag.admin.auth.login.LoginController
+import com.matag.admin.auth.validators.PasswordValidator
+import com.matag.admin.auth.validators.ValidationException
+import com.matag.admin.exception.MatagException
+import com.matag.admin.user.MatagUser
+import com.matag.admin.user.MatagUserRepository
+import lombok.AllArgsConstructor
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import java.time.Clock
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
-public class ChangePasswordController {
-  private final SecurityContextHolderHelper securityContextHolderHelper;
-  private final PasswordEncoder passwordEncoder;
-  private final PasswordValidator passwordValidator;
-  private final Clock clock;
-  private final MatagUserRepository userRepository;
+open class ChangePasswordController(
+    @param:Autowired private val securityContextHolderHelper: SecurityContextHolderHelper,
+    @param:Autowired private val passwordEncoder: PasswordEncoder,
+    @param:Autowired private val passwordValidator: PasswordValidator,
+    @param:Autowired private val clock: Clock,
+    @param:Autowired private val userRepository: MatagUserRepository
+) {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
-  @PreAuthorize("hasRole('USER')")
-  @PostMapping("/change-password")
-  public ChangePasswordResponse changePassword(@RequestBody ChangePasswordRequest request) {
-    var user = securityContextHolderHelper.getUser();
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/change-password")
+    open fun changePassword(@RequestBody request: ChangePasswordRequest): ChangePasswordResponse {
+        val user = securityContextHolderHelper.user
 
-    validate(request, user);
+        validate(request, user)
 
-    var newPasswordEncoded = passwordEncoder.encode(request.getNewPassword());
-    user.setPassword(newPasswordEncoded);
-    user.setUpdatedAt(LocalDateTime.now(clock));
-    userRepository.save(user);
-    LOGGER.info("Password successfully changed for user " + user.getUsername());
+        val newPasswordEncoded = passwordEncoder.encode(request.newPassword)
+        user.password = newPasswordEncoded
+        user.updatedAt = LocalDateTime.now(clock)
+        userRepository.save(user)
+        LOGGER.info("Password successfully changed for user " + user.username)
 
-    return ChangePasswordResponse.builder().message("Password changed.").build();
-  }
-
-  private void validate(@RequestBody ChangePasswordRequest request, MatagUser user) {
-    try {
-      passwordValidator.validate(request.getNewPassword());
-    } catch (ValidationException e) {
-      throw new MatagException("The new password you chose is invalid: " + e.getMessage());
+        return ChangePasswordResponse("Password changed.")
     }
 
-    if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-      throw new MatagException("Your password wasn't matched.");
+    private fun validate(@RequestBody request: ChangePasswordRequest, user: MatagUser) {
+        try {
+            passwordValidator.validate(request.newPassword)
+        } catch (e: ValidationException) {
+            throw MatagException("The new password you chose is invalid: " + e.message)
+        }
+
+        if (!passwordEncoder.matches(request.oldPassword, user.getPassword())) {
+            throw MatagException("Your password wasn't matched.")
+        }
     }
-  }
+
+    companion object {
+        private val LOGGER: Logger = LoggerFactory.getLogger(LoginController::class.java)
+    }
 }

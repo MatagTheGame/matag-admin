@@ -1,15 +1,6 @@
-package com.matag.admin.auth.changepassword;
+package com.matag.admin.auth.changepassword
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class ChangePasswordRequest {
-  String oldPassword;
-  String newPassword;
-}
+data class ChangePasswordRequest(
+    var oldPassword: String? = null,
+    var newPassword: String? = null
+)

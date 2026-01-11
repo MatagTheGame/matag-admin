@@ -79,4 +79,40 @@ public class MatagUser {
   public MatagUserVerification getMatagUserVerification() {
     return matagUserVerification;
   }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public void setEmailAddress(String emailAddress) {
+    this.emailAddress = emailAddress;
+  }
+
+  public void setStatus(MatagUserStatus status) {
+    this.status = status;
+  }
+
+  public void setType(MatagUserType type) {
+    this.type = type;
+  }
+
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public void setUpdatedAt(LocalDateTime updatedAt) {
+    this.updatedAt = updatedAt;
+  }
+
+  public void setMatagUserVerification(MatagUserVerification matagUserVerification) {
+    this.matagUserVerification = matagUserVerification;
+  }
 }
