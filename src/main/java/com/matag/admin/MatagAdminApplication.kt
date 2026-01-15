@@ -1,11 +1,11 @@
-package com.matag.admin;
+package com.matag.admin
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.SpringApplication
+import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
-public class MatagAdminApplication {
-  public static void main(String[] args) {
-    SpringApplication.run(MatagAdminApplication.class, args);
-  }
+open class MatagAdminApplication {
+    fun main(args: Array<String>) {
+        SpringApplication.run(MatagAdminApplication::class.java, *args)
+    }
 }

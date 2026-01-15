@@ -1,81 +1,63 @@
-package com.matag.admin;
+package com.matag.admin
 
-import com.matag.admin.auth.logout.MatagLogoutSuccessHandler;
-import com.matag.admin.session.AuthSessionFilter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
-import org.springframework.security.web.context.SecurityContextPersistenceFilter;
-import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
-
-import java.util.HashMap;
+import com.matag.admin.auth.logout.MatagLogoutSuccessHandler
+import com.matag.admin.session.AuthSessionFilter
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.AuthenticationServiceException
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler
+import org.springframework.security.web.context.SecurityContextPersistenceFilter
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class MatagAdminWebSecurityConfiguration {
+open class MatagAdminWebSecurityConfiguration {
     @Autowired
-    private MatagLogoutSuccessHandler matagLogoutSuccessHandler;
+    private val matagLogoutSuccessHandler: MatagLogoutSuccessHandler? = null
 
     @Autowired
-    private AuthSessionFilter authSessionFilter;
+    private val authSessionFilter: AuthSessionFilter? = null
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) {
+    open fun filterChain(http: HttpSecurity): SecurityFilterChain =
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .addFilterAfter(authSessionFilter, SecurityContextPersistenceFilter.class)
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/auth/logout")
-                        .addLogoutHandler(new HeaderWriterLogoutHandler(
-                                new ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.ALL)
-                        ))
-                        .logoutSuccessHandler(matagLogoutSuccessHandler)
-                )
-                .authorizeHttpRequests(auth -> auth
-                                .anyRequest().permitAll()
-                );
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers(
-//                                "/", "/ui/**", "/admin.html", "/js/**", "/img/**",
-//                                "/stats", "/config",
-//                                "/error", "/test/**",
-//                                "/auth/login", "/auth/logout", "/auth/register", "/auth/verify"
-//                        ).permitAll()
-//                        .anyRequest().authenticated()
-//                );
-
-        return http.build();
-    }
+            .csrf { it.disable() }
+            .addFilterAfter(authSessionFilter, SecurityContextPersistenceFilter::class.java)
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .logout {
+                it
+                    .logoutUrl("/auth/logout")
+                    .addLogoutHandler(
+                        HeaderWriterLogoutHandler(
+                            ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.ALL)
+                        )
+                    )
+                    .logoutSuccessHandler(matagLogoutSuccessHandler)
+            }
+            .authorizeHttpRequests{it.anyRequest().permitAll()}
+            .build()
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        var defaultEncodingId = "argon2";
-        var encoders = new HashMap<String, PasswordEncoder>();
-        encoders.put(defaultEncodingId, new Argon2PasswordEncoder(16, 32, 8, 1 << 16, 4));
-        return new DelegatingPasswordEncoder(defaultEncodingId, encoders);
-    }
+    open fun passwordEncoder(): PasswordEncoder =
+        DelegatingPasswordEncoder(
+            "argon2",
+            mapOf("argon2" to Argon2PasswordEncoder(16, 32, 8, 1 shl 16, 4))
+        )
 
     @Bean
-    public AuthenticationManager authenticationManager() {
-        return authentication -> {
-            throw new AuthenticationServiceException("Cannot authenticate " + authentication);
-        };
+    open fun authenticationManager(): AuthenticationManager =
+        AuthenticationManager {
+            throw AuthenticationServiceException("Cannot authenticate $it")
     }
 }
