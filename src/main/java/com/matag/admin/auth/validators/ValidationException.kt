@@ -1,9 +1,5 @@
-package com.matag.admin.auth.validators;
+package com.matag.admin.auth.validators
 
-import com.matag.admin.exception.MatagException;
+import com.matag.admin.exception.MatagException
 
-public class ValidationException extends MatagException {
-  public ValidationException(String message) {
-    super(message);
-  }
-}
+class ValidationException(message: String) : MatagException(message)

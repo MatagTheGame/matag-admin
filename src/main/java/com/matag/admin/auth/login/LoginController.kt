@@ -38,17 +38,16 @@ open class LoginController(
     private val clock: Clock
 ) {
 
-
     @PreAuthorize("permitAll()")
     @PostMapping("/login")
     open fun login(@RequestBody loginRequest: LoginRequest): LoginResponse? {
-        LOGGER.info("User " + loginRequest.emailOrUsername + " logging in.")
+        LOGGER.info("User ${loginRequest.emailOrUsername} logging in.")
 
         val user = validateLogin(loginRequest)
 
         if (user.type != MatagUserType.GUEST) {
-            val existingSession = matagSessionRepository!!.findByMatagUserId(user.id)
-            if (existingSession.isPresent()) {
+            val existingSession = matagSessionRepository.findByMatagUserId(user.id)
+            if (existingSession.isPresent) {
                 LOGGER.info("User was already logged in... restored its session.")
                 existingSession.get().validUntil = LocalDateTime.now(clock).plusSeconds(AuthSessionFilter.SESSION_DURATION_TIME.toLong())
                 matagSessionRepository.save(existingSession.get())
@@ -65,7 +64,7 @@ open class LoginController(
         matagSessionRepository.save(session)
 
         LOGGER.info("Login successful.")
-        return buildResponse(user, session!!)
+        return buildResponse(user, session)
     }
 
     private fun validateLogin(@RequestBody loginRequest: LoginRequest): MatagUser {
@@ -74,7 +73,7 @@ open class LoginController(
         val email = isEmailLogin(loginRequest)
         val userOptional = getUsername(loginRequest.emailOrUsername, email)
 
-        if (userOptional.isEmpty()) {
+        if (userOptional.isEmpty) {
             throw InsufficientAuthenticationException(EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT)
         }
 
@@ -91,20 +90,19 @@ open class LoginController(
 
     private fun isEmailLogin(@RequestBody loginRequest: LoginRequest): Boolean {
         try {
-            emailValidator!!.validate(loginRequest.emailOrUsername)
+            emailValidator.validate(loginRequest.emailOrUsername)
             return true
-        } catch (e: ValidationException) {
+        } catch (_: ValidationException) {
             return false
         }
     }
 
-    private fun getUsername(emailOrUsername: String?, email: Boolean): Optional<MatagUser> {
+    private fun getUsername(emailOrUsername: String?, email: Boolean) =
         if (email) {
-            return userRepository!!.findByEmailAddress(emailOrUsername)
+            userRepository.findByEmailAddress(emailOrUsername)
         } else {
-            return userRepository!!.findByUsername(emailOrUsername)
+            userRepository.findByUsername(emailOrUsername)
         }
-    }
 
     private fun buildResponse(user: MatagUser?, session: MatagSession): LoginResponse {
         return LoginResponse(

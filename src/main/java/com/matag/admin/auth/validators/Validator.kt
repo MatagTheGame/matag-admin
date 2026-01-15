@@ -1,5 +1,5 @@
-package com.matag.admin.auth.validators;
+package com.matag.admin.auth.validators
 
-public interface Validator<T> {
-  void validate(T field) throws ValidationException;
+interface Validator<T> {
+    fun validate(field: T?)
 }

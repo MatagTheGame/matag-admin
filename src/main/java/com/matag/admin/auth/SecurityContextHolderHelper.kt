@@ -1,18 +1,15 @@
-package com.matag.admin.auth;
+package com.matag.admin.auth
 
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-
-import com.matag.admin.session.MatagSession;
-import com.matag.admin.user.MatagUser;
+import com.matag.admin.session.MatagSession
+import com.matag.admin.user.MatagUser
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.stereotype.Component
 
 @Component
-public class SecurityContextHolderHelper {
-  public MatagUser getUser() {
-    return (MatagUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-  }
+open class SecurityContextHolderHelper {
+    fun getUser() =
+        SecurityContextHolder.getContext().authentication?.principal as MatagUser
 
-  public MatagSession getSession() {
-    return (MatagSession) SecurityContextHolder.getContext().getAuthentication().getCredentials();
-  }
+    fun getSession() =
+        SecurityContextHolder.getContext().authentication?.credentials as MatagSession
 }

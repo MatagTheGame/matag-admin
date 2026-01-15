@@ -30,7 +30,7 @@ open class ChangePasswordController(
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/change-password")
     open fun changePassword(@RequestBody request: ChangePasswordRequest): ChangePasswordResponse {
-        val user = securityContextHolderHelper.user
+        val user = securityContextHolderHelper.getUser()
 
         validate(request, user)
 
