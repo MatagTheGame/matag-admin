@@ -58,21 +58,21 @@ class AuthSessionFilter(
     private fun userAuthentication(sessionId: String): String? {
         val matagSession = matagSessionRepository.findBySessionId(sessionId)
 
-        matagSession.ifPresent(Consumer { session: MatagSession ->
-            if (LocalDateTime.now(clock).isBefore(session.validUntil)) {
-                val aPrincipal = session.matagUser!!
+        if (matagSession != null) {
+            if (LocalDateTime.now(clock).isBefore(matagSession.validUntil)) {
+                val aPrincipal = matagSession.matagUser!!
                 val authorities = listOf(SimpleGrantedAuthority("ROLE_" + aPrincipal.type.toString()))
-                val authentication = PreAuthenticatedAuthenticationToken(aPrincipal, session, authorities)
+                val authentication = PreAuthenticatedAuthenticationToken(aPrincipal, matagSession, authorities)
                 SecurityContextHolder.getContext().authentication = authentication
 
-                if (LocalDateTime.now(clock).plusSeconds((SESSION_DURATION_TIME / 2).toLong()).isAfter(session.validUntil)) {
-                    session.validUntil = LocalDateTime.now(clock).plusSeconds(SESSION_DURATION_TIME.toLong())
-                    matagSessionRepository.save(session)
+                if (LocalDateTime.now(clock).plusSeconds((SESSION_DURATION_TIME / 2).toLong()).isAfter(matagSession.validUntil)) {
+                    matagSession.validUntil = LocalDateTime.now(clock).plusSeconds(SESSION_DURATION_TIME.toLong())
+                    matagSessionRepository.save(matagSession)
                 }
             }
-        })
+        }
 
-        return matagSession.map { it.matagUser?.username }.get()
+        return matagSession?.matagUser?.username
     }
 
     companion object {

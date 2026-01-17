@@ -1,26 +1,25 @@
-package com.matag.admin.session;
+package com.matag.admin.session
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.jpa.repository.Modifying
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.CrudRepository
+import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
+import java.util.*
 
 @Repository
-public interface MatagSessionRepository extends CrudRepository<MatagSession, Long> {
-  Optional<MatagSession> findBySessionId(String sessionId);
+interface MatagSessionRepository : CrudRepository<MatagSession, Long> {
+    fun findBySessionId(sessionId: String): MatagSession?
 
-  Optional<MatagSession> findByMatagUserId(Long id);
+    fun findByMatagUserId(id: Long): MatagSession?
 
-  @Modifying
-  @Transactional
-  @Query("DELETE FROM MatagSession WHERE validUntil < ?1")
-  int deleteValidUntilBefore(LocalDateTime now);
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM MatagSession WHERE validUntil < ?1")
+    fun deleteValidUntilBefore(now: LocalDateTime): Int
 
-  void deleteBySessionId(String sessionId);
+    fun deleteBySessionId(sessionId: String)
 
-  boolean existsBySessionId(String sessionId);
+    fun existsBySessionId(sessionId: String): Boolean
 }

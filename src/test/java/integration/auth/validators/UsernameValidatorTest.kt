@@ -1,32 +1,32 @@
-package integration.auth.validators;
+package integration.auth.validators
 
-import com.matag.admin.auth.validators.UsernameValidator;
-import com.matag.admin.auth.validators.ValidationException;
-import org.junit.jupiter.api.Test;
+import com.matag.admin.auth.validators.UsernameValidator
+import com.matag.admin.auth.validators.ValidationException
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.function.Executable
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+class UsernameValidatorTest {
+    private val usernameValidator = UsernameValidator()
 
-public class UsernameValidatorTest {
-  private final UsernameValidator usernameValidator = new UsernameValidator();
+    @Test
+    fun validUsernames() {
+        usernameValidator.validate("antonio")
+        usernameValidator.validate("antonio e antonio")
+        usernameValidator.validate("_-.@+=*&")
+    }
 
-  @Test
-  public void validUsernames() {
-    usernameValidator.validate("antonio");
-    usernameValidator.validate("antonio e antonio");
-    usernameValidator.validate("_-.@+=*&");
-  }
+    @Test
+    fun tooShortUsername() {
+        Assertions.assertThrows(
+            ValidationException::class.java
+        ) { usernameValidator.validate("AB") }
+    }
 
-  @Test
-  public void tooShortUsername() {
-    assertThrows(ValidationException.class, () ->
-      usernameValidator.validate("AB")
-    );
-  }
-
-  @Test
-  public void notSureWhy() {
-    assertThrows(ValidationException.class, () ->
-      usernameValidator.validate("012345678901234567890123456")
-    );
-  }
+    @Test
+    fun notSureWhy() {
+        Assertions.assertThrows(
+            ValidationException::class.java
+        ) { usernameValidator.validate("012345678901234567890123456") }
+    }
 }

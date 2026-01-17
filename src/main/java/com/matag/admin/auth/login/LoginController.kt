@@ -46,12 +46,12 @@ open class LoginController(
         val user = validateLogin(loginRequest)
 
         if (user.type != MatagUserType.GUEST) {
-            val existingSession = matagSessionRepository.findByMatagUserId(user.id)
-            if (existingSession.isPresent) {
+            val existingSession = matagSessionRepository.findByMatagUserId(user.id!!)
+            if (existingSession != null) {
                 LOGGER.info("User was already logged in... restored its session.")
-                existingSession.get().validUntil = LocalDateTime.now(clock).plusSeconds(AuthSessionFilter.SESSION_DURATION_TIME.toLong())
-                matagSessionRepository.save(existingSession.get())
-                return buildResponse(user, existingSession.get())
+                existingSession.validUntil = LocalDateTime.now(clock).plusSeconds(AuthSessionFilter.SESSION_DURATION_TIME.toLong())
+                matagSessionRepository.save(existingSession)
+                return buildResponse(user, existingSession)
             }
         }
 

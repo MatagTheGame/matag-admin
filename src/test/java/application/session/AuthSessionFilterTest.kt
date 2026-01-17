@@ -61,8 +61,8 @@ class AuthSessionFilterTest : AbstractApplicationTest() {
 
         // Then
         assertThat(response.status).isEqualTo(OK)
-        assertThat(matagSessionRepository.findBySessionId(USER_1_SESSION_TOKEN)).isPresent()
-        assertThat(matagSessionRepository.findBySessionId(USER_1_SESSION_TOKEN).get().validUntil)
+        assertThat(matagSessionRepository.findBySessionId(USER_1_SESSION_TOKEN)).isNotNull
+        assertThat(matagSessionRepository.findBySessionId(USER_1_SESSION_TOKEN)?.validUntil)
             .isEqualTo(TEST_START_TIME.plusHours(1).plusMinutes(45))
     }
 }

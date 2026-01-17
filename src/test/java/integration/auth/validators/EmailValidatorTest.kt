@@ -1,30 +1,30 @@
-package integration.auth.validators;
+package integration.auth.validators
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import com.matag.admin.auth.validators.EmailValidator
+import com.matag.admin.auth.validators.ValidationException
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.function.Executable
 
-import com.matag.admin.auth.validators.EmailValidator;
-import com.matag.admin.auth.validators.ValidationException;
+class EmailValidatorTest {
+    private val emailValidator = EmailValidator()
 
-public class EmailValidatorTest {
-  private final EmailValidator emailValidator = new EmailValidator();
+    @Test
+    fun validEmail() {
+        emailValidator.validate("antonio@mtg.com")
+    }
 
-  @Test
-  public void validEmail() {
-    emailValidator.validate("antonio@mtg.com");
-  }
+    @Test
+    fun invalidEmail() {
+        Assertions.assertThrows(
+            ValidationException::class.java
+        ) { emailValidator.validate("antonio") }
+    }
 
-  @Test
-  public void invalidEmail() {
-    Assertions.assertThrows(ValidationException.class, () ->
-      emailValidator.validate("antonio")
-    );
-  }
-
-  @Test
-  public void tooLongEmail() {
-    Assertions.assertThrows(ValidationException.class, () ->
-      emailValidator.validate("antonio123".repeat(10) + "@mtg.com")
-    );
-  }
+    @Test
+    fun tooLongEmail() {
+        Assertions.assertThrows(
+            ValidationException::class.java
+        ) { emailValidator.validate("antonio123".repeat(10) + "@mtg.com") }
+    }
 }
