@@ -1,14 +1,8 @@
-package com.matag.admin.exception;
+package com.matag.admin.exception
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Data
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class ErrorResponse {
-  String error;
-}
+data class ErrorResponse(
+    var error: String = ""
+)

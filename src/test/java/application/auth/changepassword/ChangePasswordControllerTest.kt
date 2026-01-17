@@ -30,7 +30,7 @@ class ChangePasswordControllerTest : AbstractApplicationTest() {
 
         // Then
         assertThat(response.status).isEqualTo(BAD_REQUEST)
-        assertThat(response.getResponseBody()?.getError()).isEqualTo("Your password wasn't matched.")
+        assertThat(response.getResponseBody()?.error).isEqualTo("Your password wasn't matched.")
     }
 
     @Test
@@ -49,7 +49,7 @@ class ChangePasswordControllerTest : AbstractApplicationTest() {
 
         // Then
         assertThat(response.status).isEqualTo(BAD_REQUEST)
-        assertThat(response.getResponseBody()?.getError())
+        assertThat(response.getResponseBody()?.error)
             .isEqualTo("The new password you chose is invalid: Password is invalid (should be at least 4 characters).")
     }
 

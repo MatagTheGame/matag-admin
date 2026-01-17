@@ -1,4 +1,3 @@
-package com.matag.admin.deck;
+package com.matag.admin.deck
 
-public class Deck {
-}
+class Deck 

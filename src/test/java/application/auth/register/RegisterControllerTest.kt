@@ -163,7 +163,7 @@ class RegisterControllerTest(
         // Then
         assertThat(verifyResponse.status).isEqualTo(HttpStatus.BAD_REQUEST)
         assertThat(verifyResponse.getResponseBody()).isNotNull()
-        assertThat(verifyResponse.getResponseBody()!!.getError())
+        assertThat(verifyResponse.getResponseBody()?.error)
             .isEqualTo("Your account could not be verified. Please send a message to matag.the.game@gmail.com.")
 
         val user = loadUser(username)
@@ -184,7 +184,7 @@ class RegisterControllerTest(
 
         // Then
         assertThat(verifyResponse.status).isEqualTo(HttpStatus.BAD_REQUEST)
-        assertThat(verifyResponse.getResponseBody()?.getError())
+        assertThat(verifyResponse.getResponseBody()?.error)
             .isEqualTo("Your account could not be verified. Please send a message to matag.the.game@gmail.com.")
 
         val user = loadUser(username)
@@ -245,7 +245,7 @@ class RegisterControllerTest(
 
     private fun assertErrorRegisterResponse(response: EntityExchangeResult<ErrorResponse>, expected: String) {
         assertThat(response.status).isEqualTo(HttpStatus.BAD_REQUEST)
-        assertThat(response.getResponseBody()?.getError()).isEqualTo(expected)
+        assertThat(response.getResponseBody()?.error).isEqualTo(expected)
     }
 
     private fun assertSuccessfulRegisterResponse(response: EntityExchangeResult<RegisterResponse>) {

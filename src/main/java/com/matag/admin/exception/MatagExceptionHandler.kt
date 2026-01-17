@@ -1,36 +1,32 @@
-package com.matag.admin.exception;
+package com.matag.admin.exception
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.InsufficientAuthenticationException
+import org.springframework.web.bind.annotation.ControllerAdvice
+import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
-public class MatagExceptionHandler {
-  private static final Logger LOGGER = LoggerFactory.getLogger(MatagExceptionHandler.class);
+class MatagExceptionHandler {
+    @ExceptionHandler(MatagException::class)
+    fun handle(e: MatagException): ResponseEntity<ErrorResponse> {
+        LOGGER.error("Error ${e.message}")
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(e.message.toString()))
+    }
 
-  @ExceptionHandler(MatagException.class)
-  public ResponseEntity<ErrorResponse> handle(MatagException e) {
-    LOGGER.error("Error {}", e.getMessage());
-    return ResponseEntity
-      .status(BAD_REQUEST)
-      .body(ErrorResponse.builder()
-        .error(e.getMessage())
-        .build());
-  }
+    @ExceptionHandler(InsufficientAuthenticationException::class)
+    fun handle(e: InsufficientAuthenticationException): ResponseEntity<ErrorResponse> {
+        LOGGER.error("Error {}", e.message, e)
+        return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
+            .body(ErrorResponse(e.message.toString()))
+    }
 
-  @ExceptionHandler(InsufficientAuthenticationException.class)
-  public ResponseEntity<ErrorResponse> handle(InsufficientAuthenticationException e) {
-    LOGGER.error("Error {}", e.getMessage(), e);
-    return ResponseEntity
-      .status(UNAUTHORIZED)
-      .body(ErrorResponse.builder()
-        .error(e.getMessage())
-        .build());
-  }
+    companion object {
+        private val LOGGER: Logger = LoggerFactory.getLogger(MatagExceptionHandler::class.java)
+    }
 }
