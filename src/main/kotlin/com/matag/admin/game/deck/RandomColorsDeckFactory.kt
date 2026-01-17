@@ -7,14 +7,12 @@ import com.matag.cards.properties.Color
 import com.matag.cards.properties.Type
 import com.matag.cards.search.CardSearch
 import com.matag.cards.sets.MtgSets
-import lombok.AllArgsConstructor
 import org.springframework.stereotype.Component
 import java.util.Collections.nCopies
 
 val ALL_SETS = "_ALL_"
 
 @Component
-@AllArgsConstructor
 class RandomColorsDeckFactory(
     private val cards: Cards,
     private val sets: MtgSets

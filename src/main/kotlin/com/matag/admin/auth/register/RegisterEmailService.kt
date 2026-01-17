@@ -2,7 +2,6 @@ package com.matag.admin.auth.register
 
 import com.matag.admin.config.ConfigService
 import com.matag.admin.email.MatagEmailSender
-import lombok.SneakyThrows
 import org.springframework.stereotype.Component
 
 @Component
@@ -10,7 +9,6 @@ class RegisterEmailService(
     private val emailSender: MatagEmailSender,
     private val configService: ConfigService
 ) {
-    @SneakyThrows
     fun sendRegistrationEmail(receiver: String, username: String, verificationCode: String) {
         emailSender.send(receiver, "Registration", createBody(username, verificationCode))
     }

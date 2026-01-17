@@ -1,7 +1,6 @@
 package com.matag.admin.game.score
 
 import com.matag.admin.game.game.GameResultType
-import lombok.AllArgsConstructor
 import org.springframework.stereotype.Component
 import kotlin.math.pow
 

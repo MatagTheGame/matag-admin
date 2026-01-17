@@ -7,14 +7,12 @@ import com.matag.admin.game.game.GameStatus
 import com.matag.admin.game.session.GameSession
 import com.matag.admin.game.session.GameSessionRepository
 import com.matag.admin.game.session.GameSessionService
-import lombok.AllArgsConstructor
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
 import java.time.LocalDateTime
 
 @Component
-@AllArgsConstructor
 open class JoinGameService(
     private val securityContextHolderHelper: SecurityContextHolderHelper,
     private val gameRepository: GameRepository,

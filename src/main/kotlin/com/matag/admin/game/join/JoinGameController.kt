@@ -1,6 +1,5 @@
 package com.matag.admin.game.join
 
-import lombok.AllArgsConstructor
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody

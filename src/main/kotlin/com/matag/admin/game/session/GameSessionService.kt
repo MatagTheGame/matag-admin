@@ -1,7 +1,6 @@
 package com.matag.admin.game.session
 
 import com.matag.admin.game.game.Game
-import lombok.AllArgsConstructor
 import org.springframework.stereotype.Component
 
 @Component

@@ -5,7 +5,6 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
 import jakarta.servlet.ServletRequest
 import jakarta.servlet.ServletResponse
-import lombok.extern.slf4j.Slf4j
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
@@ -16,9 +15,7 @@ import org.springframework.web.filter.GenericFilterBean
 import java.io.IOException
 import java.time.Clock
 import java.time.LocalDateTime
-import java.util.function.Consumer
 
-@Slf4j
 @Component
 class AuthSessionFilter(
     private val configService: ConfigService,

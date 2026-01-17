@@ -2,10 +2,6 @@ package com.matag.admin.game.history
 
 import com.matag.admin.game.game.GameType
 import com.matag.admin.game.game.GameUserResultType
-import lombok.AllArgsConstructor
-import lombok.Builder
-import lombok.Data
-import lombok.NoArgsConstructor
 import java.time.LocalDateTime
 
 data class GameHistory(

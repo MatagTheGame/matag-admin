@@ -3,7 +3,6 @@ package com.matag.admin.game.score
 import com.matag.admin.game.game.GameResultType
 import com.matag.admin.user.MatagUser
 import com.matag.admin.user.MatagUserType
-import lombok.AllArgsConstructor
 import org.springframework.stereotype.Component
 
 @Component

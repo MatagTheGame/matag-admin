@@ -6,20 +6,14 @@ import com.matag.admin.auth.register.RegisterRequest
 import com.matag.admin.auth.register.RegisterResponse
 import com.matag.admin.auth.register.VerifyResponse
 import com.matag.admin.exception.ErrorResponse
-import com.matag.admin.game.score.ScoreRepository
-import com.matag.admin.user.MatagUser
-import com.matag.admin.user.MatagUserRepository
 import com.matag.admin.user.MatagUserStatus
 import jakarta.mail.internet.MimeMessage
-import lombok.SneakyThrows
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.test.web.servlet.client.EntityExchangeResult
 import java.time.LocalDateTime
@@ -92,7 +86,6 @@ class RegisterControllerTest(
     }
 
     @Test
-    @SneakyThrows
     fun registerANewUser() {
         // Given
         val request = RegisterRequest("new-user@matag.com", "NewUser", TestUtils.PASSWORD)

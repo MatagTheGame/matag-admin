@@ -7,7 +7,6 @@ import com.matag.admin.game.session.GamePlayers
 import com.matag.admin.game.session.GameSessionRepository
 import com.matag.admin.game.session.GameSessionService
 import com.matag.admin.session.MatagSession
-import lombok.AllArgsConstructor
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 

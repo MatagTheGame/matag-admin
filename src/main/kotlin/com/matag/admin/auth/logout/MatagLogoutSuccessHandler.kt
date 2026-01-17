@@ -4,7 +4,6 @@ import com.matag.admin.session.AuthSessionFilter
 import com.matag.admin.session.MatagSessionRepository
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import lombok.AllArgsConstructor
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler
 import org.springframework.stereotype.Component

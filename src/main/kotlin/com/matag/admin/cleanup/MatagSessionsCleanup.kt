@@ -1,7 +1,6 @@
 package com.matag.admin.cleanup
 
 import com.matag.admin.session.MatagSessionRepository
-import lombok.AllArgsConstructor
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component

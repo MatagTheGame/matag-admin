@@ -1,6 +1,5 @@
 package com.matag.admin.game.finish
 
-import com.matag.admin.game.finish.FinishGameRequest
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 

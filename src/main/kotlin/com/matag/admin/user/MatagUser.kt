@@ -2,7 +2,6 @@ package com.matag.admin.user
 
 import com.matag.admin.user.verification.MatagUserVerification
 import jakarta.persistence.*
-import lombok.*
 import java.time.LocalDateTime
 
 @Entity

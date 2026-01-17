@@ -3,11 +3,9 @@ package com.matag.admin.game.findactive
 import com.matag.admin.auth.SecurityContextHolderHelper
 import com.matag.admin.game.session.GameSessionRepository
 import com.matag.admin.game.session.GameSessionService
-import lombok.AllArgsConstructor
 import org.springframework.stereotype.Component
 
 @Component
-@AllArgsConstructor
 open class FindGameService(
     private val securityContextHolderHelper: SecurityContextHolderHelper,
     private val gameSessionRepository: GameSessionRepository,

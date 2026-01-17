@@ -2,13 +2,11 @@ package com.matag.admin.game.score
 
 import com.matag.admin.game.game.GameType
 import com.matag.admin.user.MatagUser
-import lombok.AllArgsConstructor
 import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.LocalDateTime
 
 @Component
-@AllArgsConstructor
 class ScoreService(
     private val scoreRepository: ScoreRepository,
     private val clock: Clock

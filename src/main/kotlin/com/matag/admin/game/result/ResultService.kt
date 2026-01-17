@@ -6,11 +6,9 @@ import com.matag.admin.game.game.GameUserResultType
 import com.matag.admin.game.session.GamePlayers
 import com.matag.admin.game.session.GameSessionService
 import com.matag.admin.user.MatagUser
-import lombok.AllArgsConstructor
 import org.springframework.stereotype.Component
 
 @Component
-@AllArgsConstructor
 class ResultService(
     private val gameSessionService: GameSessionService
 ) {

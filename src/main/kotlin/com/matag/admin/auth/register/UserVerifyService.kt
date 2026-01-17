@@ -4,8 +4,6 @@ import com.matag.admin.auth.codes.RandomCodeService
 import com.matag.admin.user.MatagUser
 import com.matag.admin.user.verification.MatagUserVerification
 import com.matag.admin.user.verification.MatagUserVerificationRepository
-import lombok.AllArgsConstructor
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional

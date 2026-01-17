@@ -11,7 +11,6 @@ import com.matag.admin.user.MatagUserRepository
 import com.matag.admin.user.MatagUserStatus
 import com.matag.admin.user.MatagUserType
 import com.matag.admin.user.profile.CurrentUserProfileService
-import lombok.AllArgsConstructor
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
@@ -27,7 +26,6 @@ import java.util.*
 
 @RestController
 @RequestMapping("/auth")
-@AllArgsConstructor
 open class LoginController(
     private val userRepository: MatagUserRepository,
     private val passwordEncoder: PasswordEncoder,
