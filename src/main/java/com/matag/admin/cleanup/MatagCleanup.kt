@@ -1,25 +1,26 @@
-package com.matag.admin.cleanup;
+package com.matag.admin.cleanup
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
-import lombok.AllArgsConstructor;
+import lombok.AllArgsConstructor
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.scheduling.annotation.Scheduled
+import org.springframework.stereotype.Component
 
 @Component
 @AllArgsConstructor
-public class MatagCleanup {
-  private static final Logger LOGGER = LoggerFactory.getLogger(MatagCleanup.class);
+class MatagCleanup {
+    private val matagSessionsCleanup: MatagSessionsCleanup? = null
+    private val matagGameCleanup: MatagGameCleanup? = null
 
-  private final MatagSessionsCleanup matagSessionsCleanup;
-  private final MatagGameCleanup matagGameCleanup;
+    @Scheduled(fixedRate = 6 * 60 * 60 * 1000, initialDelay = 10 * 60 * 1000)
+    fun cleanup() {
+        LOGGER.info("cleanup triggered.")
 
-  @Scheduled(fixedRate = 6 * 60 * 60 * 1000, initialDelay = 10 * 60 * 1000)
-  public void cleanup() {
-    LOGGER.info("cleanup triggered.");
+        matagSessionsCleanup!!.cleanup()
+        matagGameCleanup!!.cleanup()
+    }
 
-    matagSessionsCleanup.cleanup();
-    matagGameCleanup.cleanup();
-  }
+    companion object {
+        private val LOGGER: Logger = LoggerFactory.getLogger(MatagCleanup::class.java)
+    }
 }

@@ -1,61 +1,33 @@
-package com.matag.admin.config;
+package com.matag.admin.config
 
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import java.util.Map;
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
+import java.util.Map
 
 @Component
-public class ConfigService {
-  @Value("${matag.name}")
-  private String matagName;
+class ConfigService(
+    @Value("\${matag.name}")
+    val matagName: String,
 
-  @Value("${matag.game.path}")
-  private String matagGamePath;
+    @Value("\${matag.game.path}")
+    val matagGamePath: String,
 
-  @Value("${matag.admin.path}")
-  private String matagAdminPath;
+    @Value("\${matag.admin.path}")
+    val matagAdminPath: String,
 
-  @Value("${matag.admin.externalUrl}")
-  private String matagExternalUrl;
+    @Value("\${matag.admin.externalUrl}")
+    val matagExternalUrl: String,
 
-  @Value("${matag.admin.password}")
-  private String matagAdminPassword;
+    @Value("\${matag.admin.password}")
+    val matagAdminPassword: String,
 
-  @Value("${matag.email.username}")
-  private String matagSupportEmail;
-
-  public Map<String, String> getConfig() {
-    return Map.of(
-      "matagName", matagName,
-      "matagAdminUrl", matagAdminPath,
-      "matagGameUrl", matagGamePath,
-      "matagSupportEmail", matagSupportEmail
-    );
-  }
-
-  public String getMatagName() {
-    return matagName;
-  }
-
-  public String getMatagExternalUrl() {
-    return matagExternalUrl;
-  }
-
-  public String getMatagGamePath() {
-    return matagGamePath;
-  }
-
-  public String getMatagAdminPath() {
-    return matagAdminPath;
-  }
-
-  public String getMatagAdminPassword() {
-    return matagAdminPassword;
-  }
-
-  public String getMatagSupportEmail() {
-    return matagSupportEmail;
-  }
+    @Value("\${matag.email.username}")
+    val matagSupportEmail: String
+) {
+    fun getConfig() = Map.of(
+            "matagName", matagName,
+            "matagAdminUrl", matagAdminPath,
+            "matagGameUrl", matagGamePath,
+            "matagSupportEmail", matagSupportEmail
+        )
 }

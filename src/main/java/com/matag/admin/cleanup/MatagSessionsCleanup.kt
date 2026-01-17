@@ -1,28 +1,27 @@
-package com.matag.admin.cleanup;
+package com.matag.admin.cleanup
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.matag.admin.session.MatagSessionRepository;
-
-import lombok.AllArgsConstructor;
+import com.matag.admin.session.MatagSessionRepository
+import lombok.AllArgsConstructor
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
+import java.time.Clock
+import java.time.LocalDateTime
 
 @Component
-@AllArgsConstructor
-public class MatagSessionsCleanup {
-  private static final Logger LOGGER = LoggerFactory.getLogger(MatagSessionsCleanup.class);
+open class MatagSessionsCleanup(
+    private val matagSessionRepository: MatagSessionRepository,
+    private val clock: Clock
+) {
 
-  private final MatagSessionRepository matagSessionRepository;
-  private final Clock clock;
+    @Transactional
+    open fun cleanup() {
+        val deletedRows = matagSessionRepository.deleteValidUntilBefore(LocalDateTime.now(clock))
+        LOGGER.info("MatagSessionsCleanup deleted $deletedRows rows.")
+    }
 
-  @Transactional
-  public void cleanup() {
-    var deletedRows = matagSessionRepository.deleteValidUntilBefore(LocalDateTime.now(clock));
-    LOGGER.info("MatagSessionsCleanup deleted " + deletedRows + " rows.");
-  }
+    companion object {
+        private val LOGGER: Logger = LoggerFactory.getLogger(MatagSessionsCleanup::class.java)
+    }
 }

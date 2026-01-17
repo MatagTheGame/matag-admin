@@ -45,4 +45,32 @@ public class Game {
 
   @OneToMany(mappedBy = "game", cascade = CascadeType.REMOVE)
   private List<GameSession> gameSessions;
+
+  public Long getId() {
+    return id;
+  }
+
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public GameType getType() {
+    return type;
+  }
+
+  public GameStatusType getStatus() {
+    return status;
+  }
+
+  public GameResultType getResult() {
+    return result;
+  }
+
+  public LocalDateTime getFinishedAt() {
+    return finishedAt;
+  }
+
+  public List<GameSession> getGameSessions() {
+    return gameSessions;
+  }
 }
