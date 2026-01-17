@@ -24,7 +24,7 @@ class FindActiveGameControllerTest : AbstractApplicationTest() {
         val response = getForEntity("/game", ActiveGameResponse::class.java)
 
         // Then
-        assertThat(response.getResponseBody()?.getGameId()).isNull()
+        assertThat(response.getResponseBody()?.gameId).isNull()
     }
 
     @Test
@@ -43,11 +43,11 @@ class FindActiveGameControllerTest : AbstractApplicationTest() {
 
         // Then
         assertThat(response.status).isEqualTo(HttpStatus.OK)
-        assertThat(response.getResponseBody()!!.getGameId()).isGreaterThan(0)
-        assertThat(response.getResponseBody()!!.getCreatedAt()).isNotNull()
-        assertThat(response.getResponseBody()!!.getPlayerName()).isEqualTo("User1")
-        assertThat(response.getResponseBody()!!.getPlayerOptions()).isEqualTo("player1 options")
-        assertThat(response.getResponseBody()!!.getOpponentName()).isNull()
-        assertThat(response.getResponseBody()!!.getOpponentOptions()).isNull()
+        assertThat(response.getResponseBody()?.gameId).isGreaterThan(0)
+        assertThat(response.getResponseBody()?.createdAt).isNotNull()
+        assertThat(response.getResponseBody()?.playerName).isEqualTo("User1")
+        assertThat(response.getResponseBody()?.playerOptions).isEqualTo("player1 options")
+        assertThat(response.getResponseBody()?.opponentName).isNull()
+        assertThat(response.getResponseBody()?.opponentOptions).isNull()
     }
 }

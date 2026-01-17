@@ -1,38 +1,39 @@
-package com.matag.admin.game.findactive;
+package com.matag.admin.game.findactive
 
-import org.springframework.stereotype.Component;
-
-import com.matag.admin.auth.SecurityContextHolderHelper;
-import com.matag.admin.game.session.GameSessionRepository;
-import com.matag.admin.game.session.GameSessionService;
-
-import lombok.AllArgsConstructor;
+import com.matag.admin.auth.SecurityContextHolderHelper
+import com.matag.admin.game.session.GameSessionRepository
+import com.matag.admin.game.session.GameSessionService
+import lombok.AllArgsConstructor
+import org.springframework.stereotype.Component
 
 @Component
 @AllArgsConstructor
-public class FindGameService {
-  private final SecurityContextHolderHelper securityContextHolderHelper;
-  private final GameSessionRepository gameSessionRepository;
-  private final GameSessionService gameSessionService;
+open class FindGameService(
+    private val securityContextHolderHelper: SecurityContextHolderHelper,
+    private val gameSessionRepository: GameSessionRepository,
+    private val gameSessionService: GameSessionService
+) {
 
-  public ActiveGameResponse findActiveGame() {
-    var session = securityContextHolderHelper.getSession();
-    var activeGameSession = gameSessionRepository.findPlayerActiveGameSession(session.sessionId);
+    open fun findActiveGame(): ActiveGameResponse {
+        val session = securityContextHolderHelper.getSession()
+        val activeGameSession = gameSessionRepository.findPlayerActiveGameSession(session.sessionId)
 
-    if (activeGameSession.isEmpty()) {
-      return ActiveGameResponse.builder().build();
+        if (activeGameSession.isEmpty()) {
+            return ActiveGameResponse()
+        }
+
+        val game = activeGameSession.get().game
+        val gamePlayers = gameSessionService.getGamePlayers(game)
+
+        return ActiveGameResponse(
+            gameId = game.id,
+            createdAt = game.createdAt,
+            playerName = gamePlayers.playerSession.player.username,
+            playerOptions = gamePlayers.playerSession.playerOptions,
+            opponentName = if (gamePlayers.opponentSession != null) gamePlayers.opponentSession
+                    .player.username else null,
+            opponentOptions = if (gamePlayers.opponentSession != null) gamePlayers.opponentSession
+                    .playerOptions else null
+        )
     }
-
-    var game = activeGameSession.get().getGame();
-    var gamePlayers = gameSessionService.getGamePlayers(game);
-
-    return ActiveGameResponse.builder()
-      .gameId(game.getId())
-      .createdAt(game.getCreatedAt())
-      .playerName(gamePlayers.getPlayerSession().getPlayer().getUsername())
-      .playerOptions(gamePlayers.getPlayerSession().getPlayerOptions())
-      .opponentName(gamePlayers.getOpponentSession() != null ? gamePlayers.getOpponentSession().getPlayer().getUsername() : null)
-      .opponentOptions(gamePlayers.getOpponentSession() != null ? gamePlayers.getOpponentSession().getPlayerOptions() : null)
-      .build();
-  }
 }
