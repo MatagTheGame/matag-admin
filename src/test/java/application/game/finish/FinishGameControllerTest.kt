@@ -74,7 +74,7 @@ class FinishGameControllerTest : AbstractApplicationTest() {
         assertThat(gameSessions[1].session).isNull()
 
         // Check elo score
-        assertThat(scoreRepository.findByUsername(TestUtils.USER_1_USERNAME).getElo()).isEqualTo(1050)
-        assertThat(scoreRepository.findByUsername(TestUtils.USER_2_USERNAME).getElo()).isEqualTo(950)
+        assertThat(scoreRepository.findByUsername(TestUtils.USER_1_USERNAME)?.elo).isEqualTo(1050)
+        assertThat(scoreRepository.findByUsername(TestUtils.USER_2_USERNAME)?.elo).isEqualTo(950)
     }
 }

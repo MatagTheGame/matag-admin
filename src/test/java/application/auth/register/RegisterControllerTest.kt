@@ -111,7 +111,7 @@ class RegisterControllerTest(
         assertThat(user.status).isEqualTo(MatagUserStatus.VERIFYING)
         assertThat(user.createdAt).isNotNull()
 
-        val score = scoreRepository.findByMatagUser(user)
+        val score = scoreRepository.findByMatagUser(user)!!
         assertThat(score.elo).isEqualTo(1000)
 
         Mockito.verify(javaMailSender).send(mimeMessage)

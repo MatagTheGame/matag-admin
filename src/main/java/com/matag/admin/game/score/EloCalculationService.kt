@@ -1,39 +1,41 @@
-package com.matag.admin.game.score;
+package com.matag.admin.game.score
 
-import org.springframework.stereotype.Component;
-
-import com.matag.admin.game.game.GameResultType;
-
-import lombok.AllArgsConstructor;
+import com.matag.admin.game.game.GameResultType
+import lombok.AllArgsConstructor
+import org.springframework.stereotype.Component
+import kotlin.math.pow
 
 @Component
-@AllArgsConstructor
-public class EloCalculationService {
-  private static final int K = 100;
+open class EloCalculationService {
+    open fun applyEloRating(score1: Score, score2: Score, result: GameResultType) {
+        val p1 = probability(score1.elo!!.toFloat(), score2.elo!!.toFloat())
+        val p2 = probability(score2.elo!!.toFloat(), score1.elo!!.toFloat())
 
-  public void applyEloRating(Score score1, Score score2, GameResultType result) {
-    float p1 = probability(score1.getElo(), score2.getElo());
-    float p2 = probability(score2.getElo(), score1.getElo());
+        when (result) {
+            GameResultType.R1 -> {
+                score1.elo = Math.round(score1.elo!! + K * (1 - p2))
+                score2.elo = Math.round(score2.elo!! + K * (0 - p1))
+            }
 
-    switch (result) {
-      case R1 -> {
-        score1.setElo(Math.round(score1.getElo() + K * (1 - p2)));
-        score2.setElo(Math.round(score2.getElo() + K * (0 - p1)));
-      }
-      case R2 -> {
-        score1.setElo(Math.round(score1.getElo() + K * (0 - p2)));
-        score2.setElo(Math.round(score2.getElo() + K * (1 - p1)));
-      } case RX -> {
+            GameResultType.R2 -> {
+                score1.elo = Math.round(score1.elo!! + K * (0 - p2))
+                score2.elo = Math.round(score2.elo!! + K * (1 - p1))
+            }
 
-      }
+            GameResultType.RX -> {
+            }
+        }
+
+        println("Updated Ratings:")
+        println("user1: " + score1.elo)
+        println("user2: " + score2.elo)
     }
 
-    System.out.println("Updated Ratings:");
-    System.out.println("user1: " + score1.getElo());
-    System.out.println("user2: " + score2.getElo());
-  }
+    private fun probability(rating1: Float, rating2: Float): Float {
+        return 1.0f * 1.0f / (1 + 1.0f * (10.0.pow((1.0f * (rating1 - rating2) / 400).toDouble())).toFloat())
+    }
 
-  private float probability(float rating1, float rating2) {
-    return 1.0f * 1.0f / (1 + 1.0f * (float)(Math.pow(10, 1.0f * (rating1 - rating2) / 400)));
-  }
+    companion object {
+        private const val K = 100
+    }
 }

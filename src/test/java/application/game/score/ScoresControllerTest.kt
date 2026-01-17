@@ -28,8 +28,8 @@ class ScoresControllerTest : AbstractApplicationTest() {
         // Given
         loginUser(TestUtils.USER_1_SESSION_TOKEN, TestUtils.USER_1_USERNAME)
 
-        scoreRepository.save(scoreRepository.findByUsername(TestUtils.USER_1_USERNAME).toBuilder().elo(1600).wins(1).draws(0).losses(0).build())
-        scoreRepository.save(scoreRepository.findByUsername(TestUtils.USER_2_USERNAME).toBuilder().elo(1400).wins(0).draws(0).losses(1).build())
+        scoreRepository.save(scoreRepository.findByUsername(TestUtils.USER_1_USERNAME)?.copy(elo = 1600, wins = 1, draws = 0, losses = 0)!!)
+        scoreRepository.save(scoreRepository.findByUsername(TestUtils.USER_2_USERNAME)?.copy(elo = 1400, wins = 0, draws = 0, losses = 1)!!)
 
         // When
         val response =
@@ -37,9 +37,9 @@ class ScoresControllerTest : AbstractApplicationTest() {
 
         // Then
         assertThat(response.status).isEqualTo(HttpStatus.OK)
-        assertThat(response.getResponseBody()?.getScores()).contains(
-            ScoreResponse.builder().rank(1).player(TestUtils.USER_1_USERNAME).elo(1600).wins(1).draws(0).losses(0).build(),
-            ScoreResponse.builder().rank(2).player(TestUtils.USER_2_USERNAME).elo(1400).wins(0).draws(0).losses(1).build()
+        assertThat(response.getResponseBody()?.scores).contains(
+            ScoreResponse(rank = 1, player = TestUtils.USER_1_USERNAME, elo = 1600, wins = 1, draws = 0, losses = 0),
+            ScoreResponse(rank = 2, player = TestUtils.USER_2_USERNAME, elo = 1400, wins = 0, draws = 0, losses = 1)
         )
     }
 }

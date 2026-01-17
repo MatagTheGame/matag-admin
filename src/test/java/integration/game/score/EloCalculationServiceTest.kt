@@ -12,8 +12,8 @@ class EloCalculationServiceTest {
     @Test
     fun sameEloPlayer1Winner() {
         // Given
-        val user1 = Score.builder().elo(1000).build()
-        val user2 = Score.builder().elo(1000).build()
+        val user1 = Score(elo = 1000)
+        val user2 = Score(elo = 1000)
 
         // When
         eloCalculationService.applyEloRating(user1, user2, GameResultType.R1)
@@ -26,8 +26,8 @@ class EloCalculationServiceTest {
     @Test
     fun sameEloPlayer2Winner() {
         // Given
-        val user1 = Score.builder().elo(1000).build()
-        val user2 = Score.builder().elo(1000).build()
+        val user1 = Score(elo = 1000)
+        val user2 = Score(elo = 1000)
 
         // When
         eloCalculationService.applyEloRating(user1, user2, GameResultType.R2)
@@ -40,8 +40,8 @@ class EloCalculationServiceTest {
     @Test
     fun highEloWins() {
         // Given
-        val user1 = Score.builder().elo(1800).build()
-        val user2 = Score.builder().elo(1000).build()
+        val user1 = Score(elo = 1800)
+        val user2 = Score(elo = 1000)
 
         // When
         eloCalculationService.applyEloRating(user1, user2, GameResultType.R1)
@@ -54,8 +54,8 @@ class EloCalculationServiceTest {
     @Test
     fun highEloLoses() {
         // Given
-        val user1 = Score.builder().elo(1800).build()
-        val user2 = Score.builder().elo(1000).build()
+        val user1 = Score(elo = 1800)
+        val user2 = Score(elo = 1000)
 
         // When
         eloCalculationService.applyEloRating(user1, user2, GameResultType.R2)

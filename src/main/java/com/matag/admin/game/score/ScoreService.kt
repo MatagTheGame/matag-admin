@@ -1,33 +1,34 @@
-package com.matag.admin.game.score;
+package com.matag.admin.game.score
 
-import static com.matag.admin.game.game.GameType.UNLIMITED;
-
-import java.time.Clock;
-import java.time.LocalDateTime;
-
-import org.springframework.stereotype.Component;
-
-import com.matag.admin.user.MatagUser;
-
-import lombok.AllArgsConstructor;
+import com.matag.admin.game.game.GameType
+import com.matag.admin.user.MatagUser
+import lombok.AllArgsConstructor
+import org.springframework.stereotype.Component
+import java.time.Clock
+import java.time.LocalDateTime
 
 @Component
 @AllArgsConstructor
-public class ScoreService {
-  private static final int STARTING_ELO = 1000;
+class ScoreService(
+    private val scoreRepository: ScoreRepository,
+    private val clock: Clock
+) {
 
-  private final ScoreRepository scoreRepository;
-  private final Clock clock;
+    fun createStartingScore(matagUser: MatagUser?) {
+        scoreRepository.save(
+            Score(
+                matagUser = matagUser,
+                elo = STARTING_ELO,
+                type = GameType.UNLIMITED,
+                wins = 0,
+                draws = 0,
+                losses = 0,
+                lastGamePlayedAt = LocalDateTime.now(clock)
+            )
+        )
+    }
 
-  public void createStartingScore(MatagUser matagUser) {
-    scoreRepository.save(Score.builder()
-      .matagUser(matagUser)
-      .elo(STARTING_ELO)
-      .type(UNLIMITED)
-      .wins(0)
-      .draws(0)
-      .losses(0)
-      .lastGamePlayedAt(LocalDateTime.now(clock))
-      .build());
-  }
+    companion object {
+        private const val STARTING_ELO = 1000
+    }
 }

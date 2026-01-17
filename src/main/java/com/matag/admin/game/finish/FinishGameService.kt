@@ -49,6 +49,6 @@ open class FinishGameService(
         gamePlayers.opponentSession?.session = null
         gameSessionRepository.save(session2!!)
 
-        eloApplyService.apply(session1?.player, session2?.player, gameResultType)
+        eloApplyService.apply(session1?.player!!, session2?.player!!, gameResultType)
     }
 }
