@@ -32,10 +32,10 @@ class FindActiveGameControllerTest : AbstractApplicationTest() {
         // Given
         loginUser(USER_1_SESSION_TOKEN, USER_1_USERNAME)
 
-        val request = JoinGameRequest.builder()
-            .gameType(GameType.UNLIMITED)
-            .playerOptions("player1 options")
-            .build()
+        val request = JoinGameRequest(
+            gameType = GameType.UNLIMITED,
+            playerOptions = "player1 options"
+        )
         postForEntity("/game", request, JoinGameResponse::class.java, USER_1_SESSION_TOKEN)
 
         // When

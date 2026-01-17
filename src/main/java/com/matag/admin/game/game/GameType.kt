@@ -1,5 +1,5 @@
-package com.matag.admin.game.game;
+package com.matag.admin.game.game
 
-public enum GameType {
-  UNLIMITED, PRIVATE
+enum class GameType {
+    UNLIMITED, PRIVATE
 }

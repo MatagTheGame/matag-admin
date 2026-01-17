@@ -16,24 +16,24 @@ open class FindGameService(
 
     open fun findActiveGame(): ActiveGameResponse {
         val session = securityContextHolderHelper.getSession()
-        val activeGameSession = gameSessionRepository.findPlayerActiveGameSession(session.sessionId)
+        val activeGameSession = gameSessionRepository.findPlayerActiveGameSession(session.sessionId!!)
 
-        if (activeGameSession.isEmpty()) {
+        if (activeGameSession == null) {
             return ActiveGameResponse()
         }
 
-        val game = activeGameSession.get().game
+        val game = activeGameSession.game!!
         val gamePlayers = gameSessionService.getGamePlayers(game)
 
         return ActiveGameResponse(
             gameId = game.id,
             createdAt = game.createdAt,
-            playerName = gamePlayers.playerSession.player.username,
-            playerOptions = gamePlayers.playerSession.playerOptions,
-            opponentName = if (gamePlayers.opponentSession != null) gamePlayers.opponentSession
-                    .player.username else null,
-            opponentOptions = if (gamePlayers.opponentSession != null) gamePlayers.opponentSession
-                    .playerOptions else null
+            playerName = gamePlayers.playerSession?.player?.username,
+            playerOptions = gamePlayers.playerSession?.playerOptions,
+            opponentName = if (gamePlayers.opponentSession != null) gamePlayers?.opponentSession
+                    ?.player?.username else null,
+            opponentOptions = if (gamePlayers.opponentSession != null) gamePlayers?.opponentSession
+                    ?.playerOptions else null
         )
     }
 }

@@ -21,15 +21,15 @@ open class CancelGameService(
 ) {
 
     @Transactional
-    open fun cancel(gameId: Long?) {
+    open fun cancel(gameId: Long) {
         val session = securityContextHolderHelper.getSession()
-        val activeGameSession = gameSessionRepository.findPlayerActiveGameSession(session.sessionId)
-        if (activeGameSession.isPresent()) {
-            if (activeGameSession.get().game.id == gameId) {
-                val game = activeGameSession.get().game
-                val gamePlayers = gameSessionService.getGamePlayers(game)
+        val activeGameSession = gameSessionRepository.findPlayerActiveGameSession(session.sessionId!!)
+        if (activeGameSession != null) {
+            if (activeGameSession.game?.id == gameId) {
+                val game = activeGameSession.game
+                val gamePlayers = gameSessionService.getGamePlayers(game!!)
                 if (gamePlayers.opponentSession == null) {
-                    gameSessionRepository.delete(gamePlayers.playerSession)
+                    gameSessionRepository.delete(gamePlayers.playerSession!!)
                     gameRepository.delete(game)
                 } else {
                     val winnerSessionId = findOpponentSessionId(gamePlayers, session)
@@ -40,10 +40,10 @@ open class CancelGameService(
     }
 
     private fun findOpponentSessionId(gamePlayers: GamePlayers, session: MatagSession): String? {
-        if (gamePlayers.playerSession.session.id == session.id) {
-            return gamePlayers.opponentSession.session.sessionId
+        return if (gamePlayers.playerSession?.session?.id == session.id) {
+            gamePlayers.opponentSession?.session?.sessionId
         } else {
-            return gamePlayers.playerSession.session.sessionId
+            gamePlayers.playerSession?.session?.sessionId
         }
     }
 }

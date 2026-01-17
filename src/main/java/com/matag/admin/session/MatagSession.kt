@@ -2,10 +2,6 @@ package com.matag.admin.session
 
 import com.matag.admin.user.MatagUser
 import jakarta.persistence.*
-import lombok.AllArgsConstructor
-import lombok.Builder
-import lombok.Data
-import lombok.NoArgsConstructor
 import java.time.LocalDateTime
 
 @Entity
@@ -15,6 +11,7 @@ data class MatagSession(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
+
     @JvmField
     var sessionId: String? = null,
 

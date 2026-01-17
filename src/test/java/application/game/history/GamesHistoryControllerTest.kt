@@ -6,14 +6,10 @@ import com.matag.admin.game.game.*
 import com.matag.admin.game.history.GameHistory
 import com.matag.admin.game.history.GamesHistoryResponse
 import com.matag.admin.game.session.GameSession
-import com.matag.admin.game.session.GameSessionRepository
 import com.matag.admin.user.MatagUser
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
 import java.time.LocalDateTime
 
 class GamesHistoryControllerTest : AbstractApplicationTest() {
@@ -53,66 +49,66 @@ class GamesHistoryControllerTest : AbstractApplicationTest() {
         )
 
         // Then
-        assertThat(gamesHistoryResponse.getResponseBody()?.getGamesHistory()).hasSize(3)
-        assertThat(gamesHistoryResponse.getResponseBody()?.getGamesHistory()?.get(0))
+        assertThat(gamesHistoryResponse.getResponseBody()?.gamesHistory).hasSize(3)
+        assertThat(gamesHistoryResponse.getResponseBody()?.gamesHistory?.get(0))
             .usingRecursiveComparison().ignoringFields("gameId").isEqualTo(
-                GameHistory.builder()
-                    .startedTime(LocalDateTime.now(clock))
-                    .finishedTime(LocalDateTime.now(clock))
-                    .type(GameType.UNLIMITED)
-                    .result(GameUserResultType.WIN)
-                    .player1Name(TestUtils.USER_1_USERNAME)
-                    .player1Options("User1 options")
-                    .player2Name(TestUtils.USER_2_USERNAME)
-                    .player2Options("User2 options")
-                    .build()
+                GameHistory(
+                    startedTime = LocalDateTime.now(clock),
+                    finishedTime = LocalDateTime.now(clock),
+                    type = GameType.UNLIMITED,
+                    result = GameUserResultType.WIN,
+                    player1Name = TestUtils.USER_1_USERNAME,
+                    player1Options = "User1 options",
+                    player2Name = TestUtils.USER_2_USERNAME,
+                    player2Options = "User2 options"
+                )
             )
-        assertThat(gamesHistoryResponse.getResponseBody()?.getGamesHistory()?.get(1))
+        assertThat(gamesHistoryResponse.getResponseBody()?.gamesHistory?.get(1))
             .usingRecursiveComparison().ignoringFields("gameId").isEqualTo(
-                GameHistory.builder()
-                    .startedTime(LocalDateTime.now(clock))
-                    .finishedTime(LocalDateTime.now(clock))
-                    .type(GameType.UNLIMITED)
-                    .result(GameUserResultType.LOST)
-                    .player1Name(TestUtils.USER_1_USERNAME)
-                    .player1Options("User1 options")
-                    .player2Name(TestUtils.USER_2_USERNAME)
-                    .player2Options("User2 options")
-                    .build()
+                GameHistory(
+                    startedTime = LocalDateTime.now(clock),
+                    finishedTime = LocalDateTime.now(clock),
+                    type = GameType.UNLIMITED,
+                    result = GameUserResultType.LOST,
+                    player1Name = TestUtils.USER_1_USERNAME,
+                    player1Options = "User1 options",
+                    player2Name = TestUtils.USER_2_USERNAME,
+                    player2Options = "User2 options"
+                )
             )
-        assertThat(gamesHistoryResponse.getResponseBody()?.getGamesHistory()?.get(2))
+        assertThat(gamesHistoryResponse.getResponseBody()?.gamesHistory?.get(2))
             .usingRecursiveComparison().ignoringFields("gameId").isEqualTo(
-                GameHistory.builder()
-                    .startedTime(LocalDateTime.now(clock))
-                    .finishedTime(LocalDateTime.now(clock))
-                    .type(GameType.UNLIMITED)
-                    .result(GameUserResultType.DRAW)
-                    .player1Name(TestUtils.USER_2_USERNAME)
-                    .player1Options("User2 options")
-                    .player2Name(TestUtils.USER_1_USERNAME)
-                    .player2Options("User1 options")
-                    .build()
+                GameHistory(
+                    startedTime = LocalDateTime.now(clock),
+                    finishedTime = LocalDateTime.now(clock),
+                    type = GameType.UNLIMITED,
+                    result = GameUserResultType.DRAW,
+                    player1Name = TestUtils.USER_2_USERNAME,
+                    player1Options = "User2 options",
+                    player2Name = TestUtils.USER_1_USERNAME,
+                    player2Options = "User1 options"
+                )
             )
     }
 
     private fun createGame(result: GameResultType?): Game {
-        val game = Game.builder()
-            .createdAt(LocalDateTime.now(clock))
-            .type(GameType.UNLIMITED)
-            .status(GameStatusType.FINISHED)
-            .result(result)
-            .finishedAt(LocalDateTime.now(clock))
-            .build()
+        val game = Game(
+            createdAt = LocalDateTime.now(clock),
+            type = GameType.UNLIMITED,
+            status = GameStatus.FINISHED,
+            result = result,
+            finishedAt = LocalDateTime.now(clock)
+        )
         gameRepository.save(game)
         return game
     }
 
-    private fun createGameSession(game: Game?, user: MatagUser) {
-        val gameSession = GameSession.builder()
-            .game(game)
-            .player(user)
-            .playerOptions(user.username + " options")
-            .build()
+    private fun createGameSession(game: Game, user: MatagUser) {
+        val gameSession = GameSession(
+            game = game,
+            player = user,
+            playerOptions = user.username + " options"
+        )
         gameSessionRepository.save(gameSession)
     }
 }

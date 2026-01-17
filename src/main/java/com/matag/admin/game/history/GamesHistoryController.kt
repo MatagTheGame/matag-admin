@@ -1,58 +1,52 @@
-package com.matag.admin.game.history;
+package com.matag.admin.game.history
 
-import static com.matag.admin.game.game.GameStatusType.FINISHED;
-
-import java.util.stream.Collectors;
-
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.matag.admin.auth.SecurityContextHolderHelper;
-import com.matag.admin.game.game.Game;
-import com.matag.admin.game.game.GameRepository;
-import com.matag.admin.game.result.ResultService;
-import com.matag.admin.game.session.GameSessionService;
-import com.matag.admin.user.MatagUser;
-
-import lombok.AllArgsConstructor;
+import com.matag.admin.auth.SecurityContextHolderHelper
+import com.matag.admin.game.game.Game
+import com.matag.admin.game.game.GameRepository
+import com.matag.admin.game.game.GameStatus
+import com.matag.admin.game.result.ResultService
+import com.matag.admin.game.session.GameSessionService
+import com.matag.admin.user.MatagUser
+import lombok.AllArgsConstructor
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import java.util.stream.Collectors
 
 @RestController
 @RequestMapping("/game")
-@AllArgsConstructor
-public class GamesHistoryController {
-  private final SecurityContextHolderHelper securityContextHolderHelper;
-  private final GameRepository gameRepository;
-  private final GameSessionService gameSessionService;
-  private final ResultService resultService;
+open class GamesHistoryController(
+    private val securityContextHolderHelper: SecurityContextHolderHelper,
+    private val gameRepository: GameRepository,
+    private val gameSessionService: GameSessionService,
+    private val resultService: ResultService
+) {
 
-  @PreAuthorize("hasAnyRole('USER', 'GUEST')")
-  @GetMapping("/history")
-  public GamesHistoryResponse gameHistory() {
-    var user = securityContextHolderHelper.getUser();
-    var games = gameRepository.findByPlayerIdAndStatus(user.getId(), FINISHED);
-    return GamesHistoryResponse.builder()
-      .gamesHistory(games.stream()
-        .map(game -> this.toGameHistory(game, user))
-        .collect(Collectors.toList()))
-      .build();
-  }
+    @PreAuthorize("hasAnyRole('USER', 'GUEST')")
+    @GetMapping("/history")
+    open fun gameHistory(): GamesHistoryResponse? {
+        val user = securityContextHolderHelper.getUser()
+        val games = gameRepository.findByPlayerIdAndStatus(user.id!!, GameStatus.FINISHED)
+        return GamesHistoryResponse(
+            gamesHistory = games.map { this.toGameHistory(it!!, user) }
+        )
+    }
 
-  private GameHistory toGameHistory(Game game, MatagUser user) {
-    var gamePlayers = gameSessionService.getGamePlayers(game);
-    var player1 = gamePlayers.getPlayerSession();
-    var player2 = gamePlayers.getOpponentSession();
-    return GameHistory.builder()
-      .gameId(game.getId())
-      .startedTime(game.getCreatedAt())
-      .finishedTime(game.getFinishedAt())
-      .type(game.getType())
-      .result(resultService.toUserResult(game, user))
-      .player1Name(player1.getPlayer().getUsername())
-      .player1Options(player1.getPlayerOptions())
-      .player2Name(player2.getPlayer().getUsername())
-      .player2Options(player2.getPlayerOptions())
-      .build();
-  }
+    private fun toGameHistory(game: Game, user: MatagUser): GameHistory {
+        val gamePlayers = gameSessionService!!.getGamePlayers(game)
+        val player1 = gamePlayers.playerSession
+        val player2 = gamePlayers.opponentSession
+        return GameHistory(
+            gameId = game.id,
+            startedTime = game.createdAt,
+            finishedTime = game.finishedAt,
+            type = game.type,
+            result = resultService!!.toUserResult(game, user),
+            player1Name = player1!!.player!!.username,
+            player1Options = player1.playerOptions,
+            player2Name = player2!!.player!!.username,
+            player2Options = player2.playerOptions,
+        )
+    }
 }

@@ -1,104 +1,40 @@
-package com.matag.admin.game.game;
+package com.matag.admin.game.game
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.matag.admin.game.session.GameSession
+import jakarta.persistence.*
+import java.time.LocalDateTime
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-
-import com.matag.admin.game.session.GameSession;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-@Data
-@ToString(exclude = "gameSessions")
-@EqualsAndHashCode(exclude = "gameSessions")
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "game")
-public class Game {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-  private LocalDateTime createdAt;
-  @Enumerated(EnumType.STRING)
-  private GameType type;
-  @Enumerated(EnumType.STRING)
-  private GameStatusType status;
-  @Enumerated(EnumType.STRING)
-  private GameResultType result;
-  private LocalDateTime finishedAt;
+data class Game(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
 
-  @OneToMany(mappedBy = "game", cascade = CascadeType.REMOVE)
-  private List<GameSession> gameSessions;
+    @Column(nullable = false, updatable = false)
+    val createdAt: LocalDateTime = LocalDateTime.now(),
 
-  public Long getId() {
-    return id;
-  }
+    @Enumerated(EnumType.STRING)
+    var type: GameType? = null,
 
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
-  }
+    @Enumerated(EnumType.STRING)
+    var status: GameStatus? = null,
 
-  public GameType getType() {
-    return type;
-  }
+    @Enumerated(EnumType.STRING)
+    var result: GameResultType? = null,
 
-  public GameStatusType getStatus() {
-    return status;
-  }
+    var finishedAt: LocalDateTime? = null,
 
-  public GameResultType getResult() {
-    return result;
-  }
+    @OneToMany(mappedBy = "game", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    var gameSessions: MutableList<GameSession> = mutableListOf()
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Game) return false
+        return id != null && id == other.id
+    }
 
-  public LocalDateTime getFinishedAt() {
-    return finishedAt;
-  }
+    override fun hashCode(): Int = id?.hashCode() ?: 0
 
-  public List<GameSession> getGameSessions() {
-    return gameSessions;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public void setType(GameType type) {
-    this.type = type;
-  }
-
-  public void setStatus(GameStatusType status) {
-    this.status = status;
-  }
-
-  public void setResult(GameResultType result) {
-    this.result = result;
-  }
-
-  public void setFinishedAt(LocalDateTime finishedAt) {
-    this.finishedAt = finishedAt;
-  }
-
-  public void setGameSessions(List<GameSession> gameSessions) {
-    this.gameSessions = gameSessions;
-  }
+    override fun toString(): String = "Game(id=$id, type=$type, status=$status)"
 }

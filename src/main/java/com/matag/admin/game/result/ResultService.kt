@@ -1,52 +1,46 @@
-package com.matag.admin.game.result;
+package com.matag.admin.game.result
 
-import org.springframework.stereotype.Component;
-
-import com.matag.admin.game.game.Game;
-import com.matag.admin.game.game.GameResultType;
-import com.matag.admin.game.game.GameUserResultType;
-import com.matag.admin.game.session.GamePlayers;
-import com.matag.admin.game.session.GameSessionService;
-import com.matag.admin.user.MatagUser;
-
-import lombok.AllArgsConstructor;
+import com.matag.admin.game.game.Game
+import com.matag.admin.game.game.GameResultType
+import com.matag.admin.game.game.GameUserResultType
+import com.matag.admin.game.session.GamePlayers
+import com.matag.admin.game.session.GameSessionService
+import com.matag.admin.user.MatagUser
+import lombok.AllArgsConstructor
+import org.springframework.stereotype.Component
 
 @Component
 @AllArgsConstructor
-public class ResultService {
-  private final GameSessionService gameSessionService;
-
-  public GameResultType getResult(GamePlayers gamePlayers, String winnerSessionId) {
-    if (gamePlayers.getPlayerSession().getSession().sessionId.equals(winnerSessionId)) {
-      return GameResultType.R1;
-    } else {
-      return GameResultType.R2;
-    }
-  }
-
-  public GameUserResultType toUserResult(Game game, MatagUser user) {
-    var gamePlayers = gameSessionService.getGamePlayers(game);
-
-    switch (game.getResult()) {
-      case R1:
-        if (gamePlayers.getPlayerSession().getPlayer().getUsername().equals(user.getUsername())) {
-          return GameUserResultType.WIN;
+class ResultService(
+    private val gameSessionService: GameSessionService
+) {
+    fun getResult(gamePlayers: GamePlayers, winnerSessionId: String?): GameResultType {
+        if (gamePlayers.playerSession!!.session!!.sessionId == winnerSessionId) {
+            return GameResultType.R1
         } else {
-          return GameUserResultType.LOST;
+            return GameResultType.R2
         }
-
-      case RX:
-        return GameUserResultType.DRAW;
-
-      case R2:
-        if (gamePlayers.getPlayerSession().getPlayer().getUsername().equals(user.getUsername())) {
-          return GameUserResultType.LOST;
-        } else {
-          return GameUserResultType.WIN;
-        }
-
-      default:
-        throw new RuntimeException("Could not transform " + game.getResult());
     }
-  }
+
+    fun toUserResult(game: Game, user: MatagUser): GameUserResultType {
+        val gamePlayers = gameSessionService.getGamePlayers(game)
+
+        when (game.result) {
+            GameResultType.R1 -> if (gamePlayers.playerSession!!.player!!.username == user.username) {
+                return GameUserResultType.WIN
+            } else {
+                return GameUserResultType.LOST
+            }
+
+            GameResultType.RX -> return GameUserResultType.DRAW
+
+            GameResultType.R2 -> if (gamePlayers.playerSession!!.player!!.username == user.username) {
+                return GameUserResultType.LOST
+            } else {
+                return GameUserResultType.WIN
+            }
+
+            else -> throw RuntimeException("Could not transform " + game.result)
+        }
+    }
 }

@@ -20,9 +20,9 @@ open class DeckRetrieverController(
     @PreAuthorize("hasAnyRole('USER', 'GUEST')")
     @GetMapping
     open fun deckInfo(): DeckInfo {
-        val activeSession = gameSessionRepository.findPlayerActiveGameSession(securityContextHolderHelper.getSession().sessionId)
-            .orElseThrow { IllegalStateException("Active deck not found.") }
-        val deckMetadata = readDeckInfo(activeSession)
+        val activeSession = gameSessionRepository.findPlayerActiveGameSession(securityContextHolderHelper.getSession().sessionId!!)
+            ?: { IllegalStateException("Active deck not found.") }
+        val deckMetadata = readDeckInfo(activeSession as GameSession)
         return buildDeck(deckMetadata)
     }
 

@@ -5,17 +5,10 @@ import application.TestUtils
 import com.matag.admin.game.game.*
 import com.matag.admin.game.join.JoinGameRequest
 import com.matag.admin.game.join.JoinGameResponse
-import com.matag.admin.game.score.ScoreRepository
-import com.matag.admin.game.session.GameSession
-import com.matag.admin.game.session.GameSessionRepository
-import com.matag.admin.session.MatagSession
 import com.matag.admin.game.finish.FinishGameRequest
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
 import java.util.stream.Collectors
 import java.util.stream.StreamSupport
 
@@ -38,23 +31,23 @@ class FinishGameControllerTest : AbstractApplicationTest() {
     fun shouldFinishAGame() {
         // Given
         loginUser(TestUtils.USER_1_SESSION_TOKEN, TestUtils.USER_1_USERNAME)
-        val request1 = JoinGameRequest.builder()
-            .gameType(GameType.UNLIMITED)
-            .playerOptions("player1 options")
-            .build()
+        val request1 = JoinGameRequest(
+            gameType = GameType.UNLIMITED,
+            playerOptions = "player1 options",
+        )
         val joinGameResponse = postForEntity(
             "/game",
             request1,
             JoinGameResponse::class.java,
             TestUtils.USER_1_SESSION_TOKEN
         )
-        val gameId = requireNotNull(joinGameResponse.getResponseBody()?.getGameId())
+        val gameId = requireNotNull(joinGameResponse.getResponseBody()?.gameId)
 
         loginUser(TestUtils.USER_2_SESSION_TOKEN, TestUtils.USER_2_USERNAME)
-        val request2 = JoinGameRequest.builder()
-            .gameType(GameType.UNLIMITED)
-            .playerOptions("player2 options")
-            .build()
+        val request2 = JoinGameRequest(
+            gameType = GameType.UNLIMITED,
+            playerOptions = "player2 options"
+        )
         postForEntity(
             "/game",
             request2,
@@ -70,7 +63,7 @@ class FinishGameControllerTest : AbstractApplicationTest() {
         assertThat(response.status).isEqualTo(HttpStatus.OK)
         val game = gameRepository.findById(gameId)
         assertThat(game).isPresent()
-        assertThat(game.get().status).isEqualTo(GameStatusType.FINISHED)
+        assertThat(game.get().status).isEqualTo(GameStatus.FINISHED)
         assertThat(game.get().result).isEqualTo(GameResultType.R1)
         assertThat(game.get().finishedAt).isNotNull()
 

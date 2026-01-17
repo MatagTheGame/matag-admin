@@ -1,5 +1,5 @@
-package com.matag.admin.game.game;
+package com.matag.admin.game.game
 
-public enum GameResultType {
-  R1, RX, R2
+enum class GameResultType {
+    R1, RX, R2
 }

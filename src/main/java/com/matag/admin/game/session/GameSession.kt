@@ -1,80 +1,33 @@
-package com.matag.admin.game.session;
+package com.matag.admin.game.session
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.matag.admin.game.game.Game
+import com.matag.admin.session.MatagSession
+import com.matag.admin.user.MatagUser
+import jakarta.persistence.*
 
-import com.matag.admin.game.game.Game;
-import com.matag.admin.session.MatagSession;
-import com.matag.admin.user.MatagUser;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "game_session")
-public class GameSession {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-  @ManyToOne
-  @JoinColumn(referencedColumnName = "id")
-  private Game game;
-  @ManyToOne
-  @JoinColumn(referencedColumnName = "id")
-  private MatagSession session;
-  @ManyToOne
-  @JoinColumn(referencedColumnName = "id")
-  private MatagUser player;
-  private String playerOptions;
+data class GameSession(
+    @JvmField
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
 
-  public Long getId() {
-    return id;
-  }
+    @JvmField
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "game_id", nullable = false)
+    var game: Game = Game(),
 
-  public Game getGame() {
-    return game;
-  }
+    @JvmField
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "session_id")
+    var session: MatagSession? = null,
 
-  public MatagSession getSession() {
-    return session;
-  }
+    @JvmField
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "player_id")
+    var player: MatagUser? = null,
 
-  public MatagUser getPlayer() {
-    return player;
-  }
-
-  public String getPlayerOptions() {
-    return playerOptions;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public void setGame(Game game) {
-    this.game = game;
-  }
-
-  public void setSession(MatagSession session) {
-    this.session = session;
-  }
-
-  public void setPlayer(MatagUser player) {
-    this.player = player;
-  }
-
-  public void setPlayerOptions(String playerOptions) {
-    this.playerOptions = playerOptions;
-  }
-}
+    @JvmField
+    var playerOptions: String? = null
+)

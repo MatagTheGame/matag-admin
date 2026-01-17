@@ -2,7 +2,7 @@ package com.matag.admin.cleanup
 
 import com.matag.admin.game.game.Game
 import com.matag.admin.game.game.GameRepository
-import com.matag.admin.game.game.GameStatusType
+import com.matag.admin.game.game.GameStatus
 import com.matag.admin.game.session.GameSessionRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -27,8 +27,8 @@ open class MatagGameCleanup(
     private fun cleanupOldUnfinishedGames() {
         val oldNotFinishedGames = gameRepository.findOldGameByStatus(
             listOf(
-                GameStatusType.STARTING,
-                GameStatusType.IN_PROGRESS
+                GameStatus.STARTING,
+                GameStatus.IN_PROGRESS
             ), LocalDateTime.now(clock).minusDays(2)
         )
         LOGGER.info("cleanupOldUnfinishedGames...")
@@ -55,7 +55,7 @@ open class MatagGameCleanup(
                     totalGameDeleted++
                 }
             } catch (e: Exception) {
-                LOGGER.error("Could not delete game with id " + game.getId(), e)
+                LOGGER.error("Could not delete game with id " + game.id, e)
             }
         }
 

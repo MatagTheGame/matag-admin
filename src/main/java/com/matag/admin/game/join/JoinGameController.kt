@@ -1,22 +1,20 @@
-package com.matag.admin.game.join;
+package com.matag.admin.game.join
 
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import lombok.AllArgsConstructor;
+import lombok.AllArgsConstructor
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/game")
-@AllArgsConstructor
-public class JoinGameController {
-  private final JoinGameService joinGameService;
+open class JoinGameController(
+    private val joinGameService: JoinGameService
+) {
 
-  @PreAuthorize("hasAnyRole('USER', 'GUEST')")
-  @PostMapping
-  public JoinGameResponse joinGame(@RequestBody JoinGameRequest joinGameRequest) {
-    return joinGameService.joinGame(joinGameRequest);
-  }
+    @PreAuthorize("hasAnyRole('USER', 'GUEST')")
+    @PostMapping
+    open fun joinGame(@RequestBody joinGameRequest: JoinGameRequest): JoinGameResponse =
+        joinGameService.joinGame(joinGameRequest)
 }

@@ -1,16 +1,10 @@
-package com.matag.admin.game.join;
+package com.matag.admin.game.join
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Data
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class JoinGameResponse {
-  Long gameId;
-  String error;
-  Long activeGameId;
-}
+data class JoinGameResponse(
+    var gameId: Long = 0,
+    var error: String = "",
+    var activeGameId: Long = 0
+)
