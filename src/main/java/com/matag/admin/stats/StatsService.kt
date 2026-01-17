@@ -1,40 +1,35 @@
-package com.matag.admin.stats;
+package com.matag.admin.stats
 
-import static com.matag.admin.user.MatagUserStatus.ACTIVE;
-
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.springframework.stereotype.Component;
-
-import com.matag.admin.user.MatagUserRepository;
-import com.matag.cards.Cards;
-import com.matag.cards.sets.MtgSets;
-
-import lombok.AllArgsConstructor;
+import com.matag.admin.user.MatagUserRepository
+import com.matag.admin.user.MatagUserStatus
+import com.matag.cards.Cards
+import com.matag.cards.sets.MtgSets
+import lombok.AllArgsConstructor
+import org.springframework.stereotype.Component
+import java.time.Clock
+import java.time.LocalDateTime
 
 @Component
-@AllArgsConstructor
-public class StatsService {
-  private final MatagUserRepository matagUserRepository;
-  private final MtgSets mtgSets;
-  private final Cards cards;
-  private final Clock clock;
+open class StatsService(
+    private val matagUserRepository: MatagUserRepository,
+    private val mtgSets: MtgSets,
+    private val cards: Cards,
+    private val clock: Clock
+) {
 
-  public long countTotalUsers() {
-    return matagUserRepository.countUsersByStatus(ACTIVE);
-  }
+    open fun countTotalUsers(): Long {
+        return matagUserRepository.countUsersByStatus(MatagUserStatus.ACTIVE)
+    }
 
-  public List<String> onlineUsers() {
-    return matagUserRepository.retrieveOnlineUsers(LocalDateTime.now(clock));
-  }
+    open fun onlineUsers(): List<String> {
+        return matagUserRepository.retrieveOnlineUsers(LocalDateTime.now(clock))
+    }
 
-  public int countCards() {
-    return cards.all().size();
-  }
+    open fun countCards(): Int {
+        return cards.all().size
+    }
 
-  public int countSets() {
-    return mtgSets.getSets().size();
-  }
+    open fun countSets(): Int {
+        return mtgSets.sets.size
+    }
 }

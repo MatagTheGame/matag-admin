@@ -39,13 +39,12 @@ open class RegisterService(
         registerEmailService.sendRegistrationEmail(email, username, verification.verificationCode!!)
     }
 
-    open fun activate(username: String?, code: String?) {
-        val userOptional = userRepository.findByUsername(username)
-        if (userOptional.isEmpty) {
+    open fun activate(username: String, code: String) {
+        val user = userRepository.findByUsername(username)
+        if (user == null) {
             throw RuntimeException("User $username not found.")
         }
 
-        val user = userOptional.get()
         when (user.status) {
             MatagUserStatus.INACTIVE -> throw RuntimeException("User $username is inactive and cannot be activated.")
             MatagUserStatus.ACTIVE -> throw RuntimeException("User $username is already active.")

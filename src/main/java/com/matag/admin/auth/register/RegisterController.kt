@@ -36,7 +36,7 @@ open class RegisterController(
     }
 
     @GetMapping("/verify")
-    open fun verify(@RequestParam("username") username: String?, @RequestParam("code") code: String?): VerifyResponse? {
+    open fun verify(@RequestParam("username") username: String, @RequestParam("code") code: String): VerifyResponse? {
         LOGGER.info("Verifying {} with code {}", username, code)
         try {
             registerService.activate(username, code)
@@ -57,11 +57,11 @@ open class RegisterController(
         usernameValidator.validate(request.username)
         passwordValidator.validate(request.password)
 
-        if (userRepository.findByEmailAddress(request.email).isPresent) {
+        if (userRepository.findByEmailAddress(request.email) != null) {
             throw ValidationException(EMAIL_ALREADY_REGISTERED)
         }
 
-        if (userRepository.findByUsername(request.username).isPresent) {
+        if (userRepository.findByUsername(request.username) != null) {
             throw ValidationException(USERNAME_ALREADY_REGISTERED)
         }
     }

@@ -1,19 +1,8 @@
-package com.matag.admin.stats;
+package com.matag.admin.stats
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class StatsResponse {
-  long totalUsers;
-  List<String> onlineUsers;
-  int totalCards;
-  int totalSets;
-}
+data class StatsResponse(
+    var totalUsers: Long = 0,
+    var onlineUsers: List<String> = listOf(),
+    var totalCards: Int = 0,
+    var totalSets: Int = 0
+)

@@ -71,13 +71,12 @@ open class LoginController(
         passwordValidator.validate(loginRequest.password)
 
         val email = isEmailLogin(loginRequest)
-        val userOptional = getUsername(loginRequest.emailOrUsername, email)
+        val user = getUsername(loginRequest.emailOrUsername, email)
 
-        if (userOptional.isEmpty) {
+        if (user == null) {
             throw InsufficientAuthenticationException(EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT)
         }
 
-        val user = userOptional.get()
         if (!passwordEncoder.matches(loginRequest.password, user.password)) {
             throw InsufficientAuthenticationException(EMAIL_USERNAME_OR_PASSWORD_ARE_INCORRECT)
         }
@@ -97,7 +96,7 @@ open class LoginController(
         }
     }
 
-    private fun getUsername(emailOrUsername: String?, email: Boolean) =
+    private fun getUsername(emailOrUsername: String, email: Boolean) =
         if (email) {
             userRepository.findByEmailAddress(emailOrUsername)
         } else {

@@ -30,3 +30,11 @@ class MatagUser(
         return "MatagUser(id=$id, username=$username, emailAddress=$emailAddress, status=$status, type=$type)"
     }
 }
+
+enum class MatagUserType {
+    ADMIN, USER, GUEST
+}
+
+enum class MatagUserStatus {
+    ACTIVE, INACTIVE, VERIFYING
+}

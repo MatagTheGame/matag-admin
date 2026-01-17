@@ -80,7 +80,7 @@ abstract class AbstractApplicationTest {
         (clock as MockClock).setCurrentTime(currentTime.toInstant(ZoneOffset.UTC))
 
     fun loadUser(username: String) =
-        matagUserRepository.findByUsername(username).orElseThrow()
+        requireNotNull(matagUserRepository.findByUsername(username))
 
     fun loginUser(userToken: String, username: String) {
         val sessionId = UUID.fromString(userToken).toString()

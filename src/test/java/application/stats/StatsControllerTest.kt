@@ -4,6 +4,7 @@ import application.AbstractApplicationTest
 import application.TestUtils
 import com.matag.admin.stats.StatsResponse
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
@@ -16,7 +17,7 @@ class StatsControllerTest : AbstractApplicationTest() {
         val response = getForEntity("/stats", StatsResponse::class.java)
 
         // Then
-        Assertions.assertThat<HttpStatusCode?>(response.status).isEqualTo(HttpStatus.OK)
+        assertThat<HttpStatusCode?>(response.status).isEqualTo(HttpStatus.OK)
     }
 
     @Test
@@ -25,7 +26,7 @@ class StatsControllerTest : AbstractApplicationTest() {
         val response = getForEntity("/stats", StatsResponse::class.java)
 
         // Then
-        Assertions.assertThat(response.getResponseBody()!!.getTotalUsers()).isEqualTo(3)
+        assertThat(response.getResponseBody()!!.totalUsers).isEqualTo(3)
     }
 
     @Test
@@ -42,7 +43,7 @@ class StatsControllerTest : AbstractApplicationTest() {
         val response = getForEntity("/stats", StatsResponse::class.java)
 
         // Then
-        Assertions.assertThat<String?>(response.getResponseBody()!!.getOnlineUsers())
+        assertThat<String?>(response.getResponseBody()!!.onlineUsers)
             .containsExactlyInAnyOrder("User1", "Guest", "Guest")
     }
 
@@ -52,7 +53,7 @@ class StatsControllerTest : AbstractApplicationTest() {
         val response = getForEntity("/stats", StatsResponse::class.java)
 
         // Then
-        Assertions.assertThat(response.getResponseBody()!!.getTotalCards()).isGreaterThan(100)
+        assertThat(response.getResponseBody()!!.totalCards).isGreaterThan(100)
     }
 
     @Test
@@ -61,6 +62,6 @@ class StatsControllerTest : AbstractApplicationTest() {
         val response = getForEntity("/stats", StatsResponse::class.java)
 
         // Then
-        Assertions.assertThat(response.getResponseBody()!!.getTotalSets()).isGreaterThan(10)
+        assertThat(response.getResponseBody()!!.totalSets).isGreaterThan(10)
     }
 }
