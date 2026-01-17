@@ -73,4 +73,32 @@ public class Game {
   public List<GameSession> getGameSessions() {
     return gameSessions;
   }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public void setType(GameType type) {
+    this.type = type;
+  }
+
+  public void setStatus(GameStatusType status) {
+    this.status = status;
+  }
+
+  public void setResult(GameResultType result) {
+    this.result = result;
+  }
+
+  public void setFinishedAt(LocalDateTime finishedAt) {
+    this.finishedAt = finishedAt;
+  }
+
+  public void setGameSessions(List<GameSession> gameSessions) {
+    this.gameSessions = gameSessions;
+  }
 }

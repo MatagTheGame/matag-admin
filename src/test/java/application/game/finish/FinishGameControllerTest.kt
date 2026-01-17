@@ -9,7 +9,7 @@ import com.matag.admin.game.score.ScoreRepository
 import com.matag.admin.game.session.GameSession
 import com.matag.admin.game.session.GameSessionRepository
 import com.matag.admin.session.MatagSession
-import com.matag.adminentities.FinishGameRequest
+import com.matag.admin.game.finish.FinishGameRequest
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

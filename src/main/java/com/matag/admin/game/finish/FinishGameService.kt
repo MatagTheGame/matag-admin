@@ -1,62 +1,57 @@
-package com.matag.admin.game.finish;
+package com.matag.admin.game.finish
 
-import static com.matag.admin.game.game.GameStatusType.IN_PROGRESS;
-
-import java.time.Clock;
-import java.time.LocalDateTime;
-
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.matag.admin.game.game.Game;
-import com.matag.admin.game.game.GameRepository;
-import com.matag.admin.game.game.GameStatusType;
-import com.matag.admin.game.result.ResultService;
-import com.matag.admin.game.score.EloApplyService;
-import com.matag.admin.game.session.GamePlayers;
-import com.matag.admin.game.session.GameSession;
-import com.matag.admin.game.session.GameSessionRepository;
-import com.matag.admin.game.session.GameSessionService;
-import com.matag.adminentities.FinishGameRequest;
-
-import lombok.AllArgsConstructor;
+import com.matag.admin.game.game.Game
+import com.matag.admin.game.game.GameRepository
+import com.matag.admin.game.game.GameStatusType
+import com.matag.admin.game.result.ResultService
+import com.matag.admin.game.score.EloApplyService
+import com.matag.admin.game.session.GamePlayers
+import com.matag.admin.game.session.GameSession
+import com.matag.admin.game.session.GameSessionRepository
+import com.matag.admin.game.session.GameSessionService
+import com.matag.admin.game.finish.FinishGameRequest
+import lombok.AllArgsConstructor
+import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
+import java.time.Clock
+import java.time.LocalDateTime
+import java.util.function.Consumer
 
 @Component
-@AllArgsConstructor
-public class FinishGameService {
-  private final Clock clock;
-  private final GameRepository gameRepository;
-  private final GameSessionRepository gameSessionRepository;
-  private final GameSessionService gameSessionService;
-  private final ResultService resultService;
-  private final EloApplyService eloApplyService;
+open class FinishGameService(
+    private val clock: Clock,
+    private val gameRepository: GameRepository,
+    private val gameSessionRepository: GameSessionRepository,
+    private val gameSessionService: GameSessionService,
+    private val resultService: ResultService,
+    private val eloApplyService: EloApplyService,
+) {
+    @Transactional
+    open fun finish(gameId: Long, request: FinishGameRequest) {
+        val gameOptional = gameRepository.findById(gameId)
+        gameOptional.ifPresent(Consumer { game: Game? ->
+            if (game?.status == GameStatusType.IN_PROGRESS) {
+                val gamePlayers = gameSessionService.getGamePlayers(game)
+                finishGame(game, gamePlayers, request.winnerSessionId)
+            }
+        })
+    }
 
-  @Transactional
-  public void finish(Long gameId, FinishGameRequest request) {
-    var gameOptional = gameRepository.findById(gameId);
-    gameOptional.ifPresent(game -> {
-      if (game.getStatus() == IN_PROGRESS) {
-        var gamePlayers = gameSessionService.getGamePlayers(game);
-        finishGame(game, gamePlayers, request.getWinnerSessionId());
-      }
-    });
-  }
+    open fun finishGame(game: Game, gamePlayers: GamePlayers, winnerSessionId: String?) {
+        val session1 = gamePlayers.getPlayerSession()
+        val session2 = gamePlayers.getOpponentSession()
 
-  public void finishGame(Game game, GamePlayers gamePlayers, String winnerSessionId) {
-    GameSession session1 = gamePlayers.getPlayerSession();
-    GameSession session2 = gamePlayers.getOpponentSession();
+        val gameResultType = resultService.getResult(gamePlayers, winnerSessionId)
+        game.status = GameStatusType.FINISHED
+        game.result = gameResultType
+        game.finishedAt = LocalDateTime.now(clock)
+        gameRepository.save(game)
 
-    var gameResultType = resultService.getResult(gamePlayers, winnerSessionId);
-    game.setStatus(GameStatusType.FINISHED);
-    game.setResult(gameResultType);
-    game.setFinishedAt(LocalDateTime.now(clock));
-    gameRepository.save(game);
+        gamePlayers.playerSession.session = null
+        gameSessionRepository.save(session1)
+        gamePlayers.opponentSession.session = null
+        gameSessionRepository.save(session2)
 
-    gamePlayers.getPlayerSession().setSession(null);
-    gameSessionRepository.save(session1);
-    gamePlayers.getOpponentSession().setSession(null);
-    gameSessionRepository.save(session2);
-
-    eloApplyService.apply(session1.getPlayer(), session2.getPlayer(), gameResultType);
-  }
+        eloApplyService.apply(session1.player, session2.player, gameResultType)
+    }
 }

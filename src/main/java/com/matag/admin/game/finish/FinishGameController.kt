@@ -1,25 +1,18 @@
-package com.matag.admin.game.finish;
+package com.matag.admin.game.finish
 
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.matag.adminentities.FinishGameRequest;
-
-import lombok.AllArgsConstructor;
+import com.matag.admin.game.finish.FinishGameRequest
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/game")
-@AllArgsConstructor
-public class FinishGameController {
-  private final FinishGameService finishGameService;
+open class FinishGameController(
+    private val finishGameService: FinishGameService
+) {
 
-  @PostMapping("/{id}/finish")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public void finish(@PathVariable("id") Long gameId, @RequestBody FinishGameRequest request) {
-    finishGameService.finish(gameId, request);
-  }
+    @PostMapping("/{id}/finish")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    open fun finish(@PathVariable("id") gameId: Long, @RequestBody request: FinishGameRequest) {
+        finishGameService.finish(gameId, request)
+    }
 }

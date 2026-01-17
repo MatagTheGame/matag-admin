@@ -57,4 +57,24 @@ public class GameSession {
   public String getPlayerOptions() {
     return playerOptions;
   }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public void setGame(Game game) {
+    this.game = game;
+  }
+
+  public void setSession(MatagSession session) {
+    this.session = session;
+  }
+
+  public void setPlayer(MatagUser player) {
+    this.player = player;
+  }
+
+  public void setPlayerOptions(String playerOptions) {
+    this.playerOptions = playerOptions;
+  }
 }
