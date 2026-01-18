@@ -25,7 +25,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: echo "<settings><servers><server><id>github-matag-cards</id><username>MatagTheGame</username><password>${GITHUB_TOKEN}</password></server><server><id>github-matag-admin</id><username>MatagTheGame</username><password>${GITHUB_TOKEN}</password></server></servers></settings>" > ~/.m2/settings.xml
     - name: Test
-      run: mvn install
+      run: mvn install -ntp
     - name: Publish Tests Report
       uses: scacap/action-surefire-report@v1
       if: always()
@@ -33,4 +33,4 @@ jobs:
         check_name: Tests Report
         github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Publish
-      run: mvn -DskipTests deploy
+      run: mvn -DskipTests -ntp deploy
