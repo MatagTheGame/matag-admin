@@ -27,12 +27,12 @@ open class GamesHistoryController(
         val user = securityContextHolderHelper.getUser()
         val games = gameRepository.findByPlayerIdAndStatus(user.id!!, GameStatus.FINISHED)
         return GamesHistoryResponse(
-            gamesHistory = games.map { this.toGameHistory(it!!, user) }
+            gamesHistory = games.map { this.toGameHistory(it, user) }
         )
     }
 
     private fun toGameHistory(game: Game, user: MatagUser): GameHistory {
-        val gamePlayers = gameSessionService!!.getGamePlayers(game)
+        val gamePlayers = gameSessionService.getGamePlayers(game)
         val player1 = gamePlayers.playerSession
         val player2 = gamePlayers.opponentSession
         return GameHistory(
@@ -40,7 +40,7 @@ open class GamesHistoryController(
             startedTime = game.createdAt,
             finishedTime = game.finishedAt,
             type = game.type,
-            result = resultService!!.toUserResult(game, user),
+            result = resultService.toUserResult(game, user),
             player1Name = player1!!.player!!.username,
             player1Options = player1.playerOptions,
             player2Name = player2!!.player!!.username,

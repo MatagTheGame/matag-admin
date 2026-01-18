@@ -28,7 +28,7 @@ open class JoinGameService(
 
         val activeGameOfPlayer = gameSessionRepository.findPlayerActiveGameSession(session.sessionId!!)
         if (activeGameOfPlayer != null) {
-            val activeGameId = activeGameOfPlayer.game?.id
+            val activeGameId = activeGameOfPlayer.game.id
             return JoinGameResponse(
                 error = "You are already in a game.",
                 activeGameId = activeGameId!!

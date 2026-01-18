@@ -20,7 +20,7 @@ open class FindGameService(
             return ActiveGameResponse()
         }
 
-        val game = activeGameSession.game!!
+        val game = activeGameSession.game
         val gamePlayers = gameSessionService.getGamePlayers(game)
 
         return ActiveGameResponse(
@@ -28,9 +28,9 @@ open class FindGameService(
             createdAt = game.createdAt,
             playerName = gamePlayers.playerSession?.player?.username,
             playerOptions = gamePlayers.playerSession?.playerOptions,
-            opponentName = if (gamePlayers.opponentSession != null) gamePlayers?.opponentSession
+            opponentName = if (gamePlayers.opponentSession != null) gamePlayers.opponentSession
                     ?.player?.username else null,
-            opponentOptions = if (gamePlayers.opponentSession != null) gamePlayers?.opponentSession
+            opponentOptions = if (gamePlayers.opponentSession != null) gamePlayers.opponentSession
                     ?.playerOptions else null
         )
     }

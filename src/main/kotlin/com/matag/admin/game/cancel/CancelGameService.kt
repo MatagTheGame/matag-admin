@@ -24,9 +24,9 @@ open class CancelGameService(
         val session = securityContextHolderHelper.getSession()
         val activeGameSession = gameSessionRepository.findPlayerActiveGameSession(session.sessionId!!)
         if (activeGameSession != null) {
-            if (activeGameSession.game?.id == gameId) {
+            if (activeGameSession.game.id == gameId) {
                 val game = activeGameSession.game
-                val gamePlayers = gameSessionService.getGamePlayers(game!!)
+                val gamePlayers = gameSessionService.getGamePlayers(game)
                 if (gamePlayers.opponentSession == null) {
                     gameSessionRepository.delete(gamePlayers.playerSession!!)
                     gameRepository.delete(game)

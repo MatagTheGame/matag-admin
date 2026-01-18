@@ -36,7 +36,7 @@ open class RegisterController(
     }
 
     @GetMapping("/verify")
-    open fun verify(@RequestParam("username") username: String, @RequestParam("code") code: String): VerifyResponse? {
+    open fun verify(@RequestParam("username") username: String, @RequestParam("code") code: String): VerifyResponse {
         LOGGER.info("Verifying {} with code {}", username, code)
         try {
             registerService.activate(username, code)

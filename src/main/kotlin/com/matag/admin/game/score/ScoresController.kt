@@ -14,7 +14,7 @@ open class ScoresController (
     @PreAuthorize("hasAnyRole('USER', 'GUEST')")
     @GetMapping("/scores")
     open fun gameScore(): ScoresResponse? {
-        val scores = scoreRepository!!.findAll()
+        val scores = scoreRepository.findAll()
         return ScoresResponse(
             scores = toScoreResponse(scores)
         )
