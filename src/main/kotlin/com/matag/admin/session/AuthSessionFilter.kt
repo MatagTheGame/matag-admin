@@ -75,7 +75,6 @@ class AuthSessionFilter(
     companion object {
         const val SESSION_NAME: String = "session"
         const val ADMIN_NAME: String = "admin"
-        @JvmField
         val SESSION_DURATION_TIME: Int = 60 * 60
     }
 }
