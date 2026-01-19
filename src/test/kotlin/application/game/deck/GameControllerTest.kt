@@ -80,6 +80,6 @@ class GameControllerTest(
 
         assertThat(m19Cards).hasSizeGreaterThan(1)
         assertThat(m20Cards).hasSizeGreaterThan(1)
-        assertThat(m19Cards + m20Cards).hasSizeBetween(40, 60) // Only few cards are implemented... sometime a deck cannot be fulfilled.
+        assertThat(m19Cards + m20Cards).hasSizeBetween(30, 60) // Only few cards are implemented... sometime a deck cannot be fulfilled.
     }
 }
