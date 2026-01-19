@@ -1,4 +1,6 @@
-@import 'constants';
+@use 'constants' as *;
+@use 'form' as *;
+@use 'card' as *;
 
 body {
   background-color: $body-background-color;
@@ -197,7 +199,3 @@ table {
     background-color: $tab-body-background-color;
   }
 }
-
-
-@import 'form';
-@import 'card';
