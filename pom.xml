@@ -128,7 +128,7 @@
                             <goal>install-node-and-yarn</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>${node.version</nodeVersion>
+                            <nodeVersion>${node.version}</nodeVersion>
                             <yarnVersion>${yarn.version}</yarnVersion>
                         </configuration>
                     </execution>
