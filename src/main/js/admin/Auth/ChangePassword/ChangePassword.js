@@ -7,7 +7,7 @@ import FormMessage from 'admin/Form/FormMessage'
 import FormError from 'admin/Form/FormError'
 import Loader from 'admin/Common/Loader'
 
-const ChangePassword = () => {
+export default function ChangePassword() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -69,5 +69,3 @@ const ChangePassword = () => {
     </section>
   )
 }
-
-export default ChangePassword

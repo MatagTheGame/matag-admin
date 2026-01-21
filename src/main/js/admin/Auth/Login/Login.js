@@ -6,7 +6,7 @@ import AuthHelper from '../AuthHelper'
 import FormError from 'admin/Form/FormError'
 import Loader from 'admin/Common/Loader'
 
-const Login = () => {
+export default function Login() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -74,5 +74,3 @@ const Login = () => {
     </section>
   )
 }
-
-export default Login

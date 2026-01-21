@@ -7,7 +7,7 @@ import FormError from 'admin/Form/FormError'
 import FormMessage from 'admin/Form/FormMessage'
 import Loader from 'admin/Common/Loader'
 
-const Register = () => {
+export default function Register() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -79,5 +79,3 @@ const Register = () => {
     </section>
   )
 }
-
-export default Register

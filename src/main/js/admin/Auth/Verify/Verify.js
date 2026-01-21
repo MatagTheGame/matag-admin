@@ -5,7 +5,7 @@ import ApiClient from 'admin/utils/ApiClient'
 import Loader from 'admin/Common/Loader'
 import Login from 'admin/Auth/Login/Login'
 
-const Verify = () => {
+export default function Verify() {
   const dispatch = useDispatch()
   const [searchParams] = useSearchParams()
 
@@ -44,5 +44,3 @@ const Verify = () => {
     </section>
   )
 }
-
-export default Verify
