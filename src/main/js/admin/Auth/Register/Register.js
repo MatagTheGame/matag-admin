@@ -1,13 +1,15 @@
-import React from 'react'
+import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import get from 'lodash/get'
 import {bindActionCreators} from 'redux'
 import ApiClient from 'admin/utils/ApiClient'
 import history from 'admin/utils/history'
 import AuthHelper from '../AuthHelper'
-import AbstractForm from 'admin/utils/AbstractForm'
+import FormError from 'admin/Form/FormError'
+import FormMessage from 'admin/Form/FormMessage'
+import Loader from 'admin/Common/Loader'
 
-class Register  extends AbstractForm {
+class Register extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -72,14 +74,14 @@ class Register  extends AbstractForm {
               <label htmlFor='password'>Password: </label>
               <input type='password' id='password' name='password' value={this.state.password} onChange={this.handleChangePassword}/>
             </div>
-            {this.displayError()}
-            {this.displayMessage()}
+            <FormError error={this.props.error} />
+            <FormMessage message={this.props.message} />
             <div className='grid three-columns'>
               <div/>
               <div className='form-buttons'>
                 <input type='submit' value='Register'/>
               </div>
-              {this.displayLoader()}
+              {this.props.loading && <Loader center/>}
             </div>
 
             <p><u>Note:</u> if you are having trouble, drop an email at <strong>matag.the.game@gmail.com</strong> and someone will help.</p>

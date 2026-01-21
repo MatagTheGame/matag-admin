@@ -1,13 +1,13 @@
-import React from 'react'
+import React, {Component} from 'react'
 import get from 'lodash/get'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import ApiClient from 'admin/utils/ApiClient'
 import DateUtils from 'admin/utils/DateUtils'
-import AbstractForm from 'admin/utils/AbstractForm'
+import FormError from 'admin/Form/FormError'
 
 
-class ActiveGame extends AbstractForm {
+class ActiveGame extends Component {
   constructor(props) {
     super(props)
     this.cancelGame = this.cancelGame.bind(this)
@@ -42,7 +42,7 @@ class ActiveGame extends AbstractForm {
             <dd>{game.opponentOptions}</dd>
           </dl>
 
-          { this.displayError() }
+          <FormError error={this.props.error} />
 
           <div className='matag-form'>
             <div className='grid grid-50-50'>
