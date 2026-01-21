@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.DelegatingPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler
-import org.springframework.security.web.context.SecurityContextPersistenceFilter
+import org.springframework.security.web.context.SecurityContextHolderFilter
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter
 
 @Configuration
@@ -33,7 +33,7 @@ open class MatagAdminWebSecurityConfiguration {
     open fun filterChain(http: HttpSecurity): SecurityFilterChain =
         http
             .csrf { it.disable() }
-            .addFilterAfter(authSessionFilter, SecurityContextPersistenceFilter::class.java)
+            .addFilterAfter(authSessionFilter, SecurityContextHolderFilter::class.java)
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .logout {
                 it
