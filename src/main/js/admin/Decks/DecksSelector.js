@@ -1,62 +1,48 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
+import React from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 import AbstractDeckForm from 'admin/Decks/AbstractDeckForm'
 import DecksSelectorUtils from 'admin/Decks/DecksSelectorUtils'
 import PreConstructedDeckForm from 'admin/Decks/pre-constructed/PreConstructedDeckForm'
 import CustomDeckForm from 'admin/Decks/custom/CustomForm'
 import RandomDeckForm from 'admin/Decks/random/RandomDeckForm'
 
-class DecksSelector extends Component {
-  constructor(props) {
-    super(props)
-  }
+export default function({ goToGame }) {
+  const dispatch = useDispatch()
 
-  getTabHeaderClassName(headerName) {
-    let className = 'tab-header'
+  const deckType = useSelector(state => DecksSelectorUtils.getDeckType(state))
 
-    if (this.props.deckType === headerName) {
-      className += ' selected'
-    }
-
-    return className
-  }
-
-  render() {
-    return (
-      <section className='tab-container'>
-        <div className='tab-list'>
-          <div className={this.getTabHeaderClassName('random')} onClick={() => this.props.changeDeckType('random')}><h3>Random</h3></div>
-          <div className={this.getTabHeaderClassName('pre-constructed')} onClick={() => this.props.changeDeckType('pre-constructed')}><h3>PreConstructed</h3></div>
-          <div className={this.getTabHeaderClassName('custom')} onClick={() => this.props.changeDeckType('custom')}><h3>Custom</h3></div>
-        </div>
-        <div className='tab-content'>
-          {this.props.deckType === 'random' && <AbstractDeckForm goToGame={this.props.goToGame}><RandomDeckForm /></AbstractDeckForm>}
-          {this.props.deckType === 'pre-constructed' && <AbstractDeckForm goToGame={this.props.goToGame}><PreConstructedDeckForm /></AbstractDeckForm>}
-          {this.props.deckType === 'custom' && <AbstractDeckForm goToGame={this.props.goToGame}><CustomDeckForm /></AbstractDeckForm>}
-        </div>
-      </section>
-    )
-  }
-}
-
-const changeDeckType = (deckType) => {
-  return {
+  const changeDeckType = (type) => dispatch({
     type: 'DECK_TYPE',
-    value: deckType
-  }
-}
+    value: type
+  })
 
-const mapStateToProps = state => {
-  return {
-    deckType: DecksSelectorUtils.getDeckType(state)
-  }
-}
+  const getTabHeaderClassName = (headerName) =>
+    `tab-header ${deckType === headerName ? 'selected' : ''}`
 
-const mapDispatchToProps = dispatch => {
-  return {
-    changeDeckType: bindActionCreators(changeDeckType, dispatch)
-  }
+  return (
+    <section className='tab-container'>
+      <div className='tab-list'>
+        <div className={getTabHeaderClassName('random')} onClick={() => changeDeckType('random')}>
+          <h3>Random</h3>
+        </div>
+        <div className={getTabHeaderClassName('pre-constructed')} onClick={() => changeDeckType('pre-constructed')}>
+          <h3>PreConstructed</h3>
+        </div>
+        <div className={getTabHeaderClassName('custom')} onClick={() => changeDeckType('custom')}>
+          <h3>Custom</h3>
+        </div>
+      </div>
+      <div className='tab-content'>
+        {deckType === 'random' && (
+          <AbstractDeckForm goToGame={goToGame}><RandomDeckForm /></AbstractDeckForm>
+        )}
+        {deckType === 'pre-constructed' && (
+          <AbstractDeckForm goToGame={goToGame}><PreConstructedDeckForm /></AbstractDeckForm>
+        )}
+        {deckType === 'custom' && (
+          <AbstractDeckForm goToGame={goToGame}><CustomDeckForm /></AbstractDeckForm>
+        )}
+      </div>
+    </section>
+  )
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(DecksSelector)
