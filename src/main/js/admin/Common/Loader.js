@@ -1,27 +1,21 @@
-import React, {Component} from 'react'
+import React from 'react'
 import './loader.scss'
 import {APP_BASE_PATH} from 'admin/AdminApp'
 
-export default class Loader extends Component {
-  constructor(props) {
-    super(props)
-  }
-
-  getClassNames() {
-    if (this.props.center) {
+export default function Loader({center, fullscreen}) {
+  const getClassNames = () => {
+    if (center) {
       return 'center'
     }
 
-    if (this.props.fullscreen) {
+    if (fullscreen) {
       return 'fullscreen-loader'
     }
   }
 
-  render() {
-    return (
-      <div className={this.getClassNames()}>
-        <img className='loader' alt='loader' src={APP_BASE_PATH + '/img/loader.gif'} />
-      </div>
-    )
-  }
+  return (
+    <div className={getClassNames()}>
+      <img className='loader' alt='loader' src={APP_BASE_PATH + '/img/loader.gif'} />
+    </div>
+  )
 }
