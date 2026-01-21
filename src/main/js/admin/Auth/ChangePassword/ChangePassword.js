@@ -1,111 +1,73 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import get from 'lodash/get'
-import {bindActionCreators} from 'redux'
+import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import ApiClient from 'admin/utils/ApiClient'
-import history from 'admin/utils/history'
 import AuthHelper from '../AuthHelper'
 import FormMessage from 'admin/Form/FormMessage'
 import FormError from 'admin/Form/FormError'
 import Loader from 'admin/Common/Loader'
 
-class ChangePassword extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      oldPassword: '',
-      newPassword: ''
-    }
-    this.handleChangeOldPassword = this.handleChangeOldPassword.bind(this)
-    this.handleChangeNewPassword = this.handleChangeNewPassword.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-  }
+const ChangePassword = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-  handleChangeOldPassword(event) {
-    this.setState({oldPassword: event.target.value})
-  }
+  const [form, setForm] = useState({ oldPassword: '', newPassword: '' })
 
-  handleChangeNewPassword(event) {
-    this.setState({newPassword: event.target.value})
-  }
-
-  submit(oldPassword, newPassword) {
-    const request = {
-      oldPassword: oldPassword,
-      newPassword: newPassword
-    }
-
-    this.props.changePasswordLoading()
-    ApiClient.post('/auth/change-password', request)
-      .then(response => this.props.changePasswordResponse(response))
-  }
-
-  handleSubmit(event) {
-    event.preventDefault()
-    this.submit(this.state.oldPassword, this.state.newPassword)
-  }
-
-  render() {
-    if (!this.props.isNonGuest) {
-      history.push('/ui')
-    }
-
-    return (
-      <section id='change-password'>
-        <div id='change-password-container'>
-          <h2>Change Password</h2>
-          <form className='matag-form' onSubmit={this.handleSubmit}>
-            <div className='grid grid-label-value'>
-              <label htmlFor='old-password'>Old password: </label>
-              <input type='password' id='old-password' name='old-password' value={this.state.oldPassword} onChange={this.handleChangeOldPassword}/>
-            </div>
-            <div className='grid grid-label-value'>
-              <label htmlFor='new-password'>New password: </label>
-              <input type='password' id='new-password' name='new-password' value={this.state.newPassword} onChange={this.handleChangeNewPassword}/>
-            </div>
-            <FormError error={this.props.error} />
-            <FormMessage message={this.props.message} />
-            <div className='grid three-columns'>
-              <div/>
-              <div className='form-buttons'>
-                <input type='submit' value='Change Password'/>
-              </div>
-              {this.props.loading && <Loader center/>}
-            </div>
-          </form>
-        </div>
-      </section>
-    )
-  }
-}
-
-const changePasswordLoading = () => {
-  return {
-    type: 'CHANGE_PASSWORD_LOADING'
-  }
-}
-
-const changePasswordResponse = (response) => {
-  return {
-    type: 'CHANGE_PASSWORD_RESPONSE',
-    value: response
-  }
-}
-
-const mapStateToProps = state => {
-  return {
+  const { isNonGuest, loading, message, error } = useSelector(state => ({
     isNonGuest: AuthHelper.isNonGuest(state),
-    loading: get(state, 'changePassword.loading', false),
-    message: get(state, 'changePassword.value.message', null),
-    error: get(state, 'changePassword.value.error', null)
+    loading: state.changePassword?.loading || false,
+    message: state.changePassword?.value?.message || null,
+    error: state.changePassword?.value?.error || null
+  }))
+
+  useEffect(() => {
+    if (!isNonGuest) navigate('/ui')
+  }, [isNonGuest, navigate])
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setForm(prev => ({ ...prev, [name]: value }))
   }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    dispatch({ type: 'CHANGE_PASSWORD_LOADING' })
+    try {
+      const response = await ApiClient.post('/auth/change-password', form)
+      dispatch({ type: 'CHANGE_PASSWORD_RESPONSE', value: response })
+    } catch (err) {
+      // Error handled by reducer
+    }
+  }
+
+  return (
+    <section id='change-password'>
+      <div id='change-password-container'>
+        <h2>Change Password</h2>
+        <form className='matag-form' onSubmit={handleSubmit}>
+          <div className='grid grid-label-value'>
+            <label htmlFor='old-password'>Old password: </label>
+            <input type='password' id='old-password' name='old-password' value={form.oldPassword} onChange={handleChange}/>
+          </div>
+          <div className='grid grid-label-value'>
+            <label htmlFor='new-password'>New password: </label>
+            <input type='password' id='new-password' name='new-password' value={form.newPassword} onChange={handleChange}/>
+          </div>
+
+          <FormError error={error} />
+          <FormMessage message={message} />
+
+          <div className='grid three-columns'>
+            <div />
+            <div className='form-buttons'>
+              <input type='submit' value='Change Password' disabled={loading} />
+            </div>
+            {loading && <Loader center />}
+          </div>
+        </form>
+      </div>
+    </section>
+  )
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    changePasswordLoading: bindActionCreators(changePasswordLoading, dispatch),
-    changePasswordResponse: bindActionCreators(changePasswordResponse, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ChangePassword)
+export default ChangePassword

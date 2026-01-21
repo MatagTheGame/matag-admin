@@ -1,85 +1,48 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useSearchParams } from 'react-router-dom'
 import ApiClient from 'admin/utils/ApiClient'
-import {bindActionCreators} from 'redux'
-import get from 'lodash/get'
 import Loader from 'admin/Common/Loader'
 import Login from 'admin/Auth/Login/Login'
 
-class Verify extends Component {
-  componentDidMount() {
-    this.props.verifyLoading()
-    let verificationUrl = '/auth/verify?username=' + this.getUsername() + '&code=' + this.getCode()
-    ApiClient.get(verificationUrl).then(this.props.verifyLoaded)
-  }
+const Verify = () => {
+  const dispatch = useDispatch()
+  const [searchParams] = useSearchParams()
 
-  getUrlSearchParams() {
-    return new URLSearchParams(window.location.search)
-  }
+  const { verifying, verifyResponse } = useSelector(state => ({
+    verifying: state.verify?.loading || false,
+    verifyResponse: state.verify?.value || {}
+  }))
 
-  getUsername() {
-    return this.getUrlSearchParams().get('username')
-  }
+  useEffect(() => {
+    dispatch({ type: 'VERIFY_LOADING' })
 
-  getCode() {
-    return this.getUrlSearchParams().get('code')
-  }
+    const username = searchParams.get('username')
+    const code = searchParams.get('code')
+    const verificationUrl = `/auth/verify?username=${username}&code=${code}`
 
-  displayContent() {
-    if (this.props.verifying) {
-      return <Loader/>
-    } else {
-      if (this.props.verifyResponse.message) {
-        return (
+    ApiClient.get(verificationUrl).then(response => {
+      dispatch({ type: 'VERIFY_LOADED', value: response })
+    })
+  }, [dispatch, searchParams])
+
+  return (
+    <section>
+      <div id='verify-container'>
+        <h2>Account Verification</h2>
+        {verifying ? (
+          <Loader />
+        ) : verifyResponse.message ? (
           <>
-            <p className='message'>{this.props.verifyResponse.message}</p>
-            <Login/>
+            <p className='message'>{verifyResponse.message}</p>
+            <Login />
           </>
-        )
-
-      } else {
-        return <p className='error'>{this.props.verifyResponse.error}</p>
-      }
-    }
-  }
-
-  render() {
-    return (
-      <section>
-        <div id='verify-container'>
-          <h2>Account Verification</h2>
-          {this.displayContent()}
-        </div>
-      </section>
-    )
-  }
+        ) : (
+          <p className='error'>{verifyResponse.error}</p>
+        )}
+      </div>
+    </section>
+  )
 }
 
-const verifyLoading = () => {
-  return {
-    type: 'VERIFY_LOADING'
-  }
-}
-
-const verifyLoaded = (verifyResponse) => {
-  return {
-    type: 'VERIFY_LOADED',
-    value: verifyResponse
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    verifying: get(state, 'verify.loading', false),
-    verifyResponse: get(state, 'verify.value', {})
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    verifyLoading: bindActionCreators(verifyLoading, dispatch),
-    verifyLoaded: bindActionCreators(verifyLoaded, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Verify)
+export default Verify
