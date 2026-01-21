@@ -1,73 +1,44 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
-import get from 'lodash/get'
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import ApiClient from 'admin/utils/ApiClient'
 import AuthHelper from 'admin/Auth/AuthHelper'
 import Loader from 'admin/Common/Loader'
-import ApiClient from 'admin/utils/ApiClient'
 import ActiveGame from './ActiveGame'
 import DecksSelector from '../Decks/DecksSelector'
 import './play.scss'
 
-class Play extends Component {
-  componentDidMount() {
-    this.props.loadActiveGame()
-    ApiClient.get('/game').then(this.props.activeGameLoaded)
-    this.goToGame = this.goToGame.bind(this)
+export default function Play() {
+  const dispatch = useDispatch()
+
+  const { loading, activeGame, matagGameUrl } = useSelector(state => ({
+    loading: state.play?.activeGame?.loading ?? true,
+    activeGame: state.play?.activeGame?.value || {},
+    matagGameUrl: state.config?.matagGameUrl || ''
+  }))
+
+  useEffect(() => {
+    dispatch({ type: 'ACTIVE_GAME_LOADING' })
+    ApiClient.get('/game').then(response => {
+      dispatch({ type: 'ACTIVE_GAME_LOADED', value: response })
+    })
+  }, [dispatch])
+
+  const goToGame = (id) => {
+    ApiClient.postToUrl(`${matagGameUrl}/ui/${id}`, {
+      session: AuthHelper.getToken()
+    })
   }
 
-  displayMain() {
-    if (this.props.loading) {
-      return <Loader center/>
-
-    } else if (this.props.activeGame.gameId) {
-      return <ActiveGame activeGame={this.props.activeGame} goToGame={this.goToGame} />
-
-    } else {
-      return <DecksSelector goToGame={this.goToGame} />
-    }
-  }
-
-  goToGame(id) {
-    ApiClient.postToUrl(this.props.matagGameUrl + '/ui/' + id, {session: AuthHelper.getToken()})
-  }
-
-  render() {
-    return (
-      <section id='play'>
-        <h2>Play</h2>
-        { this.displayMain() }
-      </section>
-    )
-  }
+  return (
+    <section id='play'>
+      <h2>Play</h2>
+      {loading ? (
+        <Loader center />
+      ) : activeGame.gameId ? (
+        <ActiveGame activeGame={activeGame} goToGame={goToGame} />
+      ) : (
+        <DecksSelector goToGame={goToGame} />
+      )}
+    </section>
+  )
 }
-
-const loadActiveGame = () => {
-  return {
-    type: 'ACTIVE_GAME_LOADING'
-  }
-}
-
-const activeGameLoaded = (activeGame) => {
-  return {
-    type: 'ACTIVE_GAME_LOADED',
-    value: activeGame
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    loading: get(state, 'play.activeGame.loading', true),
-    activeGame: get(state, 'play.activeGame.value', {}),
-    matagGameUrl: get(state, 'config.matagGameUrl', '')
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    loadActiveGame: bindActionCreators(loadActiveGame, dispatch),
-    activeGameLoaded: bindActionCreators(activeGameLoaded, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Play)

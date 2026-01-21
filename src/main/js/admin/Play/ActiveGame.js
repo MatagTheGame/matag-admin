@@ -1,89 +1,60 @@
-import React, {Component} from 'react'
-import get from 'lodash/get'
-import {bindActionCreators} from 'redux'
-import {connect} from 'react-redux'
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import ApiClient from 'admin/utils/ApiClient'
 import DateUtils from 'admin/utils/DateUtils'
 import FormError from 'admin/Form/FormError'
 
+export default function ActiveGame({ goToGame }) {
+  const dispatch = useDispatch()
 
-class ActiveGame extends Component {
-  constructor(props) {
-    super(props)
-    this.cancelGame = this.cancelGame.bind(this)
+  const { activeGame, error } = useSelector(state => ({
+    activeGame: state.play?.activeGame?.value || {},
+    error: state.play?.activeGame?.error || null
+  }))
+
+  const cancelGame = () => {
+    dispatch({ type: 'ACTIVE_GAME_DELETING' })
+    ApiClient.delete(`/game/${activeGame.gameId}`)
+      .then(response => dispatch({ type: 'ACTIVE_GAME_DELETED', response }))
   }
 
-  cancelGame() {
-    this.props.deletingActiveGame()
-    ApiClient.delete('/game/' + this.props.activeGame.gameId)
-      .then(response => this.props.deletedActiveGame(response))
-  }
+  return (
+    <div>
+      <p>You have already a game in progress:</p>
 
-  render() {
-    const game = this.props.activeGame
+      <div className='matag-card active-game'>
+        <dl>
+          <dt>Game id: </dt>
+          <dd>{activeGame.gameId}</dd>
+          <dt>Created at: </dt>
+          <dd>{DateUtils.formatDateTime(DateUtils.parse(activeGame.createdAt))}</dd>
+          <dt>Player name: </dt>
+          <dd>{activeGame.playerName}</dd>
+          <dt>Player options: </dt>
+          <dd>{activeGame.playerOptions}</dd>
+          <dt>Opponent name: </dt>
+          <dd>{activeGame.opponentName}</dd>
+          <dt>Opponent options: </dt>
+          <dd>{activeGame.opponentOptions}</dd>
+        </dl>
 
-    return (
-      <div>
-        <p>You have already a game in progress:</p>
+        <FormError error={error} />
 
-        <div className='matag-card active-game'>
-          <dl>
-            <dt>Game id: </dt>
-            <dd>{game.gameId}</dd>
-            <dt>Created at: </dt>
-            <dd>{DateUtils.formatDateTime(DateUtils.parse(game.createdAt))}</dd>
-            <dt>Player name: </dt>
-            <dd>{game.playerName}</dd>
-            <dt>Player options: </dt>
-            <dd>{game.playerOptions}</dd>
-            <dt>Opponent name: </dt>
-            <dd>{game.opponentName}</dd>
-            <dt>Opponent options: </dt>
-            <dd>{game.opponentOptions}</dd>
-          </dl>
-
-          <FormError error={this.props.error} />
-
-          <div className='matag-form'>
-            <div className='grid grid-50-50'>
-              <input type='button' value='Go to Game' onClick={() => this.props.goToGame(game.gameId)} />
-              <input type='button' value='Cancel Game' onClick={this.cancelGame} />
-            </div>
+        <div className='matag-form'>
+          <div className='grid grid-50-50'>
+            <input
+              type='button'
+              value='Go to Game'
+              onClick={() => goToGame(activeGame.gameId)}
+            />
+            <input
+              type='button'
+              value='Cancel Game'
+              onClick={cancelGame}
+            />
           </div>
         </div>
-
       </div>
-    )
-  }
+    </div>
+  )
 }
-
-const deletingActiveGame = () => {
-  return {
-    type: 'ACTIVE_GAME_DELETING'
-  }
-}
-
-const deletedActiveGame = (response) => {
-  return {
-    type: 'ACTIVE_GAME_DELETED',
-    response: response
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    activeGame: get(state, 'play.activeGame.value', {}),
-    deleting: get(state, 'play.activeGame.deleting', false),
-    error: get(state, 'play.activeGame.error', null),
-    matagGameUrl: get(state, 'config.matagGameUrl', '')
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    deletingActiveGame: bindActionCreators(deletingActiveGame, dispatch),
-    deletedActiveGame: bindActionCreators(deletedActiveGame, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ActiveGame)
