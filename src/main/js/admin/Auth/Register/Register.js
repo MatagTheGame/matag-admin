@@ -68,13 +68,11 @@ export default function Register() {
             </div>
             {loading && <Loader center />}
           </div>
-
-          <p>
-            <u>Note:</u> if you are having trouble, drop an email at
-            <strong> matag.the.game@gmail.com </strong>
-            and someone will help.
-          </p>
         </form>
+
+        <p>
+          <u>Note:</u> if you are having trouble, drop an email at <strong>matag.the.game@gmail.com</strong> and someone will help.
+        </p>
       </div>
     </section>
   )

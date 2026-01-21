@@ -5,6 +5,7 @@ import ApiClient from 'admin/utils/ApiClient'
 import AuthHelper from '../AuthHelper'
 import FormError from 'admin/Form/FormError'
 import Loader from 'admin/Common/Loader'
+import './login.scss'
 
 export default function Login() {
   const dispatch = useDispatch()

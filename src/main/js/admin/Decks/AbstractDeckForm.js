@@ -1,138 +1,66 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import get from 'lodash/get'
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import AuthHelper from 'admin/Auth/AuthHelper'
 import Loader from 'admin/Common/Loader'
 import ApiClient from 'admin/utils/ApiClient'
-import {bindActionCreators} from 'redux'
 import DecksSelectorUtils from 'admin/Decks/DecksSelectorUtils'
 
-class AbstractDeckForm extends Component {
-  constructor(props) {
-    super(props)
-    this.handlePlay = this.handlePlay.bind(this)
-  }
+export default function AbstractDeckForm({ children, goToGame }) {
+  const dispatch = useDispatch()
+  const state = useSelector(s => s)
 
-  handlePlay(event) {
+  const deckType = DecksSelectorUtils.getDeckType(state)
+  const { selectLoading, startLoading, error, activeGameId, playerOptions } = useSelector(s => ({
+    selectLoading: s.decks?.select?.loading || false,
+    startLoading: s.decks?.start?.loading || false,
+    error: s.decks?.start?.error || '',
+    activeGameId: s.decks?.start?.activeGameId || '',
+    playerOptions: s.decks?.[deckType]
+  }))
+
+  const handlePlay = (event) => {
     event.preventDefault()
     const request = {
       gameType: 'UNLIMITED',
       playerOptions: JSON.stringify({
-        type: DecksSelectorUtils.getDeckType(this.props.state),
-        options: this.props.playerOptions
+        type: deckType,
+        options: playerOptions
       })
     }
 
-    this.props.setSelectLoading()
-    ApiClient.post('/game', request)
-      .then(r => {
-        this.props.setSelectLoaded()
-        if (r.gameId > 0) {
-          this.props.setStartLoading()
-          this.props.goToGame(r.gameId)
-
-        } else {
-          if (r.error) {
-            this.props.setSetError(r.error)
-          }
-          if (r.activeGameId) {
-            this.props.setSetActiveGameId(r.activeGameId)
-          }
-        }
-      })
+    dispatch({ type: 'DECK_SELECT_LOADING' })
+    ApiClient.post('/game', request).then(r => {
+      dispatch({ type: 'DECK_SELECT_LOADED' })
+      if (r.gameId > 0) {
+        dispatch({ type: 'DECK_START_LOADING' })
+        goToGame(r.gameId)
+      } else {
+        if (r.error) dispatch({ type: 'DECK_SET_ERROR', value: r.error })
+        if (r.activeGameId) dispatch({ type: 'DECK_SET_ACTIVE_GAME_ID', value: r.activeGameId })
+      }
+    })
   }
 
-  displayGoToGame() {
-    if (this.props.activeGameId) {
-      return <span>Go to <a href='#' onClick={() => this.props.goToGame(this.props.activeGameId)}>game #{this.props.activeGameId}</a></span>
-    }
-  }
+  return (
+    <form id='play-form' className='matag-form' onSubmit={handlePlay}>
+      <input type='hidden' name='session' value={AuthHelper.getToken()} />
+      {children}
 
-  displayError() {
-    if (this.props.error) {
-      return (
+      {error && (
         <p className='message'>
-          <span className='error'>{this.props.error}</span>
-          {this.displayGoToGame()}
+          <span className='error'>{error}</span>
+          {activeGameId && (
+            <span> Go to <a href='#' onClick={(e) => { e.preventDefault(); goToGame(activeGameId) }}>game #{activeGameId}</a></span>
+          )}
         </p>
-      )
-    }
-  }
+      )}
 
-  displayLoader() {
-    if (this.props.selectLoading || this.props.startLoading) {
-      return <Loader center/>
-    }
-  }
+      {(selectLoading || startLoading) && <Loader center />}
 
-  render() {
-    return (
-      <form id='play-form' className='matag-form' onSubmit={this.handlePlay}>
-        <input type='hidden' name='session' value={AuthHelper.getToken()} />
-        { this.props.children }
-        { this.displayError() }
-        { this.displayLoader() }
-        <div className='grid three-columns'>
-          <div/>
-          <input type='submit' id='play-button' value='Play'/>
-        </div>
-      </form>
-    )
-  }
+      <div className='grid three-columns'>
+        <div />
+        <input type='submit' id='play-button' value='Play' />
+      </div>
+    </form>
+  )
 }
-
-const deckSelectLoading = () => {
-  return {
-    type: 'DECK_SELECT_LOADING',
-  }
-}
-
-const deckSelectLoaded = () => {
-  return {
-    type: 'DECK_SELECT_LOADED',
-  }
-}
-
-const deckStartLoading = () => {
-  return {
-    type: 'DECK_START_LOADING',
-  }
-}
-
-const deckSetError = (error) => {
-  return {
-    type: 'DECK_SET_ERROR',
-    value: error
-  }
-}
-
-const deckSetActiveGameId = (gameId) => {
-  return {
-    type: 'DECK_SET_ACTIVE_GAME_ID',
-    value: gameId
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    state: state,
-    matagGameUrl: get(state, 'config.matagGameUrl', ''),
-    selectLoading: get(state, 'decks.select.loading', false),
-    startLoading: get(state, 'decks.start.loading', false),
-    error: get(state, 'decks.start.error', ''),
-    activeGameId: get(state, 'decks.start.activeGameId', ''),
-    playerOptions: get(state, 'decks.' + DecksSelectorUtils.getDeckType(state))
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setSelectLoading: bindActionCreators(deckSelectLoading, dispatch),
-    setSelectLoaded: bindActionCreators(deckSelectLoaded, dispatch),
-    setStartLoading: bindActionCreators(deckStartLoading, dispatch),
-    setSetError: bindActionCreators(deckSetError, dispatch),
-    setSetActiveGameId: bindActionCreators(deckSetActiveGameId, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AbstractDeckForm)
