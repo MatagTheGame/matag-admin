@@ -88,4 +88,22 @@
   .form-buttons {
     margin-top: .5rem;
   }
+
+  .message {
+    color: $message-text-color;
+  }
+
+  .message {
+    text-align: center;
+  }
+
+  .error {
+    color: $error-text-color;
+  }
+
+  .error {
+    margin-right: 1rem;
+  }
+
+
 }

@@ -2,6 +2,21 @@
   -webkit-animation: rotation 3s infinite linear;
 }
 
+.fullscreen-loader {
+  width: 100%;
+  height: 100%;
+
+  img {
+    left: 50%;
+    position: absolute;
+    top: 50%;
+  }
+}
+
+.center {
+  text-align: center;
+}
+
 @-webkit-keyframes rotation {
   to {
     -webkit-transform: rotate(360deg);
