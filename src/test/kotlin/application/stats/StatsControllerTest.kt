@@ -3,7 +3,6 @@ package application.stats
 import application.AbstractApplicationTest
 import application.TestUtils
 import com.matag.admin.stats.StatsResponse
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
@@ -26,7 +25,7 @@ class StatsControllerTest : AbstractApplicationTest() {
         val response = getForEntity("/stats", StatsResponse::class.java)
 
         // Then
-        assertThat(response.getResponseBody()!!.totalUsers).isEqualTo(3)
+        assertThat(response.getResponseBody()?.totaNonGuestlUsers).isEqualTo(2)
     }
 
     @Test

@@ -32,7 +32,7 @@ export default function Stats() {
     <section id='stats'>
       <ul>
         <li>
-          <small><span>TOTAL USERS: </span></small>
+          <small><span>TOTAL USERS (excluding Guest): </span></small>
           <span>{totalUsers}</span>
         </li>
         <li>

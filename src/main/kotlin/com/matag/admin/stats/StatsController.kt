@@ -15,7 +15,7 @@ open class StatsController(
     @GetMapping
     open fun stats(): StatsResponse {
         return StatsResponse(
-            totalUsers = statsService.countTotalUsers(),
+            totaNonGuestlUsers = statsService.countTotalUsers() - 1,
             onlineUsers = statsService.onlineUsers(),
             totalCards = statsService.countCards(),
             totalSets = statsService.countSets()
