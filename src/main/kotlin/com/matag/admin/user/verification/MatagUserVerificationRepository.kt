@@ -1,9 +1,7 @@
-package com.matag.admin.user.verification;
+package com.matag.admin.user.verification
 
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.CrudRepository
+import org.springframework.stereotype.Repository
 
 @Repository
-public interface MatagUserVerificationRepository extends CrudRepository<MatagUserVerification, Long> {
-
-}
+interface MatagUserVerificationRepository : CrudRepository<MatagUserVerification, Long>
