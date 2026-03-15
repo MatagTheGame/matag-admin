@@ -35,6 +35,6 @@ jobs:
     - name: Publish
       run: |
         mvn compile com.google.cloud.tools:jib-maven-plugin:build \
-        -Dimage=ghcr.io/matag/matag-admin:latest \
+        -Dimage=ghcr.io/matagthegame/matag-admin:latest \
         -Djib.to.auth.username=${{ github.actor }} \
         -Djib.to.auth.password=${{ secrets.GITHUB_TOKEN }}
