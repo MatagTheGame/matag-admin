@@ -33,4 +33,8 @@ jobs:
         check_name: Tests Report
         github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Publish
-      run: mvn -DskipTests -ntp deploy
+      run: |
+        mvn compile com.google.cloud.tools:jib-maven-plugin:build \
+        -Dimage=ghcr.io/matag/matag-admin:latest \
+        -Djib.to.auth.username=${{ github.actor }} \
+        -Djib.to.auth.password=${{ secrets.GITHUB_TOKEN }}
