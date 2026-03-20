@@ -37,4 +37,7 @@ jobs:
         mvn compile com.google.cloud.tools:jib-maven-plugin:build \
         -Dimage=ghcr.io/matagthegame/matag-admin:latest \
         -Djib.to.auth.username=${{ github.actor }} \
-        -Djib.to.auth.password=${{ secrets.GITHUB_TOKEN }}
+        -Djib.to.auth.password=${{ secrets.GITHUB_TOKEN }} \
+        -Djib.container.appRoot=/opt/stack/matag-admin \
+        -Djib.container.workingDirectory=/opt/stack/matag-admin \
+        -Djib.container.jvmFlags="-Dlogging.config=/opt/stack/matag-admin/resources/logback-spring.xml"
