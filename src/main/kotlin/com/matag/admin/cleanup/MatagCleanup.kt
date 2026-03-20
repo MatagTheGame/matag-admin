@@ -6,16 +6,17 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
 @Component
-class MatagCleanup {
-    private val matagSessionsCleanup: MatagSessionsCleanup? = null
-    private val matagGameCleanup: MatagGameCleanup? = null
+class MatagCleanup(
+    private val matagSessionsCleanup: MatagSessionsCleanup,
+    private val matagGameCleanup: MatagGameCleanup
+) {
 
     @Scheduled(fixedRate = 6 * 60 * 60 * 1000, initialDelay = 10 * 60 * 1000)
     fun cleanup() {
         LOGGER.info("cleanup triggered.")
 
-        matagSessionsCleanup!!.cleanup()
-        matagGameCleanup!!.cleanup()
+        matagSessionsCleanup.cleanup()
+        matagGameCleanup.cleanup()
     }
 
     companion object {
