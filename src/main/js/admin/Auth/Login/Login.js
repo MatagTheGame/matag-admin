@@ -54,7 +54,7 @@ export default function Login() {
         <form className='matag-form' onSubmit={handleLogin}>
           <div className='grid grid-label-value'>
             <label htmlFor='email-or-username'>Email or Username: </label>
-            <input type='text' id='email-or-username' name='email-or-username' value={form.emailOrUsername} onChange={handleChange}/>
+            <input type='text' id='email-or-username' name='emailOrUsername' value={form.emailOrUsername} onChange={handleChange}/>
           </div>
           <div className='grid grid-label-value'>
             <label htmlFor='password'>Password: </label>
