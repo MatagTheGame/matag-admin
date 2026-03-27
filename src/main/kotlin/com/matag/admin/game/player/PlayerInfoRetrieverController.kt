@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/player/info")
-open class PlayerInfoRetrieverController {
-    private val securityContextHolderHelper: SecurityContextHolderHelper? = null
-
+open class PlayerInfoRetrieverController(
+    private val securityContextHolderHelper: SecurityContextHolderHelper
+) {
     @PreAuthorize("hasAnyRole('USER', 'GUEST')")
     @GetMapping
     open fun deckInfo(): PlayerInfo {
-        val session = securityContextHolderHelper!!.getSession()
+        val session = securityContextHolderHelper.getSession()
         return PlayerInfo(getUsername(session))
     }
 
