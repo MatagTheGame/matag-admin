@@ -1,5 +1,5 @@
 package com.matag.admin.game.player
 
-class PlayerInfo(
+data class PlayerInfo(
     var playerName: String? = null
 )

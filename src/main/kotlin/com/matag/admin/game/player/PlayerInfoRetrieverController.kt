@@ -21,11 +21,12 @@ open class PlayerInfoRetrieverController(
     }
 
     private fun getUsername(session: MatagSession): String? {
-        val matagUser = session.matagUser
-        if (matagUser!!.type == MatagUserType.GUEST) {
-            return matagUser.username + "-" + session.id
-        } else {
-            return matagUser.username
+        return session.matagUser?.let {
+            if (it.type == MatagUserType.GUEST) {
+                it.username + "-" + session.id
+            } else {
+                it.username
+            }
         }
     }
 }
