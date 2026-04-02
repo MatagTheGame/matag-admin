@@ -1,4 +1,4 @@
-import {getNodeText, waitFor} from '@testing-library/react'
+import {waitFor} from '@testing-library/react'
 
 export default class AbstractFormSection {
   constructor(element) {
@@ -10,10 +10,10 @@ export default class AbstractFormSection {
   }
 
   getError() {
-    return getNodeText(this.element.querySelector('.error'))
+    return this.element.querySelector('.error').textContent
   }
 
   getMessage() {
-    return getNodeText(this.element.querySelector('.message'))
+    return this.element.querySelector('.message').textContent
   }
 }

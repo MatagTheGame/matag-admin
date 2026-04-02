@@ -47,6 +47,10 @@ export default function Login() {
     login('guest@matag.com', 'password')
   }
 
+  const handleRegister = () => {
+    navigate('/ui/auth/register')
+  }
+
   return (
     <section id='login'>
       <div id='login-container'>
@@ -67,6 +71,8 @@ export default function Login() {
               <input type='submit' value='Login' />
               <div className='or'>or</div>
               <input type='button' value='Login as Guest' onClick={handleLoginAsGuest} />
+              <div className='or'>or</div>
+              <input type='button' value='Register' onClick={handleRegister} />
             </div>
             {loading && <Loader center />}
           </div>

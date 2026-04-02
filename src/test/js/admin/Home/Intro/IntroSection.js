@@ -1,5 +1,3 @@
-import {getNodeText} from '@testing-library/react'
-
 export default class IntoSection {
   constructor(element) {
     this.element = element
@@ -7,8 +5,8 @@ export default class IntoSection {
 
   validateAllLinks() {
     const links = this.element.querySelectorAll('a')
-    expect(getNodeText(links[0])).toBe('Matag: The Game')
-    expect(getNodeText(links[1])).toBe('matag.the.game@gmail.com')
-    expect(getNodeText(links[2])).toBe('Matag: The Game Discord Channel')
+    expect(links[0].textContent).toBe('Matag: The Game')
+    expect(links[1].textContent).toBe('matag.the.game@gmail.com')
+    expect(links[2].textContent).toBe('Matag: The Game Discord Channel')
   }
 }

@@ -17,8 +17,8 @@ export default function Header() {
   return (
     <header>
       <div id='logo'>
-        <img src={`${APP_BASE_PATH}/img/matag.png`} alt='matag-logo' />
-        <h1>{config.matagName}</h1>
+        <Link to="/"><img src={`${APP_BASE_PATH}/img/matag.png`} alt='matag-logo' /></Link>
+        <h1><Link to="/" className="unstyled-link">{config.matagName}</Link></h1>
       </div>
 
       <div id='menu-bar'>

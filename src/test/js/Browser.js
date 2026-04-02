@@ -1,4 +1,4 @@
-import {getNodeText, waitFor} from '@testing-library/react'
+import {waitFor} from '@testing-library/react'
 import HeaderSection from './admin/Header/HeaderSection'
 import IntroSection from './admin/Home/Intro/IntroSection'
 import StatsSection from './admin/Home/Stats/StatsSection'
@@ -21,7 +21,7 @@ export default class Browser {
   }
 
   async waitForTitleToBe(title) {
-    await waitFor(() => getNodeText(this.app.container.querySelector('h2')) === title)
+    await waitFor(() => this.app.container.querySelector('h2').textContent === title)
   }
 
   getHeader() {

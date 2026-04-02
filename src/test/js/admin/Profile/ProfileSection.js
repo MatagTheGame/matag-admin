@@ -1,5 +1,3 @@
-import {getNodeText} from '@testing-library/react'
-
 export default class ProfileSection {
   constructor(element) {
     this.element = element
@@ -13,7 +11,7 @@ export default class ProfileSection {
   }
 
   validateField(dt, dd, expectedLabel, expectedValue) {
-    expect(getNodeText(dt)).toBe(expectedLabel)
-    expect(getNodeText(dd)).toBe(expectedValue)
+    expect(dt.textContent).toBe(expectedLabel)
+    expect(dd.textContent).toBe(expectedValue)
   }
 }

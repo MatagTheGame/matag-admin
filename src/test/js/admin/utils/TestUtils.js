@@ -1,7 +1,7 @@
 import React from 'react'
 import { Provider } from 'react-redux'
 import {createStore} from 'redux'
-import {getNodeText, render} from '@testing-library/react'
+import {render} from '@testing-library/react'
 import AdminApp from 'admin/AdminApp'
 import history from 'admin/utils/history'
 import AppReducer from 'admin/_reducers/AppReducer'
@@ -45,7 +45,7 @@ export default class TestUtils {
   static rowAsStrings(row) {
     const tds = row.querySelectorAll('td')
     return Array.from(tds)
-      .map((td) => getNodeText(td))
+      .map((td) => td.textContent)
   }
 }
 
